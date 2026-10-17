@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Test</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--txt:#1d2430;--mut:#667085;--line:#dde1e7;--acc:#2b6cb0;--ok:#22863a;--okbg:#e6f4ea;--ko:#b42318;--kobg:#fdecea;--warn:#8a5a00;--warnbg:#fff4d6}
+@media(prefers-color-scheme:dark){:root{--bg:#121417;--card:#1c2026;--txt:#e6e9ee;--mut:#9aa4b2;--line:#2c323b;--acc:#6ea8e8;--ok:#4cc26b;--okbg:#17321f;--ko:#ff8a80;--kobg:#3a1c1a;--warn:#f0c46b;--warnbg:#3a2e12}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.45 -apple-system,system-ui,sans-serif}
+header{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 10px;display:flex;align-items:center;gap:10px;z-index:5}
+header h1{font-size:18px;margin:0;flex:1}
+main{padding:14px;max-width:720px;margin:0 auto;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 40px)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+button,.btn{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;padding:10px 14px;cursor:pointer;min-height:44px;display:inline-block}
+button.primary{background:var(--acc);border-color:var(--acc);color:#fff}
+button.danger{color:var(--ko)}
+button.small{min-height:34px;padding:6px 10px;font-size:14px}
+button:disabled{opacity:.45}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;white-space:normal}
+.opt.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok)}
+.opt.ko{background:var(--kobg);border-color:var(--ko);color:var(--ko)}
+.meta{color:var(--mut);font-size:13px}
+.badge{display:inline-block;font-size:12px;border-radius:6px;padding:2px 7px;background:var(--line);color:var(--mut)}
+.badge.warn{background:var(--warnbg);color:var(--warn)}
+select,input[type=text],textarea{font:inherit;width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--txt)}
+textarea{min-height:70px;resize:vertical}
+label{display:block;margin:10px 0 4px;font-size:14px;color:var(--mut)}
+.qitem{display:block;width:100%;text-align:left;margin:6px 0;padding:10px 12px}
+.bar{height:6px;background:var(--line);border-radius:4px;overflow:hidden;margin:8px 0}
+.bar div{height:100%;background:var(--acc)}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title">Test</h1>
+  <button id="btnInicio" class="small">Inicio</button>
+</header>
+<main id="app"></main>
+
+<script>
+const KQ='test-app-v1', KS='test-app-sesiones-v1';
+let Q=[], SES=[];
+let view='home', actual=null, sess=null, editing=null, form=null;
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function saveQ(){try{localStorage.setItem(KQ,JSON.stringify(Q));}catch(e){}}
+function saveS(){try{localStorage.setItem(KS,JSON.stringify(SES));}catch(e){}}
+function load(){
+  try{const q=localStorage.getItem(KQ); if(q) Q=JSON.parse(q);}catch(e){}
+  try{const s=localStorage.getItem(KS); if(s) SES=JSON.parse(s);}catch(e){}
+}
+function byId(id){return Q.find(q=>q.id===id);}
+function sesionById(id){return SES.find(s=>s.id===id);}
+function nuevoId(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function esLimpia(q){return !q.revisar || q.revisar.length===0;}
+function estado(q){
+  if(q.editada) return {t:'editada',c:''};
+  if(!q.correcta) return {t:'sin respuesta',c:'warn'};
+  if(q.revisar&&q.revisar.length) return {t:'revisar',c:'warn'};
+  return {t:'ok',c:''};
+}
+function convs(){return [...new Set(Q.map(q=>q.convocatoria))];}
+function temasDe(conv){return [...new Set(Q.filter(q=>conv==='all'||q.convocatoria===conv).map(q=>q.tema))].sort((a,b)=>a-b);}
+function filtrarPara(s){
+  return Q.filter(q=>(s.conv==='all'||q.convocatoria===s.conv)
+    &&(s.tema==='all'||String(q.tema)===String(s.tema))
+    &&(!s.limpias||esLimpia(q)));
+}
+function resumenFiltro(s){
+  const c=s.conv==='all'?'Todas las convocatorias':s.conv;
+  const t=s.tema==='all'?'todos los temas':'tema '+s.tema;
+  return `${c} · ${t}${s.limpias?' · solo revisadas':''}`;
+}
+
+function go(v){view=v; render(); window.scrollTo(0,0);}
+function render(){
+  const titulos={home:'Test',sesiones:'Sesiones',sesion:'Sesión',form:'Configurar sesión',practice:'Practicar',edit:'Editar pregunta',list:'Preguntas',datos:'Datos'};
+  document.getElementById('title').textContent=titulos[view]||'Test';
+  const app=document.getElementById('app');
+  const v={home:vistaInicio,sesiones:vistaSesiones,sesion:vistaSesion,form:vistaForm,practice:vistaPractica,edit:vistaEditar,list:vistaLista,datos:vistaDatos}[view];
+  app.innerHTML=v();
+  bind();
+}
+
+/* ---------- INICIO ---------- */
+function vistaInicio(){
+  if(!Q.length) return `<div class="card"><p>Todavía no hay preguntas cargadas.</p>
+    <label>Importa el archivo JSON de preguntas</label>
+    <input type="file" id="fileIn" accept=".json,application/json">
+    <p class="meta">Se guarda en este dispositivo. Solo hace falta importarlo una vez.</p></div>`;
+  return `<div class="card"><p style="margin:0 0 6px"><b>${Q.length}</b> preguntas guardadas en este dispositivo.</p>
+    <p class="meta">${SES.length} sesiones creadas</p></div>
+    <div class="row"><button class="primary" id="bComenzar">Comenzar</button><button id="bDatos">Datos</button></div>`;
+}
+
+/* ---------- SESIONES ---------- */
+function vistaSesiones(){
+  const items=SES.map(s=>{
+    const n=filtrarPara(s).length;
+    return `<div class="card">
+      <b>${esc(s.nombre)}</b><br><span class="meta">${esc(resumenFiltro(s))} · ${n} preguntas</span><br>
+      <span class="meta">Hechas: ${s.hechas||0} · ✓ ${s.aciertos||0} · ✗ ${s.fallos||0}</span>
+      <div class="row" style="margin-top:8px"><button class="primary small" data-abrir="${s.id}">Abrir</button>
+      <button class="small" data-editar-ses="${s.id}">Configurar</button>
+      <button class="small danger" data-borrar-ses="${s.id}">Borrar</button></div></div>`;
+  }).join('');
+  return `<div class="row" style="margin-bottom:10px"><button class="primary" id="bNueva">+ Nueva sesión</button>
+    <button class="small" id="bVolver">← Inicio</button></div>
+    ${items||'<p class="meta">Aún no tienes sesiones. Crea una para empezar.</p>'}`;
+}
+function vistaSesion(){
+  const s=sesionById(actual); if(!s){go('sesiones');return '';}
+  const n=filtrarPara(s).length;
+  return `<div class="card"><b>${esc(s.nombre)}</b><br><span class="meta">${esc(resumenFiltro(s))} · ${n} preguntas</span>
+    <p class="meta" style="margin-bottom:0">Hechas: ${s.hechas||0} · ✓ ${s.aciertos||0} · ✗ ${s.fallos||0}</p></div>
+    <div class="row">
+      <button class="primary" id="bOrden" ${n?'':'disabled'}>Practicar en orden</button>
+      <button id="bMezcla" ${n?'':'disabled'}>Mezclar</button>
+      <button id="bLista">Ver y editar preguntas</button>
+      <button id="bNuevaP">+ Pregunta</button>
+    </div>
+    <div class="row" style="margin-top:12px"><button class="small" id="bVolverS">← Sesiones</button></div>`;
+}
+function vistaForm(){
+  const f=form;
+  const cv=convs().map(c=>`<option value="${esc(c)}" ${f.conv===c?'selected':''}>${esc(c)}</option>`).join('');
+  const tm=temasDe(f.conv).map(t=>`<option value="${t}" ${String(f.tema)===String(t)?'selected':''}>Tema ${t}</option>`).join('');
+  return `<div class="card">
+    <label>Nombre de la sesión</label><input type="text" id="fNom" value="${esc(f.nombre)}" placeholder="Ej: Auxiliar - temas 1 a 10">
+    <label>Convocatoria</label><select id="fConv"><option value="all">Todas</option>${cv}</select>
+    <label>Tema</label><select id="fTema"><option value="all">Todos</option>${tm}</select>
+    <label class="row" style="margin-top:12px;color:var(--txt)"><input type="checkbox" id="fLimp" ${f.limpias?'checked':''} style="width:auto"> Solo preguntas revisadas</label>
+    <p class="meta">${filtrarParaTemp(f).length} preguntas en esta sesión</p>
+  </div>
+  <div class="row"><button class="primary" id="bGuardarS">Guardar</button><button id="bCancelS">Cancelar</button></div>`;
+}
+function filtrarParaTemp(f){return filtrarPara(f);}
+
+/* ---------- PRÁCTICA ---------- */
+function vistaPractica(){
+  if(!sess) {go('sesiones'); return '';}
+  if(sess.i>=sess.ids.length) return vistaFin();
+  const q=byId(sess.ids[sess.i]);
+  if(!q){sess.i++; return vistaPractica();}
+  const e=estado(q);
+  const opts=q.opciones.map(o=>{
+    let cls='opt';
+    if(sess.resp!==null){
+      if(q.correcta===o.letra) cls+=' ok';
+      else if(sess.resp===o.letra) cls+=' ko';
+    }
+    return `<button class="${cls}" data-letra="${esc(o.letra)}" ${sess.resp!==null?'disabled':''}><b>${esc(o.letra)})</b> ${esc(o.texto)}</button>`;
+  }).join('');
+  let pie='';
+  if(sess.resp!==null){
+    if(!q.correcta){
+      pie=`<div class="card" style="background:var(--warnbg)"><p>Sin respuesta marcada. ¿Marcar <b>${esc(sess.resp)}</b> como correcta?</p>
+        <div class="row"><button class="primary small" id="bSetOk">Sí, marcar</button><button class="small" id="bNoSet">No</button></div></div>`;
+    }
+    pie+=`<div class="row" style="margin-top:8px"><button class="primary" id="bSig">${sess.i+1<sess.ids.length?'Siguiente':'Ver resultado'}</button></div>`;
+  }
+  return `<div class="meta">${sess.i+1} / ${sess.ids.length} · ${esc(q.convocatoria)} · Tema ${esc(q.tema)} · nº ${esc(q.numero)}
+     <span class="badge ${e.c}">${e.t}</span></div>
+  <div class="bar"><div style="width:${(sess.i/sess.ids.length)*100}%"></div></div>
+  <div class="card"><p style="margin:0 0 6px"><b>${esc(q.enunciado)}</b></p>${opts}${pie}</div>
+  <div class="row">
+    <button class="small" id="bEditP">Editar esta pregunta</button>
+    <button class="small" id="bSalir">Salir</button>
+    <span class="meta" style="margin-left:auto">✓ ${sess.ac} · ✗ ${sess.fa}</span>
+  </div>`;
+}
+function vistaFin(){
+  const tot=sess.ac+sess.fa, pct=tot?Math.round(sess.ac/tot*100):0;
+  return `<div class="card"><h2 style="margin-top:0">Resultado</h2>
+    <p>${sess.ac} aciertos · ${sess.fa} fallos (${pct}%)</p></div>
+    <div class="row"><button class="primary" id="bSalir">Volver a la sesión</button></div>`;
+}
+
+/* ---------- EDICIÓN ---------- */
+function vistaEditar(){
+  const d=editing.data;
+  const opts=d.opciones.map((o,i)=>`<div class="card" style="padding:10px">
+      <div class="row" style="justify-content:space-between"><b>${esc(o.letra)})</b>
+        <label class="row" style="margin:0;color:var(--txt)"><input type="radio" name="corr" value="${esc(o.letra)}" ${d.correcta===o.letra?'checked':''} style="width:auto"> Correcta</label></div>
+      <textarea data-opt="${i}">${esc(o.texto)}</textarea></div>`).join('');
+  return `<div class="card">
+    <div class="row"><span class="badge">${esc(d.convocatoria||'')}</span><span class="badge">Tema ${esc(d.tema)}</span><span class="badge">nº ${esc(d.numero)}</span></div>
+    <label>Enunciado</label><textarea id="eEnun">${esc(d.enunciado)}</textarea></div>
+  ${opts}
+  <div class="card row">
+    <button id="bAddOpt" class="small">+ Opción</button>
+    <button id="bDelOpt" class="small" ${d.opciones.length<=2?'disabled':''}>− Última opción</button>
+    <button id="bNoCorr" class="small">Sin respuesta marcada</button></div>
+  <div class="card row">
+    <button class="primary" id="bGuardarE">Guardar</button>
+    <button id="bCancelE">Cancelar</button>
+    <button class="danger" id="bDelQ" style="margin-left:auto">Eliminar</button></div>`;
+}
+function abrirEditor(id,back){
+  const q=byId(id);
+  editing={id,back,data:JSON.parse(JSON.stringify(q))};
+  view='edit'; render();
+}
+function leerEdicion(){
+  const d=editing.data;
+  d.enunciado=document.getElementById('eEnun').value;
+  document.querySelectorAll('[data-opt]').forEach(t=>{d.opciones[+t.dataset.opt].texto=t.value;});
+  const r=document.querySelector('input[name=corr]:checked');
+  d.correcta=r?r.value:null;
+  return d;
+}
+function nuevaPregunta(){
+  const n=Math.max(0,...Q.filter(q=>q.convocatoria==='Manual').map(q=>q.numero))+1;
+  const p={id:nuevoId('m'),convocatoria:'Manual',plaza:'',tema:0,numero:n,enunciado:'',
+    opciones:['a','b','c','d'].map(l=>({letra:l,texto:''})),correcta:null,pagina:null,revisar:[],editada:true};
+  Q.push(p); saveQ(); return p.id;
+}
+
+/* ---------- LISTA ---------- */
+function vistaLista(){
+  const s=sesionById(actual);
+  const f=s?filtrarPara(s):Q;
+  const items=f.slice(0,300).map(q=>{
+    const e=estado(q);
+    return `<button class="qitem" data-edit="${esc(q.id)}"><span class="meta">${esc(q.convocatoria)} · T${esc(q.tema)} · nº ${esc(q.numero)}</span>
+      <span class="badge ${e.c}" style="float:right">${e.t}</span><br>${esc(q.enunciado).slice(0,140)}</button>`;
+  }).join('');
+  return `<div class="row" style="margin-bottom:8px"><button id="bVolverL" class="small">← Sesión</button>
+    <span class="meta">${f.length} preguntas${f.length>300?' (mostrando 300)':''}</span></div>${items||'<p class="meta">Nada que mostrar.</p>'}`;
+}
+
+/* ---------- DATOS ---------- */
+function vistaDatos(){
+  return `<div class="card"><p>${Q.length} preguntas guardadas.</p>
+    <label>Importar otro JSON (reemplaza las preguntas actuales)</label>
+    <input type="file" id="fileIn" accept=".json,application/json"></div>
+    <div class="row"><button id="bExp">Exportar copia</button><button class="danger" id="bReset">Borrar todo</button>
+    <button class="small" id="bVolverD">← Inicio</button></div>`;
+}
+
+/* ---------- EVENTOS ---------- */
+function bind(){
+  const $=id=>document.getElementById(id);
+  const on=(id,fn)=>{const el=$(id); if(el) el.onclick=fn;};
+  const fi=$('fileIn'); if(fi) fi.onchange=e=>importar(e.target.files[0]);
+
+  on('bComenzar',()=>go('sesiones'));
+  on('bDatos',()=>go('datos'));
+  on('bVolverD',()=>go('home'));
+  on('bExp',exportar);
+  on('bReset',()=>{ if(confirm('¿Borrar todas las preguntas, sesiones y cambios?')){Q=[];SES=[];saveQ();saveS();go('home');} });
+
+  on('bNueva',()=>{form={id:null,nombre:'',conv:'all',tema:'all',limpias:false}; go('form');});
+  on('bVolver',()=>go('home'));
+  document.querySelectorAll('[data-abrir]').forEach(b=>b.onclick=()=>{actual=b.dataset.abrir; go('sesion');});
+  document.querySelectorAll('[data-editar-ses]').forEach(b=>b.onclick=()=>{const s=sesionById(b.dataset.editarSes); form={...s}; actual=s.id; go('form');});
+  document.querySelectorAll('[data-borrar-ses]').forEach(b=>b.onclick=()=>{
+    const s=sesionById(b.dataset.borrarSes);
+    if(confirm(`¿Borrar la sesión "${s.nombre}"? Las preguntas no se borran.`)){SES=SES.filter(x=>x.id!==s.id);saveS();render();}
+  });
+
+  // formulario de sesión
+  if(view==='form'){
+    const fc=$('fConv'); if(fc) fc.onchange=e=>{form.conv=e.target.value; form.tema='all'; form.nombre=$('fNom').value; render();};
+    const ft=$('fTema'); if(ft) ft.onchange=e=>{form.tema=e.target.value; form.nombre=$('fNom').value; render();};
+    const fl=$('fLimp'); if(fl) fl.onchange=e=>{form.limpias=e.target.checked; form.nombre=$('fNom').value; render();};
+    on('bCancelS',()=>go('sesiones'));
+    on('bGuardarS',()=>{
+      const nombre=$('fNom').value.trim()||'Sesión sin nombre';
+      const datos={nombre,conv:$('fConv').value,tema:$('fTema').value,limpias:$('fLimp').checked};
+      if(form.id){ Object.assign(sesionById(form.id),datos); }
+      else { SES.push({id:nuevoId('s'),...datos,hechas:0,aciertos:0,fallos:0}); }
+      saveS(); go('sesiones');
+    });
+  }
+
+  // sesión
+  on('bVolverS',()=>go('sesiones'));
+  on('bOrden',()=>iniciar(false));
+  on('bMezcla',()=>iniciar(true));
+  on('bLista',()=>go('list'));
+  on('bNuevaP',()=>{const id=nuevaPregunta(); abrirEditor(id,'sesion');});
+
+  // práctica
+  document.querySelectorAll('[data-letra]').forEach(b=>b.onclick=()=>responder(b.dataset.letra));
+  on('bSig',siguiente);
+  on('bSetOk',()=>{const q=byId(sess.ids[sess.i]); q.correcta=sess.resp; q.editada=true; q.revisar=[]; saveQ(); sess.ac++; const s=sesionById(actual); s.aciertos=(s.aciertos||0)+0; render();});
+  on('bNoSet',()=>render());
+  on('bEditP',()=>abrirEditor(sess.ids[sess.i],'practice'));
+  on('bSalir',()=>{cerrarSesionPractica(); go('sesion');});
+
+  // edición
+  if(view==='edit'){
+    on('bAddOpt',()=>{leerEdicion(); const d=editing.data; d.opciones.push({letra:String.fromCharCode(97+d.opciones.length),texto:''}); render();});
+    on('bDelOpt',()=>{leerEdicion(); const d=editing.data; if(d.opciones.length>2) d.opciones.pop(); if(!d.opciones.find(o=>o.letra===d.correcta)) d.correcta=null; render();});
+    on('bNoCorr',()=>{leerEdicion(); editing.data.correcta=null; render();});
+    on('bGuardarE',()=>{
+      const d=leerEdicion(); d.editada=true; d.revisar=[];
+      const i=Q.findIndex(q=>q.id===d.id); if(i>=0) Q[i]=d; else Q.push(d);
+      saveQ();
+      const b=editing.back; editing=null;
+      if(b==='practice' && sess){ sess.resp=null; go('practice'); }
+      else if(b==='list') go('list');
+      else go('sesion');
+    });
+    on('bCancelE',()=>{const b=editing.back; editing=null; if(b==='practice'&&sess) go('practice'); else if(b==='list') go('list'); else go('sesion');});
+    on('bDelQ',()=>{
+      if(!confirm('¿Eliminar esta pregunta?')) return;
+      const id=editing.id, b=editing.back;
+      Q=Q.filter(q=>q.id!==id); saveQ(); editing=null;
+      if(sess) sess.ids=sess.ids.filter(x=>x!==id);
+      if(b==='practice'&&sess&&sess.ids.length) go('practice'); else go(b==='list'?'list':'sesion');
+    });
+  }
+
+  // lista
+  on('bVolverL',()=>go('sesion'));
+  document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>abrirEditor(b.dataset.edit,'list'));
+}
+
+/* ---------- ACCIONES ---------- */
+function iniciar(mezclar){
+  const s=sesionById(actual); if(!s) return;
+  let ids=filtrarPara(s).map(q=>q.id);
+  if(mezclar) ids=ids.sort(()=>Math.random()-0.5);
+  if(!ids.length) return;
+  sess={ids,i:0,ac:0,fa:0,resp:null,guardada:false};
+  go('practice');
+}
+function responder(letra){
+  if(sess.resp!==null) return;
+  const q=byId(sess.ids[sess.i]);
+  sess.resp=letra;
+  if(q.correcta){ if(letra===q.correcta) sess.ac++; else sess.fa++; }
+  render();
+}
+function siguiente(){
+  sess.i++; sess.resp=null;
+  if(sess.i>=sess.ids.length) cerrarSesionPractica();
+  render();
+}
+function cerrarSesionPractica(){
+  if(sess && !sess.guardada){
+    const s=sesionById(actual);
+    if(s){ s.hechas=(s.hechas||0)+sess.i; s.aciertos=(s.aciertos||0)+sess.ac; s.fallos=(s.fallos||0)+sess.fa; saveS(); }
+    sess.guardada=true;
+  }
+}
+function importar(file){
+  if(!file) return;
+  file.text().then(t=>{
+    const data=JSON.parse(t);
+    if(!Array.isArray(data)) throw new Error('formato');
+    Q=data.map(q=>({revisar:[],editada:false,...q}));
+    saveQ(); go('home');
+  }).catch(()=>alert('No se pudo leer el archivo. Debe ser el JSON de preguntas.'));
+}
+function exportar(){
+  const blob=new Blob([JSON.stringify(Q,null,1)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='preguntas-copia.json';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+document.getElementById('btnInicio').onclick=()=>{cerrarSesionPractica(); sess=null; editing=null; go('home');};
+load(); render();
+</script>
+</body>
+</html>
