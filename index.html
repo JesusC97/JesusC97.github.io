@@ -65,6 +65,7 @@ label{display:block;margin:12px 0 6px;font-size:13px;font-weight:600;color:var(-
 
 <script>
 const KQ='test-app-v1', KS='test-app-sesiones-v1';
+const VERSION='Actualizada el 17/10/2026';
 let Q=[], SES=[];
 let view='home', actual=null, sess=null, editing=null, form=null;
 
@@ -113,10 +114,12 @@ function vistaInicio(){
   if(!Q.length) return `<div class="card"><p>Todavía no hay preguntas cargadas.</p>
     <label>Importa el archivo JSON de preguntas</label>
     <input type="file" id="fileIn" accept=".json,application/json">
-    <p class="meta">Se guarda en este dispositivo. Solo hace falta importarlo una vez.</p></div>`;
+    <p class="meta">Se guarda en este dispositivo. Solo hace falta importarlo una vez.</p></div>
+    <p class="meta" style="text-align:center;margin-top:24px">${VERSION}</p>`;
   return `<div class="card"><p style="margin:0 0 6px"><b>${Q.length}</b> preguntas guardadas en este dispositivo.</p>
     <p class="meta">${SES.length} sesiones creadas</p></div>
-    <div class="row"><button class="primary" id="bComenzar">Comenzar</button><button id="bDatos">Datos</button></div>`;
+    <div class="row"><button class="primary" id="bComenzar">Comenzar</button><button id="bDatos">Datos</button></div>
+    <p class="meta" style="text-align:center;margin-top:24px">${VERSION}</p>`;
 }
 
 /* ---------- SESIONES ---------- */
