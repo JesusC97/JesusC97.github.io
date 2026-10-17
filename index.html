@@ -1,4 +1,4 @@
-<!doctype html>
+ <!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -94,7 +94,7 @@ label{display:block;margin:12px 0 6px;font-size:13px;font-weight:600;color:var(-
 
 <script>
 const KQ='test-app-v1', KS='test-app-sesiones-v1';
-const VERSION='Actualizada el 17/10/2026';
+const VERSION='Actualizada el 17/10/2026 a las 21:20';
 let Q=[], SES=[];
 let view='home', actual=null, sess=null, editing=null, form=null;
 
@@ -110,6 +110,7 @@ function sesionById(id){return SES.find(s=>s.id===id);}
 function nuevoId(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 function esLimpia(q){return !q.revisar || q.revisar.length===0;}
 function estado(q){
+  if(q.anulada) return {t:'anulada',c:'warn'};
   if(q.editada) return {t:'editada',c:''};
   if(!q.correcta) return {t:'sin respuesta',c:'warn'};
   if(q.revisar&&q.revisar.length) return {t:'revisar',c:'warn'};
@@ -117,8 +118,13 @@ function estado(q){
 }
 function convs(){return [...new Set(Q.map(q=>q.convocatoria))];}
 function temasDe(conv){return [...new Set(Q.filter(q=>conv==='all'||q.convocatoria===conv).map(q=>q.tema))].sort((a,b)=>a-b);}
-function filtrarPara(s){
+function filtrarTodas(s){
   return Q.filter(q=>(s.conv==='all'||q.convocatoria===s.conv)
+    &&(s.tema==='all'||String(q.tema)===String(s.tema))
+    &&(!s.limpias||esLimpia(q)));
+}
+function filtrarPara(s){
+  return Q.filter(q=>!q.anulada&&(s.conv==='all'||q.convocatoria===s.conv)
     &&(s.tema==='all'||String(q.tema)===String(s.tema))
     &&(!s.limpias||esLimpia(q)));
 }
@@ -291,7 +297,8 @@ function vistaEditar(){
       <textarea data-opt="${i}">${esc(o.texto)}</textarea></div>`).join('');
   return `<div class="card">
     <div class="row"><span class="badge">${esc(d.convocatoria||'')}</span><span class="badge">Tema ${esc(d.tema)}</span><span class="badge">nº ${esc(d.numero)}</span></div>
-    <label>Enunciado</label><textarea id="eEnun">${esc(d.enunciado)}</textarea></div>
+    <label>Enunciado</label><textarea id="eEnun">${esc(d.enunciado)}</textarea>
+    <label class="row" style="margin:12px 0 0;color:var(--txt)"><input type="checkbox" id="eAnul" ${d.anulada?'checked':''} style="width:auto"> Pregunta anulada (no se practica)</label></div>
   ${opts}
   <div class="card row">
     <button id="bAddOpt" class="small">+ Opción</button>
@@ -310,6 +317,7 @@ function abrirEditor(id,back){
 function leerEdicion(){
   const d=editing.data;
   d.enunciado=document.getElementById('eEnun').value;
+  d.anulada=document.getElementById('eAnul').checked;
   document.querySelectorAll('[data-opt]').forEach(t=>{d.opciones[+t.dataset.opt].texto=t.value;});
   const r=document.querySelector('input[name=corr]:checked');
   d.correcta=r?r.value:null;
@@ -325,7 +333,7 @@ function nuevaPregunta(){
 /* ---------- LISTA ---------- */
 function vistaLista(){
   const s=sesionById(actual);
-  const f=s?filtrarPara(s):Q;
+  const f=s?filtrarTodas(s):Q;
   const items=f.slice(0,300).map(q=>{
     const e=estado(q);
     return `<button class="qitem" data-edit="${esc(q.id)}"><span class="meta">${esc(q.convocatoria)} · T${esc(q.tema)} · nº ${esc(q.numero)}</span>
@@ -338,9 +346,15 @@ function vistaLista(){
 /* ---------- DATOS ---------- */
 function vistaDatos(){
   return `<div class="card"><p>${Q.length} preguntas guardadas.</p>
-    <label>Importar PDF de preguntas</label>
-    <input type="file" id="pdfIn" accept=".pdf,application/pdf">
-    <p class="meta" id="pdfEstado">Se leerá en este dispositivo. Antes de guardar verás un resumen para confirmar.</p></div>
+    <label>Importar examen (dos PDF)</label>
+    <label>Nombre del examen</label>
+    <input type="text" id="exNombre" placeholder="Ej: Administrativo PEPI 2023">
+    <label>PDF de preguntas</label>
+    <input type="file" id="exPreg" accept=".pdf,application/pdf">
+    <label>PDF de plantilla de respuestas</label>
+    <input type="file" id="exPlan" accept=".pdf,application/pdf">
+    <p class="meta" id="pdfEstado" style="margin:10px 0">Antes de guardar verás un resumen para confirmar.</p>
+    <button class="primary small" id="bExamen">${ic('play')} Leer examen</button></div>
     <div class="card"><label style="margin-top:0">Importar JSON</label>
     <input type="file" id="fileIn" accept=".json,application/json">
     <p class="meta">Reemplaza las preguntas actuales.</p></div>
@@ -357,11 +371,15 @@ function vistaRevision(){
   const lista=Object.entries(porConv).map(([c,n])=>`<li>${esc(c)}: <b>${n}</b></li>`).join('');
   const muestra=P.slice(0,2).map(q=>`<div class="card" style="margin:8px 0"><span class="meta">T${esc(q.tema)} · nº ${esc(q.numero)}</span><p style="margin:4px 0"><b>${esc(q.enunciado).slice(0,160)}</b></p>
     <span class="meta">${q.opciones.length} opciones · correcta: ${esc(q.correcta||'no marcada')}</span></div>`).join('');
+  const anuladas=P.filter(q=>q.anulada).map(q=>q.numero);
   const hayActuales=Q.length>0;
   return `<div class="card">
-      <p><b>${P.length}</b> preguntas detectadas en ${importacion.paginas} páginas.</p>
+      <p><b>${P.length}</b> preguntas listas para guardar.</p><p class="meta">${esc(importacion.resumen)}</p>
       <p class="meta">${conRes} con respuesta marcada · ${P.length-conRes} sin respuesta · ${revisar} con avisos</p>
       <ul class="meta">${lista}</ul>
+      <label>Preguntas anuladas (números separados por comas)</label>
+      <div class="row"><input type="text" id="revAnul" value="${esc(anuladas.join(', '))}" placeholder="Ej: 12, 45"><button class="small" id="bAplicarAnul">Aplicar</button></div>
+      <p class="meta">Se guardan, pero no aparecen en las sesiones de práctica.</p>
       ${importacion.avisos.length?`<p class="meta" style="color:var(--warn)">${importacion.avisos.map(esc).join('<br>')}</p>`:''}
     </div>
     <div class="card"><label style="margin-top:0">Muestra</label>${muestra}</div>
@@ -371,106 +389,102 @@ function vistaRevision(){
     </div>`;
 }
 
-/* ---------- IMPORTACIÓN PDF ---------- */
+/* ---------- IMPORTACIÓN DE EXAMEN (preguntas + plantilla) ---------- */
 let importacion=null;
-const RE_Q1=/^(\d+)\.(\d+)\.\s+(.*)$/, RE_Q2=/^Tema\s*(\d+)\s*[-–]\s*Pregunta\s*(\d+)\s*\.?\s*[-–]?\s*(.*)$/;
-const RE_TEMA=/^Tema\s*(\d+)\.\s/, RE_OPT=/^([a-d])\)\s?(.*)$/, RE_PLAZA=/PLAZA DE (.*)/;
-const RUIDO=[/^Pl\. España/,/^\d+ de \d+$/,/^CONVOCATORIA/,/^\d+$/,/^Normativa:/,/^Preguntas tema/,/^Heredia Herrera/,/^MATERIAS ESPEC/,/^Bibliograf/];
-function esRojo(c){
-  if(!c) return false;
-  if(typeof c==='string'){ const m=c.match(/^#?([0-9a-f]{6})$/i); if(!m) return false; const v=parseInt(m[1],16); return (v>>16)>230 && ((v>>8)&255)<30 && (v&255)<30; }
-  if(Array.isArray(c)&&c.length===3){ const [r,g,b]=c.map(x=>x<=1?x*255:x); return r>230&&g<30&&b<30; }
-  return false;
-}
-async function extraerPDF(file, progreso){
+async function leerLineasPDF(file){
   const buf=await file.arrayBuffer();
   pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
   const pdf=await pdfjsLib.getDocument({data:buf}).promise;
-  const OPS=pdfjsLib.OPS;
-  const lineas=[]; const avisos=[]; let paginas=0;
+  const out=[];
   for(let p=1;p<=pdf.numPages;p++){
     const page=await pdf.getPage(p);
-    const ops=await page.getOperatorList();
-    const tc=await page.getTextContent({disableCombineTextItems:true});
-    // color de relleno asociado a cada operación de texto, en orden
-    let fill=null; const colores=[];
-    for(let k=0;k<ops.fnArray.length;k++){
-      const fn=ops.fnArray[k], a=ops.argsArray[k];
-      if(fn===OPS.setFillRGBColor) fill=a;
-      else if(fn===OPS.setFillColor && a && a.length===3) fill=a;
-      else if(fn===OPS.setFillGray) fill=[a[0],a[0],a[0]];
-      else if(fn===OPS.showText||fn===OPS.showSpacedText) colores.push(esRojo(fill));
-    }
-    const items=tc.items;
-    const alineado=items.length===colores.length;
-    if(!alineado) avisos.push(`Página ${p}: no se pudo leer el color; sus respuestas quedan sin marcar.`);
-    const cajas=items.map((it,k)=>({str:it.str,x:it.transform[4],y:it.transform[5],w:it.width||0,rojo:alineado&&colores[k]}));
-    // agrupar en líneas por altura
-    const ordenados=cajas.filter(c=>c.str.trim()!=='').sort((a,b)=>b.y-a.y);
+    const tc=await page.getTextContent();
+    const cajas=tc.items.filter(it=>it.str.trim()!=='').map(it=>({str:it.str,x:it.transform[4],y:it.transform[5],w:it.width||0}));
+    cajas.sort((a,b)=>b.y-a.y);
     const grupos=[];
-    for(const c of ordenados){
-      const g=grupos[grupos.length-1];
-      if(g && Math.abs(c.y-g.y)<=2.5) g.items.push(c); else grupos.push({y:c.y,items:[c]});
-    }
-    let finAnexo=false;
+    for(const c of cajas){ const g=grupos[grupos.length-1]; if(g&&Math.abs(c.y-g.y)<=2.5) g.items.push(c); else grupos.push({y:c.y,items:[c]}); }
     for(const g of grupos){
       g.items.sort((a,b)=>a.x-b.x);
-      let texto='', nr=0, nt=0, prev=null;
-      for(const c of g.items){
-        if(prev && c.x-(prev.x+prev.w)>1.5 && !texto.endsWith(' ')) texto+=' ';
-        texto+=c.str; prev=c;
-        nt+=c.str.length; if(c.rojo) nr+=c.str.length;
-      }
-      texto=texto.replace(/\s+/g,' ').trim();
-      if(texto==='ANEXO'){ finAnexo=true; break; }
-      lineas.push({pg:p,t:texto,nr,nt});
+      let t='', prev=null;
+      for(const c of g.items){ if(prev&&c.x-(prev.x+prev.w)>1.5&&!t.endsWith(' ')) t+=' '; t+=c.str; prev=c; }
+      out.push(t.replace(/\s+/g,' ').trim());
     }
-    paginas=p;
-    if(finAnexo){ paginas=p-1; break; }
-    if(p%20===0 && progreso) progreso(`Leyendo página ${p} de ${pdf.numPages}…`);
     if(p%20===0) await new Promise(r=>setTimeout(r,0));
   }
-  if(progreso) progreso('Detectando preguntas…');
-  const preguntas=analizarLineas(lineas);
-  return {preguntas,paginas,avisos};
+  return out.filter(Boolean);
 }
-function analizarLineas(lineas){
-  const out=[]; let cur=null, state='out', bloque=0, plaza=null, bufPlaza=null;
-  const cerrar=()=>{ if(cur) out.push(cur); cur=null; };
-  for(const L of lineas){
-    const t=L.t; if(!t) continue;
-    if(t.startsWith('UNA PLAZA DE')){ cerrar(); state='out'; bloque++; plaza=t.replace('UNA PLAZA DE','').trim(); continue; }
-    const mp=t.match(RE_PLAZA); if(mp) bufPlaza=mp[1];
-    if(t.startsWith('MATERIAS COMUNES')){ cerrar(); state='out'; continue; }
-    if(RUIDO.some(r=>r.test(t))) continue;
-    const mt=t.match(RE_TEMA); if(mt){ cerrar(); state='out'; continue; }
-    const m1=t.match(RE_Q1), m2=t.match(RE_Q2);
-    if(m1||m2){
-      cerrar(); state='q';
-      const m=m1||m2;
-      cur={convocatoria:'Convocatoria '+bloque,plaza:plaza||bufPlaza||'',tema:+m[1],numero:+(m1?m[2]:m[2]),enunciado:m[3],opciones:[],pagina:L.pg,_r:0,_t:0};
-      continue;
+// Plantilla: pares "número letra" (en una o dos columnas)
+function leerPlantilla(lineas){
+  const pares={}, conflictos=[];
+  const re=/(?<!\d)(\d{1,3})\s+([A-D])(?![A-Za-zÁÉÍÓÚáéíóúñ])/g;
+  for(const l of lineas){
+    re.lastIndex=0; let m;
+    while((m=re.exec(l))){
+      const n=+m[1], letra=m[2];
+      if(n<1||n>200) continue;
+      if(pares[n]&&pares[n]!==letra){ if(!conflictos.includes(n)) conflictos.push(n); }
+      else pares[n]=letra;
     }
-    if(!cur || state==='out') continue;
-    const mo=t.match(RE_OPT);
-    if(mo){ state='o'; cur.opciones.push({letra:mo[1],texto:mo[2],_r:L.nr,_t:L.nt}); continue; }
+  }
+  return {pares,conflictos};
+}
+// Cuestionario: "N.- enunciado", opciones "a) ...", reservas tras el encabezado "PREGUNTAS DE RESERVA"
+function leerCuestionario(lineas){
+  const preguntas=[]; let cur=null, state='out', started=false, reserva=false;
+  const cerrar=()=>{ if(cur){ preguntas.push(cur); cur=null; } };
+  const RUIDO=[/^Excmo\. Ayuntamiento/,/^Servicio de Personal/,/^PRIMER EJERCICIO 2 PLAZAS/,/^ADMINISTRATIVO\/A PEPI/,/^\d+$/];
+  for(const t of lineas){
+    if(!started){ if(t==='PRIMER EJERCICIO') started=true; continue; }
+    if(RUIDO.some(r=>r.test(t))) continue;
+    if(t==='PREGUNTAS DE RESERVA'){ cerrar(); state='out'; reserva=true; continue; }
+    if(/^(PRIMER|SEGUNDO)\s+(EJERCICIO|SUPUESTO)(\s+PRÁCTICO|\s+PRACTICO)?$/.test(t)){ cerrar(); state='out'; reserva=false; continue; }
+    const mq=t.match(/^(\d{1,3})\.-\s*(.*)$/);
+    if(mq){ cerrar(); state='q'; cur={numero:+mq[1],enunciado:mq[2],opciones:[],reserva}; continue; }
+    if(!cur) continue;
+    const mo=t.match(/^([a-d])\)\s*(.*)$/);
+    if(mo){ state='o'; cur.opciones.push({letra:mo[1],texto:mo[2]}); continue; }
     if(state==='q') cur.enunciado+=' '+t;
-    else { const o=cur.opciones[cur.opciones.length-1]; if(o){ o.texto+=' '+t; o._r+=L.nr; o._t+=L.nt; } }
+    else if(state==='o'&&cur.opciones.length){ cur.opciones[cur.opciones.length-1].texto+=' '+t; }
   }
   cerrar();
-  return out.map((q,i)=>{
-    const rojas=q.opciones.filter(o=>o._t&&o._r/o._t>0.5).map(o=>o.letra);
-    const res={id:nuevoId('p'),convocatoria:q.convocatoria,plaza:q.plaza,tema:q.tema,numero:q.numero,
-      enunciado:q.enunciado.trim(),opciones:q.opciones.map(o=>({letra:o.letra,texto:o.texto.trim()})),
-      correcta:rojas.length===1?rojas[0]:null,pagina:q.pagina,revisar:[],editada:false};
-    const motivos=[];
-    if(res.opciones.length!==4) motivos.push('opciones');
-    if(res.opciones.some(o=>o.texto.length<2)) motivos.push('opcion_vacia');
-    if(res.opciones.some(o=>o.texto.length>300)) motivos.push('opcion_larga');
-    if(!res.correcta) motivos.push('sin_correcta');
-    res.revisar=motivos;
-    return res;
+  return preguntas;
+}
+function construirImportacion(lineasPreg, lineasPlan, nombre){
+  const cuest=leerCuestionario(lineasPreg);
+  if(!cuest.length) throw new Error('No se encontraron preguntas en el PDF de preguntas.');
+  const {pares,conflictos}=leerPlantilla(lineasPlan);
+  const avisos=[];
+  if(conflictos.length) avisos.push('Números con dos respuestas distintas en la plantilla: '+conflictos.join(', ')+'.');
+  const reservas=cuest.filter(q=>q.reserva).length;
+  const ordinarias=cuest.filter(q=>!q.reserva);
+  const sinRespuesta=ordinarias.filter(q=>!pares[q.numero]).map(q=>q.numero);
+  if(sinRespuesta.length) avisos.push('Sin respuesta en la plantilla: '+sinRespuesta.join(', ')+'.');
+  const preguntas=ordinarias.map(q=>{
+    const opciones=q.opciones.map(o=>({letra:o.letra,texto:o.texto.trim()}));
+    const correcta=pares[q.numero]||null;
+    const revisar=[];
+    if(opciones.length!==4) revisar.push('opciones');
+    if(!correcta) revisar.push('sin_correcta');
+    if(conflictos.includes(q.numero)) revisar.push('conflicto');
+    return {id:nuevoId('e'),convocatoria:nombre,plaza:'',tema:q.numero<=70?1:2,numero:q.numero,
+      enunciado:q.enunciado.trim(),opciones,correcta,pagina:null,revisar,editada:false};
   });
+  return {preguntas,avisos,resumen:`Examen: ${nombre}. ${reservas} preguntas de reserva no se incluyen.`};
+}
+async function procesarExamen(){
+  const $=id=>document.getElementById(id);
+  const fp=$('exPreg').files[0], fl=$('exPlan').files[0];
+  if(!fp||!fl){ alert('Selecciona el PDF de preguntas y el de plantilla.'); return; }
+  const nombre=$('exNombre').value.trim()||fp.name.replace(/\.pdf$/i,'');
+  const est=$('pdfEstado');
+  try{
+    est.textContent='Leyendo preguntas…';
+    const lp=await leerLineasPDF(fp);
+    est.textContent='Leyendo plantilla de respuestas…';
+    const ll=await leerLineasPDF(fl);
+    importacion=construirImportacion(lp,ll,nombre);
+    go('revisar');
+  }catch(err){ est.textContent='No se pudo leer: '+err.message; }
 }
 function guardarImportacion(modo){
   const nuevas=importacion.preguntas;
@@ -483,14 +497,12 @@ function bind(){
   const $=id=>document.getElementById(id);
   const on=(id,fn)=>{const el=$(id); if(el) el.onclick=fn;};
   const fi=$('fileIn'); if(fi) fi.onchange=e=>importar(e.target.files[0]);
-  const pi=$('pdfIn'); if(pi) pi.onchange=async e=>{
-    const f=e.target.files[0]; if(!f) return;
-    const est=$('pdfEstado'); est.textContent='Leyendo PDF…';
-    try{
-      importacion=await extraerPDF(f,m=>{ const x=$('pdfEstado'); if(x) x.textContent=m; });
-      go('revisar');
-    }catch(err){ est.textContent='No se pudo leer el PDF: '+err.message; }
-  };
+  on('bExamen',procesarExamen);
+  on('bAplicarAnul',()=>{
+    const nums=$('revAnul').value.split(/[,;\s]+/).map(x=>+x).filter(x=>x>0);
+    importacion.preguntas.forEach(q=>{ q.anulada=nums.includes(q.numero); });
+    render();
+  });
   on('bRevAdd',()=>guardarImportacion('add'));
   on('bRevRep',()=>{ if(confirm('¿Reemplazar las preguntas actuales por las del PDF? Se perderán tus ediciones.')) guardarImportacion('rep'); });
   on('bRevCancel',()=>{importacion=null; go('datos');});
