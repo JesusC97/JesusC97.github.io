@@ -1,100 +1,804 @@
- <!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Test">
-<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAAHVUlEQVR4nO3dv44jRRAG8K8tMiQiHoWEiIDHWJITAQHPgERKwOsRIKSVyOARLiIwM+uZrn+2ZzzTVV9F6+necun8052u26pqb29/wIwm/ihvkJ/Jv3azaG6YM1i7mvHKqqF5Gz4WnyyyW1g/0PM3b8O8z9ly70d52TZd/4wypIUBZADNwkEZlWXA+JuDMorLgIaDMigDIg7KoIxrrHFQBmXMcVEWKcPblF1Gu8VBGZSxen15NN36GWVICwPLwBUHZVCG+PpCGZShvb5o+/SnlOEWkEEGJhyU4W2qJwPAhTLsKCsDgeNz+RllSAupZEC8laWMmwx1ZcA8PpefUYa0kFAG9ONz+RllSAs5ZTTl+Fx+RhnSQloZkI7P5QyUIS1kloHu+FzOQBnSQnIZWB6fyxkoQ1rILwPSOQdluAWUkIEOB2W4BVSRgSUOynALKCQD2q0sZUgLtWRAvJWlDGmhnAz0t7KUIS1UlIHA8flikTLM/KlktNtbWcqQFurKgHl8vshIGWb+hDKgH58vMlKGmT+nDCjH54uMlGHmTysDZvMWynALyCwDOg7KcAtILgMKDspwC8gvA9qtLGWY+UvIgHgrSxlm/ioy0N/KUoaZv5AMrG5lKcPMX0tGu72VpQwzfzkZmG9lKcPMX1EGAsfn827KcAtIJQNo9vH5vJsy3AKyyUCs9zlluAUklAEbB2XECsgpA17vc8pwC0grA2bzFspwC8gsA3rvc8pwC0guA0rzFspwC8gvA8AX3e7jZXz3/Vc/fPra2pgufv/13/e/Ps8vzyCjdc1bjpfBOIkMLL99ThnHx3lk4Ob4nDKOj1PJwPTtc8o4Ps4mA0YHY2k3Zbw+DvwPlH98bmWkjJ3jSBkw5spSxtFxsAzEep9TxuvjeBnwRofKv0sZO8cpZMDrfX6MjNp0ziKjmc1bKOP1cSIZ0HufHyijLI9zyYDSvIUyXh+nkwHp2+eUcVicSga65i2UcVicTQaMDsbWm1DG1nFCGQDap7c/tdXDZXQL6wd6fuGf8G++/fLHn5/9DtFvv/zz9/vn2yfbFqnsO0AGjLmyyWTsFIllQLuVpYxI5JaBwPH5vRkpQ9uwXjm5DPS3spQRiQoyWqz3OWXYNeSUAW90aDwjZWgb1iujyIDX+zyVjB3oZJYBs3lLMhmb20guA3rvc8rwUtqvu5XhZMDoYBzISBnK625lRBmw58pShvHW6utuZVAZMObKUkYkEsuAditLGZHILQPiXFnKiER6GehvZSkjEhVktNWtLGVEoogMBI7PPxYpw6whmwzMt7KU8VwklIHXjA49g4w94eSUgReMDqWMacNgMrD36NCTydgcSWYZ2HV0KGVMG4aUgf1Gh1LGtGFUGdhpdChlTBsGloE9RodSxrRhbBnYfHRodhnRvAlktG1Hh1LGtCGDDGw4OpQypg1JZGCr0aFDyNjLy+It8sjAJqNDKWN6i1Qy8PzoUMqY3iKbDDw5OpQyprdIKAPPjA6ljOktcsrAw6NDx5SxPZXEMvDY6FDKmDJmloEHRodSxpQxuQzcOzqUMqaM+WU0qXkLZThRRAbio0MpI5gxjQwER4fmkLG9FKuG4WUgMjqUMoKRTAbc0aGUEYx8MmCPDqWMYKSUAe+E1HpAGd1bpJIBbXQoZQQjsQzE2ltThhy5ZcCbDik8oIzuLXLKgNfemjLkqCCjmf05ksnYzEwRGdDbW1OGG8llQPmCMWW4kV8GpP4cOWVsCqSEDBhNap1CKMN/OrYM2KNDKSMYKWVAbFLrFEIZfg0ZZEAbHUoZwUgsA+KtLGUEI7cMBI7P1yuUob9FKhlY3cpSRjAqyGix9taU4daQUAa86ZCgjEANOWXA68+RSsY+zdHTyoDZ3poy3MgsA3YH40A6yogUMKQM2KNDKcPK2v+k7BxUBozRoZRhZe1/UnaOKwParSxlWFn7n5SdQ8uAeCtLGZFILwP9rSxlRKKCDADtp7f3ajLuLxIb/6F7mU4h4/ZWljL0pxVlIHB8Pu+mjFoycL2VpQz9aV0Z8KZDXndRRkUZCLS3poyiMuC1t6aMujJgNm+hjNIyoLe3pozqMqA0b6EMygCkb59TBmX8H6tvn1MGZXws3H77nDIoY7EwH59TBmWsF67H55RBGcLChTICBVSUgdh0SCsjZSCpDGgdjLvdlOEWkE0GYr3PKcMtIKEMmNMhrYyUgewy4PU+pwy3gLQyYDZvoQy3gMwyoPc+pwy3gOQymtK8hTLcAvLLgPTtc8pwCyghA13zFspwC6giA8tvn1OGW0AhGTA6GD+Wrl+hDP03Ty0DWgfjh9OtVihD/82zy4AxV5YyUFsGAsfn96WjDOfR8vGZZUC8laUMUAYasowOBWUEarj7o0wwOhSUEajhkY9y9NGhoIxADQ9+lEOPDgVlBGp4/KMcd3QoKCNQw1Mf5aCjQ0EZgRqe/ShHHB0KygjUsMFHOdzoUFBGoIZtPsqxRoeCMgI1bPZRDjQ6FJQRqGHLj/I/zJ8lEjXNpEkAAAAASUVORK5CYII=">
-<title>Test</title>
+<!DOCTYPE html>
+
+<html lang="es" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="OpoTest" name="apple-mobile-web-app-title"/>
+<title>OpoTest - Preparación de Oposiciones</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 :root{
-  --bg:#f3f5fb;--card:#ffffff;--txt:#1b2236;--mut:#6b7389;--line:#e3e7f1;
-  --acc:#5b5bd6;--acc2:#7c5cf0;--ok:#16a34a;--okbg:#e8f8ee;--ko:#dc2626;--kobg:#fdeaea;
-  --warn:#9a6700;--warnbg:#fff6dc;--shadow:0 1px 2px rgba(20,25,50,.06),0 4px 14px rgba(20,25,50,.06);
+  --font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --card-elevated:#ffffff;
+  --txt:#0f172a;
+  --mut:#64748b;
+  --line:#e2e8f0;
+  --line-soft:#f1f5f9;
+  
+  --acc:#4f46e5;
+  --acc-rgb:79,70,229;
+  --acc2:#7c3aed;
+  --acc-light:#eef2ff;
+  --acc-glow:rgba(79,70,229,0.18);
+  
+  --ok:#10b981;
+  --okbg:#ecfdf5;
+  --okborder:#a7f3d0;
+  
+  --ko:#ef4444;
+  --kobg:#fef2f2;
+  --koborder:#fecaca;
+  
+  --warn:#f59e0b;
+  --warnbg:#fffbeb;
+  --warnborder:#fde68a;
+  
+  --shadow-sm:0 1px 2px rgba(15,23,42,0.04);
+  --shadow:0 4px 16px -2px rgba(15,23,42,0.06), 0 2px 6px -1px rgba(15,23,42,0.04);
+  --shadow-lg:0 12px 32px -4px rgba(79,70,229,0.14), 0 4px 12px -2px rgba(15,23,42,0.05);
+  
+  --radius-sm:10px;
   --radius:16px;
+  --radius-lg:22px;
 }
-@media(prefers-color-scheme:dark){:root{
-  --bg:#0f1219;--card:#181d28;--txt:#e7eaf3;--mut:#97a0b5;--line:#262d3b;
-  --acc:#8b8bf5;--acc2:#a78bfa;--ok:#4ade80;--okbg:#14291d;--ko:#f87171;--kobg:#331a1d;
-  --warn:#f5c264;--warnbg:#2e2612;--shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
-}}
-*{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.5 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
-header{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;
-  padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 12px;
-  background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 2px 12px rgba(91,91,214,.25)}
-header h1{font-size:18px;font-weight:700;margin:0;flex:1;letter-spacing:.2px}
-header button{background:rgba(255,255,255,.18);border:0;color:#fff;box-shadow:none}
-main{padding:16px;max-width:720px;margin:0 auto;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 48px);animation:fade .25s ease}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}
-button,.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:12px;
-  padding:11px 16px;cursor:pointer;min-height:44px;display:inline-block;transition:transform .08s ease,background .15s,box-shadow .15s;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-button:active{transform:scale(.97)}
-button.primary{background:linear-gradient(135deg,var(--acc),var(--acc2));border-color:transparent;color:#fff;box-shadow:0 4px 12px rgba(91,91,214,.3)}
-button.danger{color:var(--ko)}
-button.small{min-height:36px;padding:7px 12px;font-size:14px;border-radius:10px}
-button:disabled{opacity:.4;box-shadow:none}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.opt{display:block;width:100%;text-align:left;margin:10px 0;padding:14px 16px;white-space:normal;font-weight:500;border-radius:14px;line-height:1.4}
-.opt:not(:disabled):hover{border-color:var(--acc);box-shadow:0 0 0 3px rgba(91,91,214,.12)}
-.opt b{color:var(--acc);margin-right:4px}
-.opt.ok{background:var(--okbg);border-color:var(--ok);color:var(--txt)}
-.opt.ok b{color:var(--ok)}
-.opt.ko{background:var(--kobg);border-color:var(--ko);color:var(--txt)}
-.opt.ko b{color:var(--ko)}
-.meta{color:var(--mut);font-size:13px}
-.badge{display:inline-block;font-size:12px;font-weight:600;border-radius:999px;padding:3px 10px;background:var(--line);color:var(--mut);margin:2px 4px 2px 0}
-.badge.warn{background:var(--warnbg);color:var(--warn)}
-select,input[type=text],textarea{font:inherit;width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--txt);outline:none}
-select:focus,input:focus,textarea:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(91,91,214,.15)}
-textarea{min-height:80px;resize:vertical}
-label{display:block;margin:12px 0 6px;font-size:13px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.4px}
-.qitem{display:block;width:100%;text-align:left;margin:8px 0;padding:14px;font-weight:400}
-.bar{height:8px;background:var(--line);border-radius:999px;overflow:hidden;margin:10px 0 14px}
-.bar div{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--acc),var(--acc2));transition:width .3s ease}
-.enun{font-size:17px;font-weight:600;margin:4px 0 10px;line-height:1.45}
-.hidden{display:none}
 
-.ico{width:18px;height:18px;vertical-align:-4px;margin-right:4px}
-.qcard{padding:20px}
-.enter{animation:slide .32s cubic-bezier(.2,.7,.2,1)}
-@keyframes slide{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
-.pr-top{display:flex;align-items:center;gap:14px;padding:14px 16px}
-.pr-txt{flex:1}
-.pr-count{font-size:26px;font-weight:800;line-height:1}
-.pr-count span{font-size:16px;color:var(--mut);font-weight:600}
-.pr-badges{display:flex;flex-direction:column;align-items:flex-end}
-.ring-bg{fill:none;stroke:var(--line);stroke-width:7}
-.ring-fg{fill:none;stroke:var(--acc);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .4s ease}
-.ring.big .ring-fg{stroke-width:10}
-.ring.big .ring-bg{stroke-width:10}
-.feedback{margin-top:10px;padding:12px 14px;border-radius:12px;font-weight:600}
-.feedback.good{background:var(--okbg);color:var(--ok)}
-.feedback.bad{background:var(--kobg);color:var(--ko)}
-.res{text-align:center;padding:24px 16px}
-.res-wrap{position:relative;width:140px;height:140px;margin:0 auto}
-.res-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:800}
-.res .res-msg{font-weight:600;margin:14px 0 4px;font-size:18px}
-.tema-row{display:flex;align-items:center;gap:10px;margin:10px 0}
-.tema-row span:first-child{width:72px;font-size:14px;font-weight:600}
-.tema-row .bar{flex:1;margin:0}
-.tema-row .meta{width:44px;text-align:right}
-.enun{font-size:19px;font-weight:600;line-height:1.65;letter-spacing:.1px;margin:4px 0 14px}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#090d16;
+    --card:#111827;
+    --card-elevated:#1e293b;
+    --txt:#f1f5f9;
+    --mut:#94a3b8;
+    --line:#1f293d;
+    --line-soft:#172033;
+    
+    --acc:#6366f1;
+    --acc-rgb:99,102,241;
+    --acc2:#8b5cf6;
+    --acc-light:rgba(99,102,241,0.14);
+    --acc-glow:rgba(99,102,241,0.25);
+    
+    --ok:#34d399;
+    --okbg:#064e3b33;
+    --okborder:#065f46;
+    
+    --ko:#f87171;
+    --kobg:#7f1d1d33;
+    --koborder:#991b1b;
+    
+    --warn:#fbbf24;
+    --warnbg:#78350f33;
+    --warnborder:#92400e;
+    
+    --shadow-sm:0 1px 2px rgba(0,0,0,0.3);
+    --shadow:0 6px 20px rgba(0,0,0,0.35);
+    --shadow-lg:0 16px 36px rgba(0,0,0,0.5);
+  }
+}
+
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  background:var(--bg);
+  color:var(--txt);
+  font-family:var(--font-family);
+  font-size:15px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+
+/* Ambient glow in background */
+body::before{
+  content:'';
+  position:fixed;
+  top:-120px;
+  left:50%;
+  transform:translateX(-50%);
+  width:680px;
+  height:360px;
+  background:radial-gradient(circle, rgba(var(--acc-rgb), 0.10) 0%, rgba(var(--acc-rgb), 0) 70%);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* Header */
+header{
+  position:sticky;
+  top:0;
+  z-index:30;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:calc(env(safe-area-inset-top,0px) + 10px) 20px 10px;
+  background:rgba(255,255,255,0.85);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+  transition:border-color .2s;
+}
+@media(prefers-color-scheme:dark){
+  header{
+    background:rgba(17,24,39,0.85);
+  }
+}
+
+.brand-wrap{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex:1;
+  text-decoration:none;
+  color:inherit;
+  cursor:pointer;
+}
+.brand-logo{
+  width:36px;
+  height:36px;
+  border-radius:10px;
+  box-shadow:0 2px 8px var(--acc-glow);
+  object-fit:cover;
+  transition:transform .2s ease;
+}
+.brand-wrap:hover .brand-logo{
+  transform:scale(1.05) rotate(-2deg);
+}
+.brand-text{
+  display:flex;
+  flex-direction:column;
+}
+.brand-title{
+  font-size:17px;
+  font-weight:800;
+  letter-spacing:-0.3px;
+  line-height:1.15;
+  background:linear-gradient(135deg, var(--txt), var(--acc));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.brand-tag{
+  font-size:11px;
+  font-weight:600;
+  color:var(--mut);
+  letter-spacing:0.1px;
+}
+
+/* Nav Actions */
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.nav-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:var(--card);
+  border:1px solid var(--line);
+  color:var(--txt);
+  padding:7px 13px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .15s ease;
+  box-shadow:var(--shadow-sm);
+}
+.nav-btn:hover{
+  border-color:var(--acc);
+  color:var(--acc);
+  background:var(--acc-light);
+  transform:translateY(-1px);
+}
+
+/* Main Container */
+main{
+  position:relative;
+  z-index:1;
+  padding:20px 16px;
+  max-width:700px;
+  margin:0 auto;
+  padding-bottom:calc(env(safe-area-inset-bottom,0px) + 54px);
+  animation:fade .3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes fade{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:none}
+}
+
+/* Cards */
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:20px;
+  margin-bottom:16px;
+  box-shadow:var(--shadow);
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+.card:hover{
+  border-color:rgba(var(--acc-rgb),0.3);
+}
+
+/* Hero Card (Friendly Welcome) */
+.hero-card{
+  background:linear-gradient(145deg, var(--card) 0%, var(--acc-light) 100%);
+  border:1px solid rgba(var(--acc-rgb), 0.22);
+  border-radius:var(--radius-lg);
+  padding:24px;
+  position:relative;
+  overflow:hidden;
+}
+.hero-content{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+.hero-logo-box{
+  width:68px;
+  height:68px;
+  flex-shrink:0;
+  border-radius:18px;
+  padding:3px;
+  background:linear-gradient(135deg, var(--acc), var(--acc2));
+  box-shadow:var(--shadow-lg);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.hero-logo-img{
+  width:100%;
+  height:100%;
+  border-radius:15px;
+  object-fit:cover;
+}
+.hero-title{
+  font-size:20px;
+  font-weight:800;
+  margin:0 0 4px;
+  letter-spacing:-0.4px;
+  color:var(--txt);
+}
+.hero-desc{
+  margin:0;
+  color:var(--mut);
+  font-size:13.5px;
+  line-height:1.45;
+}
+
+/* Stats Row */
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:12px;
+  margin-bottom:16px;
+}
+.stat-pill{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px 12px;
+  text-align:center;
+  box-shadow:var(--shadow-sm);
+  transition:transform .15s ease;
+}
+.stat-pill:hover{
+  transform:translateY(-2px);
+  border-color:var(--acc);
+}
+.stat-val{
+  font-size:22px;
+  font-weight:800;
+  color:var(--txt);
+  line-height:1.1;
+}
+.stat-label{
+  font-size:11.5px;
+  font-weight:600;
+  color:var(--mut);
+  margin-top:4px;
+  text-transform:uppercase;
+  letter-spacing:0.3px;
+}
+
+/* Buttons */
+button, .btn{
+  font-family:inherit;
+  font-weight:600;
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--txt);
+  border-radius:14px;
+  padding:12px 18px;
+  cursor:pointer;
+  min-height:46px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  font-size:14.5px;
+  transition:all .16s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow:var(--shadow-sm);
+  text-decoration:none;
+}
+button:active{
+  transform:scale(0.97);
+}
+button.primary{
+  background:linear-gradient(135deg, var(--acc), var(--acc2));
+  border-color:transparent;
+  color:#ffffff;
+  box-shadow:0 6px 18px var(--acc-glow);
+}
+button.primary:hover{
+  box-shadow:0 8px 22px rgba(var(--acc-rgb), 0.35);
+  transform:translateY(-1px);
+}
+button.secondary{
+  background:var(--acc-light);
+  border-color:rgba(var(--acc-rgb),0.25);
+  color:var(--acc);
+}
+button.secondary:hover{
+  background:rgba(var(--acc-rgb),0.18);
+}
+button.danger{
+  color:var(--ko);
+  background:var(--kobg);
+  border-color:var(--koborder);
+}
+button.danger:hover{
+  background:var(--ko);
+  color:#ffffff;
+}
+button.small{
+  min-height:36px;
+  padding:6px 12px;
+  font-size:13px;
+  border-radius:10px;
+}
+button:disabled{
+  opacity:0.45;
+  cursor:not-allowed;
+  transform:none !important;
+  box-shadow:none !important;
+}
+
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+}
+.row.stretch > *{
+  flex:1;
+}
+
+/* Question Option Cards */
+.opt{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  width:100%;
+  text-align:left;
+  margin:10px 0;
+  padding:14px 16px;
+  white-space:normal;
+  font-weight:500;
+  border-radius:var(--radius);
+  line-height:1.45;
+  font-size:15px;
+  border:1.5px solid var(--line);
+  background:var(--card);
+  transition:all .18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow:var(--shadow-sm);
+  position:relative;
+}
+.opt:not(:disabled):hover{
+  border-color:var(--acc);
+  background:var(--acc-light);
+  transform:translateX(3px);
+  box-shadow:0 4px 12px var(--acc-glow);
+}
+.opt-badge{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:32px;
+  height:32px;
+  border-radius:10px;
+  background:var(--bg);
+  border:1px solid var(--line);
+  color:var(--acc);
+  font-weight:800;
+  font-size:14px;
+  flex-shrink:0;
+  transition:all .2s ease;
+}
+.opt:hover .opt-badge{
+  background:var(--acc);
+  color:#ffffff;
+  border-color:var(--acc);
+}
+.opt-text{
+  flex:1;
+}
+
+.opt.ok{
+  background:var(--okbg);
+  border-color:var(--ok);
+  color:var(--txt);
+  box-shadow:0 4px 14px rgba(16,185,129,0.18);
+}
+.opt.ok .opt-badge{
+  background:var(--ok);
+  color:#ffffff;
+  border-color:var(--ok);
+}
+.opt.ko{
+  background:var(--kobg);
+  border-color:var(--ko);
+  color:var(--txt);
+  box-shadow:0 4px 14px rgba(239,68,68,0.18);
+}
+.opt.ko .opt-badge{
+  background:var(--ko);
+  color:#ffffff;
+  border-color:var(--ko);
+}
+
+/* Practice Progress Header */
+.pr-top{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  padding:16px 20px;
+  border-radius:var(--radius);
+  background:var(--card);
+  box-shadow:var(--shadow);
+}
+.pr-txt{
+  flex:1;
+}
+.pr-count{
+  font-size:24px;
+  font-weight:800;
+  line-height:1;
+  letter-spacing:-0.4px;
+}
+.pr-count span{
+  font-size:15px;
+  color:var(--mut);
+  font-weight:600;
+}
+.pr-score-chips{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:6px;
+}
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  padding:2px 8px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+}
+.chip.ok{background:var(--okbg);color:var(--ok)}
+.chip.ko{background:var(--kobg);color:var(--ko)}
+.chip.theme{background:var(--acc-light);color:var(--acc)}
+
+/* Badges */
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  font-size:11.5px;
+  font-weight:700;
+  border-radius:999px;
+  padding:3px 9px;
+  background:var(--line-soft);
+  color:var(--mut);
+  border:1px solid var(--line);
+}
+.badge.warn{background:var(--warnbg);color:var(--warn);border-color:var(--warnborder)}
+.badge.ok{background:var(--okbg);color:var(--ok);border-color:var(--okborder)}
+.badge.primary{background:var(--acc-light);color:var(--acc);border-color:rgba(var(--acc-rgb),0.3)}
+
+/* Question Card */
+.qcard{
+  padding:24px 22px;
+  border-radius:var(--radius-lg);
+}
+.qcard-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:12px;
+}
+.enun{
+  font-size:18px;
+  font-weight:700;
+  line-height:1.5;
+  letter-spacing:-0.2px;
+  margin:4px 0 16px;
+  color:var(--txt);
+}
+
+/* Feedback Box */
+.feedback{
+  margin-top:14px;
+  padding:14px 18px;
+  border-radius:14px;
+  font-weight:600;
+  font-size:14.5px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  animation:pop .25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes pop{
+  from{opacity:0;transform:scale(0.97)}
+  to{opacity:1;transform:scale(1)}
+}
+.feedback.good{
+  background:var(--okbg);
+  color:var(--ok);
+  border:1.5px solid var(--okborder);
+}
+.feedback.bad{
+  background:var(--kobg);
+  color:var(--ko);
+  border:1.5px solid var(--koborder);
+}
+
+/* Progress Rings */
+.ring-bg{fill:none;stroke:var(--line);stroke-width:8}
+.ring-fg{fill:none;stroke:var(--acc);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset .5s ease}
+.ring.big .ring-fg{stroke-width:12}
+.ring.big .ring-bg{stroke-width:12}
+
+/* Results view */
+.res{
+  text-align:center;
+  padding:32px 20px;
+  border-radius:var(--radius-lg);
+}
+.res-wrap{
+  position:relative;
+  width:148px;
+  height:148px;
+  margin:0 auto 12px;
+}
+.res-pct{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  font-size:36px;
+  font-weight:800;
+  letter-spacing:-1px;
+}
+.res-pct span{
+  font-size:12px;
+  font-weight:700;
+  color:var(--mut);
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.res .res-msg{
+  font-weight:800;
+  margin:8px 0 4px;
+  font-size:22px;
+  letter-spacing:-0.3px;
+}
+
+/* Progress Bar */
+.bar{
+  height:8px;
+  background:var(--line);
+  border-radius:999px;
+  overflow:hidden;
+}
+.bar div{
+  height:100%;
+  border-radius:999px;
+  background:linear-gradient(90deg,var(--acc),var(--acc2));
+  transition:width .4s ease;
+}
+.tema-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:12px 0;
+  font-size:13.5px;
+}
+.tema-row span:first-child{
+  width:84px;
+  font-weight:700;
+  color:var(--txt);
+}
+.tema-row .bar{
+  flex:1;
+  margin:0;
+}
+.tema-row .meta{
+  width:50px;
+  text-align:right;
+  font-weight:600;
+}
+
+/* Form inputs */
+select, input[type=text], textarea{
+  font-family:inherit;
+  width:100%;
+  padding:12px 14px;
+  border:1.5px solid var(--line);
+  border-radius:12px;
+  background:var(--card);
+  color:var(--txt);
+  outline:none;
+  font-size:14.5px;
+  transition:all .15s ease;
+}
+select:focus, input:focus, textarea:focus{
+  border-color:var(--acc);
+  box-shadow:0 0 0 4px var(--acc-glow);
+}
+textarea{min-height:90px;resize:vertical}
+label{
+  display:block;
+  margin:14px 0 6px;
+  font-size:12.5px;
+  font-weight:700;
+  color:var(--mut);
+  text-transform:uppercase;
+  letter-spacing:0.4px;
+}
+
+/* Session Item Cards */
+.session-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px;
+  margin-bottom:14px;
+  box-shadow:var(--shadow-sm);
+  transition:all .18s ease;
+}
+.session-card:hover{
+  border-color:rgba(var(--acc-rgb), 0.4);
+  box-shadow:var(--shadow);
+  transform:translateY(-1px);
+}
+.session-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+}
+.session-name{
+  font-size:17px;
+  font-weight:800;
+  color:var(--txt);
+}
+
+.ico{width:18px;height:18px;vertical-align:-3px;margin-right:2px;flex-shrink:0}
+.enter{animation:slide .32s cubic-bezier(0.16, 1, 0.3, 1)}
+@keyframes slide{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+
+/* Question list item */
+.qitem{
+  display:block;
+  width:100%;
+  text-align:left;
+  margin:10px 0;
+  padding:16px;
+  font-weight:500;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:var(--card);
+  transition:all .15s ease;
+}
+.qitem:hover{
+  border-color:var(--acc);
+  background:var(--acc-light);
+  transform:translateX(2px);
+}
+
+.meta{color:var(--mut);font-size:13px}
+.footer-note{
+  text-align:center;
+  font-size:12px;
+  color:var(--mut);
+  margin-top:32px;
+  letter-spacing:0.2px;
+}
 </style>
 </head>
 <body>
 <header>
-  <h1 id="title">Test</h1>
-  <button id="btnInicio" class="small">Inicio</button>
+<div class="brand-wrap" id="brandBtn">
+<img alt="Logo OpoTest" class="brand-logo" src="https://lh3.googleusercontent.com/aida/AEtjO1WGkt92UrS4G6PuklDc20dtqJwADUq1bVF4CK58lRZCenYPLGP7E0kXJhPa4madvcJNJ5mkO90pG-uMqYfZgzL_SJFW6kpc3Tr17eVkzjhNQy5RN9Grh2ZfwfFBvoyjAGEn0EnpRWN90mpccOXnWiZ7BBDX2TMmXKZdGZ7kRVc0HXYGul2WpScMiIKIm4Dw1YxTy4OiB0nmao-NBa3NVDvDBZS6ZBwaifIxYfWAJi97KJdhfsLCVBtmLVU"/>
+<div class="brand-text">
+<span class="brand-title">OpoTest</span>
+<span class="brand-tag" id="headerSub">Modo Examen</span>
+</div>
+</div>
+<div class="header-actions">
+<button class="nav-btn" id="btnInicio">
+<svg class="ico" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      Inicio
+    </button>
+</div>
 </header>
-<main id="app"></main>
-
+<main id="app">
+<div class="pr-top">
+<svg class="ring" height="56" viewbox="0 0 56 56" width="56">
+<circle class="ring-bg" cx="28" cy="28" r="22"></circle>
+<circle class="ring-fg" cx="28" cy="28" r="22" stroke-dasharray="138.23007675795088" stroke-dashoffset="103.67255756846316" transform="rotate(-90 28 28)"></circle>
+</svg>
+<div class="pr-txt">
+<div class="pr-count">Pregunta 2 <span class="">de 4</span></div>
+<div class="pr-score-chips">
+<span class="chip ok">✓ 1 aciertos</span>
+<span class="chip ko">✗ 1 fallos</span>
+</div>
+</div>
+<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+<span class="badge primary">Tema 1</span>
+<span class="badge ok">Lista</span>
+</div>
+</div>
+<div class="card qcard" style="margin-top:14px">
+<div class="qcard-header">
+<span class="meta">Auxiliar Administrativo 2024 · Pregunta nº 2</span>
+<button class="small" id="bEditP" style="padding:4px 8px;font-size:12px"><svg aria-hidden="true" class="ico" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path><path d="M14 6l4 4"></path></svg> Editar</button>
+</div>
+<p class="enun">Según el artículo 9.3 de la Constitución Española, ¿cuál de los siguientes principios NO está expresamente garantizado?</p>
+<button class="opt ko" data-letra="a" disabled="">
+<span class="opt-badge">A</span>
+<span class="opt-text">El principio de legalidad.</span>
+</button>
+<button class="opt ok" data-letra="b" disabled="">
+<span class="opt-badge">B</span>
+<span class="opt-text">La retroactividad de las disposiciones sancionadoras no favorables.</span>
+</button>
+<button class="opt" data-letra="c" disabled="">
+<span class="opt-badge">C</span>
+<span class="opt-text">La seguridad jurídica.</span>
+</button>
+<button class="opt" data-letra="d" disabled="">
+<span class="opt-badge">D</span>
+<span class="opt-text">La responsabilidad y la interdicción de la arbitrariedad de los poderes públicos.</span>
+</button>
+<div class="feedback bad">
+<span class="" style="font-size:20px">💡</span>
+<div style="font-weight:800">Respuesta Incorrecta</div>
+</div>
+<div class="row" style="margin-top:16px">
+<button class="primary" id="bSig" style="flex:1;padding:14px;font-size:15px">
+        Siguiente pregunta →
+      </button>
+</div>
+</div>
+<div class="row" style="justify-content:space-between">
+<button class="small" id="bSalir"><svg aria-hidden="true" class="ico" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M15 6l-6 6 6 6"></path></svg> Pausar y salir</button>
+<span class="meta">25% completado</span>
+</div></main>
 <script>
 const KQ='test-app-v1', KS='test-app-sesiones-v1';
-const VERSION='Actualizada el 17/10/2026 a las 21:20';
+const VERSION='OpoTest v2.0 · Diseño optimizado';
 let Q=[], SES=[];
 let view='home', actual=null, sess=null, editing=null, form=null;
 
@@ -110,11 +814,11 @@ function sesionById(id){return SES.find(s=>s.id===id);}
 function nuevoId(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
 function esLimpia(q){return !q.revisar || q.revisar.length===0;}
 function estado(q){
-  if(q.anulada) return {t:'anulada',c:'warn'};
-  if(q.editada) return {t:'editada',c:''};
-  if(!q.correcta) return {t:'sin respuesta',c:'warn'};
-  if(q.revisar&&q.revisar.length) return {t:'revisar',c:'warn'};
-  return {t:'ok',c:''};
+  if(q.anulada) return {t:'Anulada',c:'warn'};
+  if(q.editada) return {t:'Editada',c:''};
+  if(!q.correcta) return {t:'Sin respuesta',c:'warn'};
+  if(q.revisar&&q.revisar.length) return {t:'Revisar',c:'warn'};
+  return {t:'Lista',c:'ok'};
 }
 function convs(){return [...new Set(Q.map(q=>q.convocatoria))];}
 function temasDe(conv){return [...new Set(Q.filter(q=>conv==='all'||q.convocatoria===conv).map(q=>q.tema))].sort((a,b)=>a-b);}
@@ -130,73 +834,289 @@ function filtrarPara(s){
 }
 function resumenFiltro(s){
   const c=s.conv==='all'?'Todas las convocatorias':s.conv;
-  const t=s.tema==='all'?'todos los temas':'tema '+s.tema;
-  return `${c} · ${t}${s.limpias?' · solo revisadas':''}`;
+  const t=s.tema==='all'?'Todos los temas':'Tema '+s.tema;
+  return `${c} · ${t}${s.limpias?' · Solo revisadas':''}`;
 }
 
-function go(v){view=v; render(); window.scrollTo(0,0);}
+function calcularTasaGlobal(){
+  const tot=SES.reduce((acc,s)=>acc+(s.aciertos||0)+(s.fallos||0),0);
+  const ac=SES.reduce((acc,s)=>acc+(s.aciertos||0),0);
+  return tot?Math.round((ac/tot)*100):0;
+}
+
+function go(v){view=v; render(); window.scrollTo({top:0,behavior:'smooth'});}
+
 function render(){
-  const titulos={home:'Test',sesiones:'Sesiones',sesion:'Sesión',form:'Configurar sesión',practice:'Practicar',edit:'Editar pregunta',list:'Preguntas',datos:'Datos',revisar:'Revisar importación'};
-  document.getElementById('title').textContent=titulos[view]||'Test';
+  const titulos={
+    home:'Inicio',
+    sesiones:'Sesiones de Estudio',
+    sesion:'Panel de Sesión',
+    form:'Configurar Sesión',
+    practice:'Modo Examen',
+    edit:'Editor de Preguntas',
+    list:'Banco de Preguntas',
+    datos:'Gestión de Exámenes',
+    revisar:'Revisión de Importación'
+  };
+  const sub=document.getElementById('headerSub');
+  if(sub) sub.textContent=titulos[view]||'Simulador de Exámenes';
   const app=document.getElementById('app');
-  const v={revisar:vistaRevision,home:vistaInicio,sesiones:vistaSesiones,sesion:vistaSesion,form:vistaForm,practice:vistaPractica,edit:vistaEditar,list:vistaLista,datos:vistaDatos}[view];
+  const v={
+    revisar:vistaRevision,
+    home:vistaInicio,
+    sesiones:vistaSesiones,
+    sesion:vistaSesion,
+    form:vistaForm,
+    practice:vistaPractica,
+    edit:vistaEditar,
+    list:vistaLista,
+    datos:vistaDatos
+  }[view];
   app.innerHTML=v();
   bind();
 }
 
 /* ---------- INICIO ---------- */
+function cargarMuestraDemo(){
+  Q=[
+    {id:'demo1',convocatoria:'Auxiliar Administrativo 2024',plaza:'General',tema:1,numero:1,
+     enunciado:'¿Cuál es el valor superior del ordenamiento jurídico según el artículo 1.1 de la Constitución Española?',
+     opciones:[{letra:'a',texto:'La jerarquía normativa y la seguridad jurídica.'},{letra:'b',texto:'La libertad, la justicia, la igualdad y el pluralismo político.'},{letra:'c',texto:'La solidaridad entre las nacionalidades y regiones.'},{letra:'d',texto:'El principio de legalidad e interdicción de la arbitrariedad.'}],
+     correcta:'b',revisar:[],editada:false},
+    {id:'demo2',convocatoria:'Auxiliar Administrativo 2024',plaza:'General',tema:1,numero:2,
+     enunciado:'Según el artículo 9.3 de la Constitución Española, ¿cuál de los siguientes principios NO está expresamente garantizado?',
+     opciones:[{letra:'a',texto:'El principio de legalidad.'},{letra:'b',texto:'La retroactividad de las disposiciones sancionadoras no favorables.'},{letra:'c',texto:'La seguridad jurídica.'},{letra:'d',texto:'La responsabilidad y la interdicción de la arbitrariedad de los poderes públicos.'}],
+     correcta:'b',revisar:[],editada:false},
+    {id:'demo3',convocatoria:'Auxiliar Administrativo 2024',plaza:'General',tema:2,numero:3,
+     enunciado:'En el procedimiento administrativo común (Ley 39/2015), ¿cuál es el plazo general para la interposición del recurso de alzada contra un acto expreso?',
+     opciones:[{letra:'a',texto:'Un mes.'},{letra:'b',texto:'Dos meses.'},{letra:'c',texto:'Tres meses.'},{letra:'d',texto:'Quince días hábiles.'}],
+     correcta:'a',revisar:[],editada:false},
+    {id:'demo4',convocatoria:'Auxiliar Administrativo 2024',plaza:'General',tema:2,numero:4,
+     enunciado:'¿Quién ostenta la potestad reglamentaria originaria en el Estado español?',
+     opciones:[{letra:'a',texto:'El Tribunal Constitucional.'},{letra:'b',texto:'El Gobierno de la Nación.'},{letra:'c',texto:'El Consejo General del Poder Judicial.'},{letra:'d',texto:'Las Cortes Generales en sesión conjunta.'}],
+     correcta:'b',revisar:[],editada:false}
+  ];
+  SES=[
+    {id:'s1',nombre:'Repaso Rápido Constitucional',conv:'all',tema:'all',limpias:false,hechas:0,aciertos:0,fallos:0}
+  ];
+  saveQ(); saveS();
+  go('home');
+}
+
 function vistaInicio(){
-  if(!Q.length) return `<div class="card"><p>Todavía no hay preguntas cargadas.</p>
-    <label>Importa el archivo JSON de preguntas</label>
-    <input type="file" id="fileIn" accept=".json,application/json">
-    <p class="meta">Se guarda en este dispositivo. Solo hace falta importarlo una vez.</p></div>
-    <p class="meta" style="text-align:center;margin-top:24px">${VERSION}</p>`;
-  return `<div class="card"><p style="margin:0 0 6px"><b>${Q.length}</b> preguntas guardadas en este dispositivo.</p>
-    <p class="meta">${SES.length} sesiones creadas</p></div>
-    <div class="row"><button class="primary" id="bComenzar">${ic('play')} Comenzar</button><button id="bDatos">${ic('gear')} Datos</button></div>
-    <p class="meta" style="text-align:center;margin-top:24px">${VERSION}</p>`;
+  if(!Q.length){
+    return `
+    <div class="hero-card card">
+      <div class="hero-content">
+        <div class="hero-logo-box">
+          <img src="https://lh3.googleusercontent.com/aida/AEtjO1WGkt92UrS4G6PuklDc20dtqJwADUq1bVF4CK58lRZCenYPLGP7E0kXJhPa4madvcJNJ5mkO90pG-uMqYfZgzL_SJFW6kpc3Tr17eVkzjhNQy5RN9Grh2ZfwfFBvoyjAGEn0EnpRWN90mpccOXnWiZ7BBDX2TMmXKZdGZ7kRVc0HXYGul2WpScMiIKIm4Dw1YxTy4OiB0nmao-NBa3NVDvDBZS6ZBwaifIxYfWAJi97KJdhfsLCVBtmLVU" alt="Logo OpoTest" class="hero-logo-img">
+        </div>
+        <div>
+          <h2 class="hero-title">¡Te damos la bienvenida a OpoTest!</h2>
+          <p class="hero-desc">Tu espacio para practicar preguntas oficiales de exámenes, registrar tu progreso y asegurar tu plaza.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="text-align:center;padding:32px 24px">
+      <div style="font-size:38px;margin-bottom:8px">📚</div>
+      <h3 style="margin:0 0 8px;font-size:18px;font-weight:800">Comienza a estudiar hoy</h3>
+      <p class="meta" style="max-width:440px;margin:0 auto 20px">Aún no tienes preguntas cargadas. Puedes cargar un set de demostración para probar la interfaz o importar tus exámenes en PDF o JSON.</p>
+      
+      <div class="row" style="justify-content:center;gap:12px">
+        <button class="primary" id="bCargarDemo">${ic('play')} Cargar preguntas de ejemplo</button>
+        <button id="bDatos">${ic('gear')} Importar exámenes</button>
+      </div>
+    </div>
+
+    <p class="footer-note">${VERSION}</p>`;
+  }
+
+  const globalRate = calcularTasaGlobal();
+  const totalHechas = SES.reduce((a,s)=>a+(s.hechas||0),0);
+
+  return `
+  <div class="hero-card card">
+    <div class="hero-content">
+      <div class="hero-logo-box">
+        <img src="https://lh3.googleusercontent.com/aida/AEtjO1WGkt92UrS4G6PuklDc20dtqJwADUq1bVF4CK58lRZCenYPLGP7E0kXJhPa4madvcJNJ5mkO90pG-uMqYfZgzL_SJFW6kpc3Tr17eVkzjhNQy5RN9Grh2ZfwfFBvoyjAGEn0EnpRWN90mpccOXnWiZ7BBDX2TMmXKZdGZ7kRVc0HXYGul2WpScMiIKIm4Dw1YxTy4OiB0nmao-NBa3NVDvDBZS6ZBwaifIxYfWAJi97KJdhfsLCVBtmLVU" alt="Logo OpoTest" class="hero-logo-img">
+      </div>
+      <div>
+        <h2 class="hero-title">¡A por tu plaza!</h2>
+        <p class="hero-desc">Tienes <b>${Q.length} preguntas disponibles</b> organizadas en tus sesiones de práctica.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-pill">
+      <div class="stat-val">${Q.length}</div>
+      <div class="stat-label">Preguntas</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-val">${SES.length}</div>
+      <div class="stat-label">Sesiones</div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-val" style="color:var(--ok)">${globalRate}%</div>
+      <div class="stat-label">Tasa Acierto</div>
+    </div>
+  </div>
+
+  <div class="row stretch" style="margin-bottom:18px">
+    <button class="primary" id="bComenzar" style="font-size:16px;padding:14px 22px">
+      ${ic('play')} Comenzar Sesión
+    </button>
+    <button class="secondary" id="bNuevaSesionDirecta">
+      ${ic('plus')} Nueva Sesión
+    </button>
+    <button id="bDatos">
+      ${ic('gear')} Gestión
+    </button>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <span style="font-weight:800;font-size:15px">Tus Sesiones Recientes</span>
+      <button class="small" id="bVerTodasSesiones">Ver todas →</button>
+    </div>
+    ${SES.slice(0,3).map(s=>{
+      const n=filtrarPara(s).length;
+      return `<div class="session-card" style="margin-bottom:8px;padding:14px">
+        <div class="session-head">
+          <div>
+            <b>${esc(s.nombre)}</b><br>
+            <span class="meta">${esc(resumenFiltro(s))} · ${n} preguntas</span>
+          </div>
+          <button class="primary small" data-abrir="${s.id}">Practicar</button>
+        </div>
+      </div>`;
+    }).join('')||'<p class="meta" style="text-align:center;padding:12px">No hay sesiones aún. ¡Crea tu primera sesión!</p>'}
+  </div>
+
+  <p class="footer-note">${VERSION}</p>`;
 }
 
 /* ---------- SESIONES ---------- */
 function vistaSesiones(){
   const items=SES.map(s=>{
     const n=filtrarPara(s).length;
-    return `<div class="card">
-      <b>${esc(s.nombre)}</b><br><span class="meta">${esc(resumenFiltro(s))} · ${n} preguntas</span><br>
-      <span class="meta">Hechas: ${s.hechas||0} · ✓ ${s.aciertos||0} · ✗ ${s.fallos||0}</span>
-      <div class="row" style="margin-top:8px"><button class="primary small" data-abrir="${s.id}">Abrir</button>
-      <button class="small" data-editar-ses="${s.id}">Configurar</button>
-      <button class="small danger" data-borrar-ses="${s.id}">Borrar</button></div></div>`;
+    const tot=(s.aciertos||0)+(s.fallos||0);
+    const pct=tot?Math.round((s.aciertos||0)/tot*100):0;
+    return `
+    <div class="session-card">
+      <div class="session-head">
+        <div>
+          <div class="session-name">${esc(s.nombre)}</div>
+          <span class="meta">${esc(resumenFiltro(s))}</span>
+        </div>
+        <span class="badge ${pct>=70?'ok':pct>0?'primary':''}">${tot?pct+'% acierto':'Nueva'}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin:12px 0 14px;color:var(--mut);font-size:13px">
+        <span><b>${n}</b> preguntas</span>
+        <span>•</span>
+        <span class="chip ok">✓ ${s.aciertos||0}</span>
+        <span class="chip ko">✗ ${s.fallos||0}</span>
+        <span>•</span>
+        <span>${s.hechas||0} practicadas</span>
+      </div>
+      <div class="row">
+        <button class="primary small" data-abrir="${s.id}">${ic('play')} Abrir sesión</button>
+        <button class="small" data-editar-ses="${s.id}">${ic('gear')} Configurar</button>
+        <button class="small danger" data-borrar-ses="${s.id}" style="margin-left:auto">${ic('trash')}</button>
+      </div>
+    </div>`;
   }).join('');
-  return `<div class="row" style="margin-bottom:10px"><button class="primary" id="bNueva">${ic('plus')} Nueva sesión</button>
-    <button class="small" id="bVolver">← Inicio</button></div>
-    ${items||'<p class="meta">Aún no tienes sesiones. Crea una para empezar.</p>'}`;
+
+  return `
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <div>
+      <h3 style="margin:0;font-size:18px;font-weight:800">Sesiones de práctica</h3>
+      <p class="meta" style="margin:2px 0 0">Entrena por convocatorias o temas concretos</p>
+    </div>
+    <button class="primary small" id="bNueva">${ic('plus')} Nueva sesión</button>
+  </div>
+  ${items||'<div class="card" style="text-align:center;padding:28px"><p class="meta">Aún no tienes sesiones. Crea una para empezar a entrenar.</p><button class="primary small" id="bNueva2">+ Crear primera sesión</button></div>'}
+  <div class="row" style="margin-top:16px"><button class="small" id="bVolver">← Volver al inicio</button></div>`;
 }
+
 function vistaSesion(){
   const s=sesionById(actual); if(!s){go('sesiones');return '';}
   const n=filtrarPara(s).length;
-  return `<div class="card"><b>${esc(s.nombre)}</b><br><span class="meta">${esc(resumenFiltro(s))} · ${n} preguntas</span>
-    <p class="meta" style="margin-bottom:0">Hechas: ${s.hechas||0} · ✓ ${s.aciertos||0} · ✗ ${s.fallos||0}</p></div>
-    <div class="row">
-      <button class="primary" id="bOrden" ${n?'':'disabled'}>Practicar en orden</button>
-      <button id="bMezcla" ${n?'':'disabled'}>${ic('shuffle')} Mezclar</button>
-      <button id="bLista">${ic('list')} Ver y editar</button>
-      <button id="bNuevaP">${ic('plus')} Pregunta</button>
+  const tot=(s.aciertos||0)+(s.fallos||0);
+  const pct=tot?Math.round((s.aciertos||0)/tot*100):0;
+
+  return `
+  <div class="card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between">
+      <div>
+        <span class="badge primary" style="margin-bottom:6px">Sesión seleccionada</span>
+        <h2 style="margin:2px 0 6px;font-size:22px;font-weight:800">${esc(s.nombre)}</h2>
+        <p class="meta" style="margin:0">${esc(resumenFiltro(s))}</p>
+      </div>
+      ${tot?anillo(pct,54):''}
     </div>
-    <div class="row" style="margin-top:12px"><button class="small" id="bVolverS">← Sesiones</button></div>`;
+
+    <div style="display:flex;align-items:center;gap:12px;margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:13.5px">
+      <span>Disponibles: <b>${n}</b> preguntas</span>
+      <span>•</span>
+      <span style="color:var(--ok);font-weight:700">✓ ${s.aciertos||0}</span>
+      <span style="color:var(--ko);font-weight:700">✗ ${s.fallos||0}</span>
+    </div>
+  </div>
+
+  <h4 style="margin:20px 0 10px;font-weight:800;font-size:14px;color:var(--mut);text-transform:uppercase;letter-spacing:0.5px">Modos de práctica</h4>
+  <div class="row stretch" style="margin-bottom:14px">
+    <button class="primary" id="bOrden" ${n?'':'disabled'} style="padding:16px">
+      ${ic('play')} Practicar en orden
+    </button>
+    <button class="secondary" id="bMezcla" ${n?'':'disabled'} style="padding:16px">
+      ${ic('shuffle')} Modo Aleatorio
+    </button>
+  </div>
+
+  <h4 style="margin:20px 0 10px;font-weight:800;font-size:14px;color:var(--mut);text-transform:uppercase;letter-spacing:0.5px">Gestión de la sesión</h4>
+  <div class="row">
+    <button id="bLista">${ic('list')} Ver y editar preguntas (${n})</button>
+    <button id="bNuevaP">${ic('plus')} Crear pregunta manual</button>
+    <button class="small" id="bVolverS" style="margin-left:auto">← Sesiones</button>
+  </div>`;
 }
+
 function vistaForm(){
   const f=form;
   const cv=convs().map(c=>`<option value="${esc(c)}" ${f.conv===c?'selected':''}>${esc(c)}</option>`).join('');
   const tm=temasDe(f.conv).map(t=>`<option value="${t}" ${String(f.tema)===String(t)?'selected':''}>Tema ${t}</option>`).join('');
-  return `<div class="card">
-    <label>Nombre de la sesión</label><input type="text" id="fNom" value="${esc(f.nombre)}" placeholder="Ej: Auxiliar - temas 1 a 10">
-    <label>Convocatoria</label><select id="fConv"><option value="all">Todas</option>${cv}</select>
-    <label>Tema</label><select id="fTema"><option value="all">Todos</option>${tm}</select>
-    <label class="row" style="margin-top:12px;color:var(--txt)"><input type="checkbox" id="fLimp" ${f.limpias?'checked':''} style="width:auto"> Solo preguntas revisadas</label>
-    <p class="meta">${filtrarParaTemp(f).length} preguntas en esta sesión</p>
+  const numPreg=filtrarParaTemp(f).length;
+
+  return `
+  <div class="card">
+    <h3 style="margin:0 0 16px;font-size:19px;font-weight:800">${f.id?'Configurar sesión':'Nueva sesión de estudio'}</h3>
+    
+    <label>Nombre de la sesión</label>
+    <input type="text" id="fNom" value="${esc(f.nombre)}" placeholder="Ej: Constitución Española - Temas 1 al 5">
+    
+    <label>Convocatoria</label>
+    <select id="fConv"><option value="all">Todas las convocatorias</option>${cv}</select>
+    
+    <label>Tema específico</label>
+    <select id="fTema"><option value="all">Todos los temas disponibles</option>${tm}</select>
+    
+    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:16px;text-transform:none;font-size:14px;color:var(--txt)">
+      <input type="checkbox" id="fLimp" ${f.limpias?'checked':''} style="width:18px;height:18px;accent-color:var(--acc)">
+      Solo preguntas revisadas y verificadas
+    </label>
+
+    <div style="background:var(--acc-light);padding:12px 14px;border-radius:12px;margin-top:18px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:20px">🎯</span>
+      <span style="font-weight:600;font-size:13.5px;color:var(--acc)"><b>${numPreg}</b> preguntas coinciden con este filtro</span>
+    </div>
   </div>
-  <div class="row"><button class="primary" id="bGuardarS">Guardar</button><button id="bCancelS">Cancelar</button></div>`;
+
+  <div class="row">
+    <button class="primary" id="bGuardarS">Guardar sesión</button>
+    <button id="bCancelS">Cancelar</button>
+  </div>`;
 }
 function filtrarParaTemp(f){return filtrarPara(f);}
 
@@ -209,17 +1129,22 @@ function ic(n){
     list:'<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>',
     x:'<path d="M6 6l12 12M18 6L6 18"/>',
     back:'<path d="M15 6l-6 6 6 6"/>',
-    play:'<path d="M8 5v14l11-7z"/>',
-    shuffle:'<path d="M4 7h3l10 10h3M4 17h3l3-3M14 7h6M17 4l3 3-3 3"/>',
-    gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',
-    repeat:'<path d="M4 12a8 8 0 0 1 14-5l2 2M20 12a8 8 0 0 1-14 5l-2-2M20 4v5h-5M4 20v-5h5"/>'
+    play:'<polygon points="5 3 19 12 5 21 5 3"/>',
+    shuffle:'<path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>',
+    gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+    repeat:'<path d="M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3"/>'
   }[n]||'';
   return `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 }
+
 function anillo(pct,tam){
-  const r=tam/2-5, c=2*Math.PI*r, off=c*(1-pct/100);
-  return `<svg class="ring" width="${tam}" height="${tam}" viewBox="0 0 ${tam} ${tam}"><circle cx="${tam/2}" cy="${tam/2}" r="${r}" class="ring-bg"/><circle cx="${tam/2}" cy="${tam/2}" r="${r}" class="ring-fg" stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 ${tam/2} ${tam/2})"/></svg>`;
+  const r=tam/2-6, c=2*Math.PI*r, off=c*(1-pct/100);
+  return `<svg class="ring" width="${tam}" height="${tam}" viewBox="0 0 ${tam} ${tam}">
+    <circle cx="${tam/2}" cy="${tam/2}" r="${r}" class="ring-bg"/>
+    <circle cx="${tam/2}" cy="${tam/2}" r="${r}" class="ring-fg" stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 ${tam/2} ${tam/2})"/>
+  </svg>`;
 }
+
 function vistaPractica(){
   if(!sess) {go('sesiones'); return '';}
   if(sess.i>=sess.ids.length) return vistaFin();
@@ -229,86 +1154,182 @@ function vistaPractica(){
   const n=sess.ids.length;
   const pctHechas=Math.round((sess.i/n)*100);
   const enter=sess.enter?' enter':''; sess.enter=false;
+
   const opts=q.opciones.map(o=>{
     let cls='opt';
     if(sess.resp!==null){
       if(q.correcta===o.letra) cls+=' ok';
       else if(sess.resp===o.letra) cls+=' ko';
     }
-    return `<button class="${cls}" data-letra="${esc(o.letra)}" ${sess.resp!==null?'disabled':''}><b>${esc(o.letra)})</b> ${esc(o.texto)}</button>`;
+    return `
+    <button class="${cls}" data-letra="${esc(o.letra)}" ${sess.resp!==null?'disabled':''}>
+      <span class="opt-badge">${esc(o.letra.toUpperCase())}</span>
+      <span class="opt-text">${esc(o.texto)}</span>
+    </button>`;
   }).join('');
+
   let aviso='';
   if(sess.resp!==null && q.correcta){
     const ok=sess.resp===q.correcta;
-    aviso=`<div class="feedback ${ok?'good':'bad'}">${ok?'✓ Correcto':'✗ Incorrecto. La respuesta es '+esc(q.correcta)}</div>`;
+    aviso=`
+    <div class="feedback ${ok?'good':'bad'}">
+      <span style="font-size:20px">${ok?'🎉':'💡'}</span>
+      <div style="font-weight:800">${ok?'¡Respuesta correcta!':'Respuesta incorrecta'}</div>
+    </div>`;
   }
+
   let pie='';
   if(sess.resp!==null){
     if(!q.correcta){
-      pie=`<div class="card" style="background:var(--warnbg)"><p>Sin respuesta marcada. ¿Marcar <b>${esc(sess.resp)}</b> como correcta?</p>
-        <div class="row"><button class="primary small" id="bSetOk">Sí, marcar</button><button class="small" id="bNoSet">No</button></div></div>`;
+      pie=`
+      <div class="card" style="background:var(--warnbg);border-color:var(--warnborder);margin-top:12px">
+        <p style="margin:0 0 8px;font-weight:700">Esta pregunta aún no tiene respuesta marcada. ¿Marcar la <b>${esc(sess.resp.toUpperCase())}</b> como correcta?</p>
+        <div class="row">
+          <button class="primary small" id="bSetOk">Sí, marcar como correcta</button>
+          <button class="small" id="bNoSet">No cambiar</button>
+        </div>
+      </div>`;
     }
-    pie+=`<div class="row" style="margin-top:8px"><button class="primary" id="bSig">${sess.i+1<n?'Siguiente':'Ver resultado'}</button></div>`;
+    pie+=`
+    <div class="row" style="margin-top:16px">
+      <button class="primary" id="bSig" style="flex:1;padding:14px;font-size:15px">
+        ${sess.i+1<n?'Siguiente pregunta →':'Ver resumen final 🏆'}
+      </button>
+    </div>`;
   }
+
   return `
-  <div class="pr-top card">
-    ${anillo(pctHechas,64)}
+  <div class="pr-top">
+    ${anillo(pctHechas,56)}
     <div class="pr-txt">
-      <div class="pr-count">${sess.i+1}<span>/${n}</span></div>
-      <div class="meta">✓ ${sess.ac} &nbsp; ✗ ${sess.fa}</div>
+      <div class="pr-count">Pregunta ${sess.i+1} <span>de ${n}</span></div>
+      <div class="pr-score-chips">
+        <span class="chip ok">✓ ${sess.ac} aciertos</span>
+        <span class="chip ko">✗ ${sess.fa} fallos</span>
+      </div>
     </div>
-    <div class="pr-badges"><span class="badge">Tema ${esc(q.tema)}</span><span class="badge ${e.c}">${e.t}</span></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+      <span class="badge primary">Tema ${esc(q.tema)}</span>
+      <span class="badge ${e.c}">${e.t}</span>
+    </div>
   </div>
-  <div class="card qcard${enter}">
-    <p class="enun">${esc(q.enunciado)}</p>${opts}${aviso}${pie}
+
+  <div class="card qcard${enter}" style="margin-top:14px">
+    <div class="qcard-header">
+      <span class="meta">${esc(q.convocatoria||'Examen Oficial')} · Pregunta nº ${esc(q.numero)}</span>
+      <button class="small" id="bEditP" style="padding:4px 8px;font-size:12px">${ic('edit')} Editar</button>
+    </div>
+    <p class="enun">${esc(q.enunciado)}</p>
+    ${opts}
+    ${aviso}
+    ${pie}
   </div>
-  <div class="row">
-    <button class="small" id="bEditP">${ic('edit')} Editar</button>
-    <button class="small" id="bSalir">${ic('x')} Salir</button>
+
+  <div class="row" style="justify-content:space-between">
+    <button class="small" id="bSalir">${ic('back')} Pausar y salir</button>
+    <span class="meta">${Math.round((sess.i/n)*100)}% completado</span>
   </div>`;
 }
+
 function vistaFin(){
   const tot=sess.ac+sess.fa, pct=tot?Math.round(sess.ac/tot*100):0;
   const porTema={};
-  sess.res.forEach(r=>{const q=byId(r.id); if(!q) return; const t=q.tema; porTema[t]=porTema[t]||{ok:0,tot:0}; porTema[t].tot++; if(r.ok) porTema[t].ok++;});
+  sess.res.forEach(r=>{
+    const q=byId(r.id); if(!q) return;
+    const t=q.tema; porTema[t]=porTema[t]||{ok:0,tot:0}; porTema[t].tot++; if(r.ok) porTema[t].ok++;
+  });
   const filas=Object.keys(porTema).sort((a,b)=>a-b).map(t=>{
     const x=porTema[t], p=Math.round(x.ok/x.tot*100);
-    return `<div class="tema-row"><span>Tema ${t}</span><div class="bar"><div style="width:${p}%"></div></div><span class="meta">${x.ok}/${x.tot}</span></div>`;
-  }).join('');
-  const msg=pct>=80?'¡Muy bien!':pct>=50?'Buen trabajo, sigue así':'Toca repasar';
-  return `<div class="card res">
-      <div class="res-wrap">${anillo(pct,140).replace('class="ring"','class="ring big"')}<div class="res-pct">${pct}%</div></div>
-      <p class="res-msg">${msg}</p>
-      <p class="meta">${sess.ac} aciertos · ${sess.fa} fallos · ${tot} respondidas</p>
-    </div>
-    ${filas?`<div class="card"><label style="margin-top:0">Por tema</label>${filas}</div>`:''}
-    <div class="row">
-      ${sess.fa?`<button class="primary" id="bRepasar">${ic('repeat')} Repasar falladas (${sess.fa})</button>`:''}
-      <button id="bSalir">${ic('back')} Volver a la sesión</button>
+    return `
+    <div class="tema-row">
+      <span>Tema ${t}</span>
+      <div class="bar"><div style="width:${p}%"></div></div>
+      <span class="meta">${x.ok}/${x.tot} (${p}%)</span>
     </div>`;
+  }).join('');
+
+  const badgeIcon=pct>=80?'🥇':pct>=50?'🥈':'📖';
+  const msg=pct>=80?'¡Excelente resultado!':pct>=50?'¡Buen progreso, sigue así!':'Sesión para reforzar conceptos';
+  const submsg=pct>=80?'Dominas muy bien este temario.':pct>=50?'Estás en el camino correcto hacia la plaza.':'Revisa las preguntas falladas para asentar el conocimiento.';
+
+  return `
+  <div class="card res">
+    <div style="font-size:42px;margin-bottom:6px">${badgeIcon}</div>
+    <div class="res-wrap">
+      ${anillo(pct,148).replace('class="ring"','class="ring big"')}
+      <div class="res-pct">${pct}%<span>Aciertos</span></div>
+    </div>
+    <h3 class="res-msg">${msg}</h3>
+    <p class="meta" style="margin:4px 0 16px">${submsg}</p>
+    
+    <div style="display:inline-flex;gap:12px;background:var(--line-soft);padding:10px 16px;border-radius:999px;font-size:13.5px;font-weight:700">
+      <span style="color:var(--ok)">✓ ${sess.ac} aciertos</span>
+      <span>•</span>
+      <span style="color:var(--ko)">✗ ${sess.fa} fallos</span>
+      <span>•</span>
+      <span>${tot} respondidas</span>
+    </div>
+  </div>
+
+  ${filas?`
+  <div class="card">
+    <label style="margin-top:0">Rendimiento por temas</label>
+    ${filas}
+  </div>`:''}
+
+  <div class="row stretch">
+    ${sess.fa?`<button class="primary" id="bRepasar" style="padding:14px">${ic('repeat')} Repasar las ${sess.fa} preguntas falladas</button>`:''}
+    <button id="bSalir" class="${sess.fa?'':'primary'}" style="padding:14px">${ic('back')} Volver al panel de la sesión</button>
+  </div>`;
 }
 
 /* ---------- EDICIÓN ---------- */
 function vistaEditar(){
   const d=editing.data;
-  const opts=d.opciones.map((o,i)=>`<div class="card" style="padding:10px">
-      <div class="row" style="justify-content:space-between"><b>${esc(o.letra)})</b>
-        <label class="row" style="margin:0;color:var(--txt)"><input type="radio" name="corr" value="${esc(o.letra)}" ${d.correcta===o.letra?'checked':''} style="width:auto"> Correcta</label></div>
-      <textarea data-opt="${i}">${esc(o.texto)}</textarea></div>`).join('');
-  return `<div class="card">
-    <div class="row"><span class="badge">${esc(d.convocatoria||'')}</span><span class="badge">Tema ${esc(d.tema)}</span><span class="badge">nº ${esc(d.numero)}</span></div>
-    <label>Enunciado</label><textarea id="eEnun">${esc(d.enunciado)}</textarea>
-    <label class="row" style="margin:12px 0 0;color:var(--txt)"><input type="checkbox" id="eAnul" ${d.anulada?'checked':''} style="width:auto"> Pregunta anulada (no se practica)</label></div>
+  const opts=d.opciones.map((o,i)=>`
+    <div class="card" style="padding:14px;margin-bottom:10px">
+      <div class="row" style="justify-content:space-between;margin-bottom:6px">
+        <b>Opción ${esc(o.letra.toUpperCase())}</b>
+        <label style="margin:0;display:flex;align-items:center;gap:6px;cursor:pointer;color:var(--txt);text-transform:none">
+          <input type="radio" name="corr" value="${esc(o.letra)}" ${d.correcta===o.letra?'checked':''} style="width:18px;height:18px;accent-color:var(--ok)">
+          Es la correcta
+        </label>
+      </div>
+      <textarea data-opt="${i}">${esc(o.texto)}</textarea>
+    </div>`).join('');
+
+  return `
+  <div class="card">
+    <div class="row" style="margin-bottom:10px">
+      <span class="badge primary">${esc(d.convocatoria||'Manual')}</span>
+      <span class="badge">Tema ${esc(d.tema)}</span>
+      <span class="badge">Nº ${esc(d.numero)}</span>
+    </div>
+    <label>Enunciado de la pregunta</label>
+    <textarea id="eEnun" style="min-height:100px">${esc(d.enunciado)}</textarea>
+    
+    <label style="display:flex;align-items:center;gap:8px;margin-top:14px;cursor:pointer;text-transform:none;color:var(--txt)">
+      <input type="checkbox" id="eAnul" ${d.anulada?'checked':''} style="width:18px;height:18px;accent-color:var(--ko)">
+      Pregunta anulada (se excluye de las sesiones de práctica)
+    </label>
+  </div>
+
+  <h4 style="margin:16px 0 8px;font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase">Opciones de respuesta</h4>
   ${opts}
+
+  <div class="card row" style="padding:12px">
+    <button id="bAddOpt" class="small">+ Añadir opción</button>
+    <button id="bDelOpt" class="small" ${d.opciones.length<=2?'disabled':''}>− Quitar última</button>
+    <button id="bNoCorr" class="small">Sin marcar correcta</button>
+  </div>
+
   <div class="card row">
-    <button id="bAddOpt" class="small">+ Opción</button>
-    <button id="bDelOpt" class="small" ${d.opciones.length<=2?'disabled':''}>− Última opción</button>
-    <button id="bNoCorr" class="small">Sin respuesta marcada</button></div>
-  <div class="card row">
-    <button class="primary" id="bGuardarE">Guardar</button>
+    <button class="primary" id="bGuardarE">Guardar cambios</button>
     <button id="bCancelE">Cancelar</button>
-    <button class="danger" id="bDelQ" style="margin-left:auto">${ic('trash')} Eliminar</button></div>`;
+    <button class="danger small" id="bDelQ" style="margin-left:auto">${ic('trash')} Eliminar</button>
+  </div>`;
 }
+
 function abrirEditor(id,back){
   const q=byId(id);
   editing={id,back,data:JSON.parse(JSON.stringify(q))};
@@ -325,7 +1346,7 @@ function leerEdicion(){
 }
 function nuevaPregunta(){
   const n=Math.max(0,...Q.filter(q=>q.convocatoria==='Manual').map(q=>q.numero))+1;
-  const p={id:nuevoId('m'),convocatoria:'Manual',plaza:'',tema:0,numero:n,enunciado:'',
+  const p={id:nuevoId('m'),convocatoria:'Manual',plaza:'',tema:1,numero:n,enunciado:'',
     opciones:['a','b','c','d'].map(l=>({letra:l,texto:''})),correcta:null,pagina:null,revisar:[],editada:true};
   Q.push(p); saveQ(); return p.id;
 }
@@ -336,31 +1357,70 @@ function vistaLista(){
   const f=s?filtrarTodas(s):Q;
   const items=f.slice(0,300).map(q=>{
     const e=estado(q);
-    return `<button class="qitem" data-edit="${esc(q.id)}"><span class="meta">${esc(q.convocatoria)} · T${esc(q.tema)} · nº ${esc(q.numero)}</span>
-      <span class="badge ${e.c}" style="float:right">${e.t}</span><br>${esc(q.enunciado).slice(0,140)}</button>`;
+    return `
+    <button class="qitem" data-edit="${esc(q.id)}">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <span class="meta">${esc(q.convocatoria)} · T${esc(q.tema)} · nº ${esc(q.numero)}</span>
+        <span class="badge ${e.c}">${e.t}</span>
+      </div>
+      <div style="font-weight:600;color:var(--txt)">${esc(q.enunciado).slice(0,140)}...</div>
+    </button>`;
   }).join('');
-  return `<div class="row" style="margin-bottom:8px"><button id="bVolverL" class="small">← Sesión</button>
-    <span class="meta">${f.length} preguntas${f.length>300?' (mostrando 300)':''}</span></div>${items||'<p class="meta">Nada que mostrar.</p>'}`;
+
+  return `
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <button id="bVolverL" class="small">← Volver a la sesión</button>
+    <span class="meta">${f.length} preguntas disponibles</span>
+  </div>
+  ${items||'<div class="card"><p class="meta" style="text-align:center">No hay preguntas que coincidan con este filtro.</p></div>'}`;
 }
 
 /* ---------- DATOS ---------- */
 function vistaDatos(){
-  return `<div class="card"><p>${Q.length} preguntas guardadas.</p>
-    <label>Importar examen (dos PDF)</label>
-    <label>Nombre del examen</label>
-    <input type="text" id="exNombre" placeholder="Ej: Administrativo PEPI 2023">
-    <label>PDF de preguntas</label>
+  return `
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--acc-light);color:var(--acc);display:flex;align-items:center;justify-content:center;font-size:20px">
+        📄
+      </div>
+      <div>
+        <h3 style="margin:0;font-size:17px;font-weight:800">Importar examen oficial (PDF)</h3>
+        <p class="meta" style="margin:0">Sube el PDF del cuestionario y la plantilla oficial de respuestas</p>
+      </div>
+    </div>
+
+    <label>Nombre identificador del examen</label>
+    <input type="text" id="exNombre" placeholder="Ej: Auxiliar Administrativo PEPI 2024">
+    
+    <label>PDF del cuestionario de preguntas</label>
     <input type="file" id="exPreg" accept=".pdf,application/pdf">
-    <label>PDF de plantilla de respuestas</label>
+    
+    <label>PDF de la plantilla de respuestas oficiales</label>
     <input type="file" id="exPlan" accept=".pdf,application/pdf">
-    <p class="meta" id="pdfEstado" style="margin:10px 0">Antes de guardar verás un resumen para confirmar.</p>
-    <button class="primary small" id="bExamen">${ic('play')} Leer examen</button></div>
-    <div class="card"><label style="margin-top:0">Importar JSON</label>
-    <input type="file" id="fileIn" accept=".json,application/json">
-    <p class="meta">Reemplaza las preguntas actuales.</p></div>
-    <div class="row"><button id="bExp">Exportar copia</button><button class="danger" id="bReset">Borrar todo</button>
-    <button class="small" id="bVolverD">← Inicio</button></div>`;
+    
+    <p class="meta" id="pdfEstado" style="margin:12px 0 14px;color:var(--mut)">Antes de guardar se mostrará un resumen detallado para tu confirmación.</p>
+    <button class="primary" id="bExamen">${ic('play')} Analizar y leer examen</button>
+  </div>
+
+  <div class="card">
+    <h3 style="margin:0 0 4px;font-size:16px;font-weight:800">Copia de seguridad en JSON</h3>
+    <p class="meta" style="margin:0 0 12px">Exporta todas tus preguntas y sesiones o importa un respaldo previo.</p>
+    
+    <div class="row">
+      <button class="secondary" id="bExp">Exportar copia JSON</button>
+      <label class="btn small" style="margin:0;cursor:pointer">
+        Importar archivo JSON
+        <input type="file" id="fileIn" accept=".json,application/json" style="display:none">
+      </label>
+    </div>
+  </div>
+
+  <div class="card row" style="justify-content:space-between">
+    <button class="small" id="bVolverD">← Volver al inicio</button>
+    <button class="danger small" id="bReset">Restablecer todos los datos</button>
+  </div>`;
 }
+
 function vistaRevision(){
   if(!importacion){go('datos');return '';}
   const P=importacion.preguntas;
@@ -368,28 +1428,54 @@ function vistaRevision(){
   const revisar=P.filter(q=>q.revisar.length).length;
   const porConv={};
   P.forEach(q=>{porConv[q.convocatoria]=(porConv[q.convocatoria]||0)+1;});
-  const lista=Object.entries(porConv).map(([c,n])=>`<li>${esc(c)}: <b>${n}</b></li>`).join('');
-  const muestra=P.slice(0,2).map(q=>`<div class="card" style="margin:8px 0"><span class="meta">T${esc(q.tema)} · nº ${esc(q.numero)}</span><p style="margin:4px 0"><b>${esc(q.enunciado).slice(0,160)}</b></p>
-    <span class="meta">${q.opciones.length} opciones · correcta: ${esc(q.correcta||'no marcada')}</span></div>`).join('');
+  const lista=Object.entries(porConv).map(([c,n])=>`<li>${esc(c)}: <b>${n}</b> preguntas</li>`).join('');
+  const muestra=P.slice(0,2).map(q=>`
+    <div class="card" style="margin:10px 0;padding:12px">
+      <span class="meta">Tema ${esc(q.tema)} · Pregunta nº ${esc(q.numero)}</span>
+      <p style="margin:4px 0"><b>${esc(q.enunciado).slice(0,160)}</b></p>
+      <span class="badge ${q.correcta?'ok':'warn'}">${q.opciones.length} opciones · Correcta: ${esc(q.correcta?q.correcta.toUpperCase():'No marcada')}</span>
+    </div>`).join('');
   const anuladas=P.filter(q=>q.anulada).map(q=>q.numero);
   const hayActuales=Q.length>0;
-  return `<div class="card">
-      <p><b>${P.length}</b> preguntas listas para guardar.</p><p class="meta">${esc(importacion.resumen)}</p>
-      <p class="meta">${conRes} con respuesta marcada · ${P.length-conRes} sin respuesta · ${revisar} con avisos</p>
-      <ul class="meta">${lista}</ul>
-      <label>Preguntas anuladas (números separados por comas)</label>
-      <div class="row"><input type="text" id="revAnul" value="${esc(anuladas.join(', '))}" placeholder="Ej: 12, 45"><button class="small" id="bAplicarAnul">Aplicar</button></div>
-      <p class="meta">Se guardan, pero no aparecen en las sesiones de práctica.</p>
-      ${importacion.avisos.length?`<p class="meta" style="color:var(--warn)">${importacion.avisos.map(esc).join('<br>')}</p>`:''}
+
+  return `
+  <div class="card">
+    <div class="badge ok" style="margin-bottom:8px">Examen procesado</div>
+    <h3 style="margin:0 0 6px;font-size:20px;font-weight:800">${P.length} preguntas listas para guardar</h3>
+    <p class="meta">${esc(importacion.resumen)}</p>
+    <div style="display:flex;gap:12px;margin:12px 0;font-size:13.5px">
+      <span class="chip ok">✓ ${conRes} con respuesta</span>
+      <span class="chip ko">✗ ${P.length-conRes} sin respuesta</span>
+      ${revisar?`<span class="chip theme">${revisar} avisos</span>`:''}
     </div>
-    <div class="card"><label style="margin-top:0">Muestra</label>${muestra}</div>
+    <ul class="meta" style="padding-left:18px">${lista}</ul>
+
+    <label>Preguntas anuladas oficiales (números separados por comas)</label>
     <div class="row">
-      ${hayActuales?`<button class="primary" id="bRevAdd">Añadir a las ${Q.length} actuales</button><button class="danger" id="bRevRep">Reemplazar las actuales</button>`:`<button class="primary" id="bRevAdd">Guardar ${P.length} preguntas</button>`}
-      <button id="bRevCancel">Cancelar</button>
-    </div>`;
+      <input type="text" id="revAnul" value="${esc(anuladas.join(', '))}" placeholder="Ej: 12, 45, 88" style="flex:1">
+      <button class="small" id="bAplicarAnul">Actualizar</button>
+    </div>
+    <p class="meta" style="margin-top:4px">Las preguntas anuladas se guardan para registro pero no se practicarán.</p>
+    ${importacion.avisos.length?`<div style="background:var(--warnbg);border:1px solid var(--warnborder);padding:10px 14px;border-radius:10px;margin-top:12px;color:var(--warn);font-size:13px">${importacion.avisos.map(esc).join('<br>')}</div>`:''}
+  </div>
+
+  <div class="card">
+    <label style="margin-top:0">Vista previa del examen</label>
+    ${muestra}
+  </div>
+
+  <div class="row stretch">
+    ${hayActuales?`
+      <button class="primary" id="bRevAdd">Añadir a las ${Q.length} actuales</button>
+      <button class="danger" id="bRevRep">Reemplazar existentes</button>
+    `:`
+      <button class="primary" id="bRevAdd">Guardar las ${P.length} preguntas</button>
+    `}
+    <button id="bRevCancel">Cancelar</button>
+  </div>`;
 }
 
-/* ---------- IMPORTACIÓN DE EXAMEN (preguntas + plantilla) ---------- */
+/* ---------- IMPORTACIÓN DE EXAMEN ---------- */
 let importacion=null;
 async function leerLineasPDF(file){
   const buf=await file.arrayBuffer();
@@ -413,7 +1499,6 @@ async function leerLineasPDF(file){
   }
   return out.filter(Boolean);
 }
-// Plantilla: pares "número letra" (en una o dos columnas)
 function leerPlantilla(lineas){
   const pares={}, conflictos=[];
   const re=/(?<!\d)(\d{1,3})\s+([A-D])(?![A-Za-zÁÉÍÓÚáéíóúñ])/g;
@@ -428,7 +1513,6 @@ function leerPlantilla(lineas){
   }
   return {pares,conflictos};
 }
-// Cuestionario: "N.- enunciado", opciones "a) ...", reservas tras el encabezado "PREGUNTAS DE RESERVA"
 function leerCuestionario(lineas){
   const preguntas=[]; let cur=null, state='out', started=false, reserva=false;
   const cerrar=()=>{ if(cur){ preguntas.push(cur); cur=null; } };
@@ -461,7 +1545,7 @@ function construirImportacion(lineasPreg, lineasPlan, nombre){
   if(sinRespuesta.length) avisos.push('Sin respuesta en la plantilla: '+sinRespuesta.join(', ')+'.');
   const preguntas=ordinarias.map(q=>{
     const opciones=q.opciones.map(o=>({letra:o.letra,texto:o.texto.trim()}));
-    const correcta=pares[q.numero]||null;
+    const correcta=pares[q.numero]?pares[q.numero].toLowerCase():null;
     const revisar=[];
     if(opciones.length!==4) revisar.push('opciones');
     if(!correcta) revisar.push('sin_correcta');
@@ -469,22 +1553,22 @@ function construirImportacion(lineasPreg, lineasPlan, nombre){
     return {id:nuevoId('e'),convocatoria:nombre,plaza:'',tema:q.numero<=70?1:2,numero:q.numero,
       enunciado:q.enunciado.trim(),opciones,correcta,pagina:null,revisar,editada:false};
   });
-  return {preguntas,avisos,resumen:`Examen: ${nombre}. ${reservas} preguntas de reserva no se incluyen.`};
+  return {preguntas,avisos,resumen:`Examen: ${nombre}. ${reservas} preguntas de reserva detectadas.`};
 }
 async function procesarExamen(){
   const $=id=>document.getElementById(id);
   const fp=$('exPreg').files[0], fl=$('exPlan').files[0];
-  if(!fp||!fl){ alert('Selecciona el PDF de preguntas y el de plantilla.'); return; }
+  if(!fp||!fl){ alert('Selecciona tanto el PDF de preguntas como el de la plantilla.'); return; }
   const nombre=$('exNombre').value.trim()||fp.name.replace(/\.pdf$/i,'');
   const est=$('pdfEstado');
   try{
-    est.textContent='Leyendo preguntas…';
+    est.textContent='Leyendo preguntas del PDF…';
     const lp=await leerLineasPDF(fp);
-    est.textContent='Leyendo plantilla de respuestas…';
+    est.textContent='Analizando plantilla de respuestas oficiales…';
     const ll=await leerLineasPDF(fl);
     importacion=construirImportacion(lp,ll,nombre);
     go('revisar');
-  }catch(err){ est.textContent='No se pudo leer: '+err.message; }
+  }catch(err){ est.textContent='Error al procesar: '+err.message; }
 }
 function guardarImportacion(modo){
   const nuevas=importacion.preguntas;
@@ -496,40 +1580,38 @@ function guardarImportacion(modo){
 function bind(){
   const $=id=>document.getElementById(id);
   const on=(id,fn)=>{const el=$(id); if(el) el.onclick=fn;};
-  const fi=$('fileIn'); if(fi) fi.onchange=e=>importar(e.target.files[0]);
-  on('bExamen',procesarExamen);
-  on('bAplicarAnul',()=>{
-    const nums=$('revAnul').value.split(/[,;\s]+/).map(x=>+x).filter(x=>x>0);
-    importacion.preguntas.forEach(q=>{ q.anulada=nums.includes(q.numero); });
-    render();
-  });
-  on('bRevAdd',()=>guardarImportacion('add'));
-  on('bRevRep',()=>{ if(confirm('¿Reemplazar las preguntas actuales por las del PDF? Se perderán tus ediciones.')) guardarImportacion('rep'); });
-  on('bRevCancel',()=>{importacion=null; go('datos');});
-
+  
+  on('brandBtn',()=>go('home'));
+  on('btnInicio',()=>go('home'));
+  
+  // Home
+  on('bCargarDemo',cargarMuestraDemo);
   on('bComenzar',()=>go('sesiones'));
+  on('bNuevaSesionDirecta',()=>{form={id:null,nombre:'',conv:'all',tema:'all',limpias:false}; go('form');});
+  on('bVerTodasSesiones',()=>go('sesiones'));
   on('bDatos',()=>go('datos'));
-  on('bVolverD',()=>go('home'));
-  on('bExp',exportar);
-  on('bReset',()=>{ if(confirm('¿Borrar todas las preguntas, sesiones y cambios?')){Q=[];SES=[];saveQ();saveS();go('home');} });
 
+  // Sesiones
   on('bNueva',()=>{form={id:null,nombre:'',conv:'all',tema:'all',limpias:false}; go('form');});
+  on('bNueva2',()=>{form={id:null,nombre:'',conv:'all',tema:'all',limpias:false}; go('form');});
   on('bVolver',()=>go('home'));
   document.querySelectorAll('[data-abrir]').forEach(b=>b.onclick=()=>{actual=b.dataset.abrir; go('sesion');});
   document.querySelectorAll('[data-editar-ses]').forEach(b=>b.onclick=()=>{const s=sesionById(b.dataset.editarSes); form={...s}; actual=s.id; go('form');});
   document.querySelectorAll('[data-borrar-ses]').forEach(b=>b.onclick=()=>{
     const s=sesionById(b.dataset.borrarSes);
-    if(confirm(`¿Borrar la sesión "${s.nombre}"? Las preguntas no se borran.`)){SES=SES.filter(x=>x.id!==s.id);saveS();render();}
+    if(confirm(`¿Deseas eliminar la sesión "${s.nombre}"? Tus preguntas no se borrarán.`)){
+      SES=SES.filter(x=>x.id!==s.id); saveS(); render();
+    }
   });
 
-  // formulario de sesión
+  // Formulario de sesión
   if(view==='form'){
     const fc=$('fConv'); if(fc) fc.onchange=e=>{form.conv=e.target.value; form.tema='all'; form.nombre=$('fNom').value; render();};
     const ft=$('fTema'); if(ft) ft.onchange=e=>{form.tema=e.target.value; form.nombre=$('fNom').value; render();};
     const fl=$('fLimp'); if(fl) fl.onchange=e=>{form.limpias=e.target.checked; form.nombre=$('fNom').value; render();};
     on('bCancelS',()=>go('sesiones'));
     on('bGuardarS',()=>{
-      const nombre=$('fNom').value.trim()||'Sesión sin nombre';
+      const nombre=$('fNom').value.trim()||'Sesión de repaso';
       const datos={nombre,conv:$('fConv').value,tema:$('fTema').value,limpias:$('fLimp').checked};
       if(form.id){ Object.assign(sesionById(form.id),datos); }
       else { SES.push({id:nuevoId('s'),...datos,hechas:0,aciertos:0,fallos:0}); }
@@ -537,17 +1619,21 @@ function bind(){
     });
   }
 
-  // sesión
+  // Panel de sesión
   on('bVolverS',()=>go('sesiones'));
   on('bOrden',()=>iniciar(false));
   on('bMezcla',()=>iniciar(true));
   on('bLista',()=>go('list'));
   on('bNuevaP',()=>{const id=nuevaPregunta(); abrirEditor(id,'sesion');});
 
-  // práctica
+  // Práctica
   document.querySelectorAll('[data-letra]').forEach(b=>b.onclick=()=>responder(b.dataset.letra));
   on('bSig',siguiente);
-  on('bSetOk',()=>{const q=byId(sess.ids[sess.i]); q.correcta=sess.resp; q.editada=true; q.revisar=[]; saveQ(); sess.ac++; sess.res.push({id:q.id,ok:true}); render();});
+  on('bSetOk',()=>{
+    const q=byId(sess.ids[sess.i]);
+    q.correcta=sess.resp; q.editada=true; q.revisar=[];
+    saveQ(); sess.ac++; sess.res.push({id:q.id,ok:true}); render();
+  });
   on('bNoSet',()=>render());
   on('bEditP',()=>abrirEditor(sess.ids[sess.i],'practice'));
   on('bSalir',()=>{cerrarSesionPractica(); go('sesion');});
@@ -558,7 +1644,7 @@ function bind(){
     go('practice');
   });
 
-  // edición
+  // Edición
   if(view==='edit'){
     on('bAddOpt',()=>{leerEdicion(); const d=editing.data; d.opciones.push({letra:String.fromCharCode(97+d.opciones.length),texto:''}); render();});
     on('bDelOpt',()=>{leerEdicion(); const d=editing.data; if(d.opciones.length>2) d.opciones.pop(); if(!d.opciones.find(o=>o.letra===d.correcta)) d.correcta=null; render();});
@@ -568,13 +1654,13 @@ function bind(){
       const i=Q.findIndex(q=>q.id===d.id); if(i>=0) Q[i]=d; else Q.push(d);
       saveQ();
       const b=editing.back; editing=null;
-      if(b==='practice' && sess){ sess.resp=null; go('practice'); }
+      if(b==='practice'&&sess){ sess.resp=null; go('practice'); }
       else if(b==='list') go('list');
       else go('sesion');
     });
     on('bCancelE',()=>{const b=editing.back; editing=null; if(b==='practice'&&sess) go('practice'); else if(b==='list') go('list'); else go('sesion');});
     on('bDelQ',()=>{
-      if(!confirm('¿Eliminar esta pregunta?')) return;
+      if(!confirm('¿Seguro que deseas eliminar esta pregunta?')) return;
       const id=editing.id, b=editing.back;
       Q=Q.filter(q=>q.id!==id); saveQ(); editing=null;
       if(sess) sess.ids=sess.ids.filter(x=>x!==id);
@@ -582,12 +1668,35 @@ function bind(){
     });
   }
 
-  // lista
+  // Lista
   on('bVolverL',()=>go('sesion'));
   document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>abrirEditor(b.dataset.edit,'list'));
+
+  // Datos
+  on('bExamen',procesarExamen);
+  on('bExp',exportar);
+  const fi=$('fileIn'); if(fi) fi.onchange=e=>importar(e.target.files[0]);
+  on('bVolverD',()=>go('home'));
+  on('bReset',()=>{
+    if(confirm('¿Seguro que deseas borrar todas las preguntas, sesiones y estadísticas guardadas? Esta acción no se puede deshacer.')){
+      Q=[]; SES=[]; saveQ(); saveS(); go('home');
+    }
+  });
+
+  // Revisión importación
+  on('bAplicarAnul',()=>{
+    const nums=$('revAnul').value.split(/[,;\s]+/).map(x=>+x).filter(x=>x>0);
+    importacion.preguntas.forEach(q=>{ q.anulada=nums.includes(q.numero); });
+    render();
+  });
+  on('bRevAdd',()=>guardarImportacion('add'));
+  on('bRevRep',()=>{
+    if(confirm('¿Reemplazar todas las preguntas actuales por las de este examen?')) guardarImportacion('rep');
+  });
+  on('bRevCancel',()=>{importacion=null; go('datos');});
 }
 
-/* ---------- ACCIONES ---------- */
+/* ---------- ACCIONES DE PRÁCTICA ---------- */
 function iniciar(mezclar){
   const s=sesionById(actual); if(!s) return;
   let ids=filtrarPara(s).map(q=>q.id);
@@ -600,7 +1709,11 @@ function responder(letra){
   if(sess.resp!==null) return;
   const q=byId(sess.ids[sess.i]);
   sess.resp=letra;
-  if(q.correcta){ const ok=letra===q.correcta; if(ok) sess.ac++; else sess.fa++; sess.res.push({id:q.id,ok}); }
+  if(q.correcta){
+    const ok=letra===q.correcta;
+    if(ok) sess.ac++; else sess.fa++;
+    sess.res.push({id:q.id,ok});
+  }
   render();
 }
 function siguiente(){
@@ -611,7 +1724,12 @@ function siguiente(){
 function cerrarSesionPractica(){
   if(sess && !sess.guardada){
     const s=sesionById(actual);
-    if(s){ s.hechas=(s.hechas||0)+sess.i; s.aciertos=(s.aciertos||0)+sess.ac; s.fallos=(s.fallos||0)+sess.fa; saveS(); }
+    if(s){
+      s.hechas=(s.hechas||0)+sess.i;
+      s.aciertos=(s.aciertos||0)+sess.ac;
+      s.fallos=(s.fallos||0)+sess.fa;
+      saveS();
+    }
     sess.guardada=true;
   }
 }
@@ -619,20 +1737,19 @@ function importar(file){
   if(!file) return;
   file.text().then(t=>{
     const data=JSON.parse(t);
-    if(!Array.isArray(data)) throw new Error('formato');
+    if(!Array.isArray(data)) throw new Error('Formato inválido');
     Q=data.map(q=>({revisar:[],editada:false,...q}));
     saveQ(); go('home');
-  }).catch(()=>alert('No se pudo leer el archivo. Debe ser el JSON de preguntas.'));
+  }).catch(()=>alert('No se pudo leer el archivo. Debe ser un JSON de preguntas válido.'));
 }
 function exportar(){
-  const blob=new Blob([JSON.stringify(Q,null,1)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify(Q,null,2)],{type:'application/json'});
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob); a.download='preguntas-copia.json';
+  a.href=URL.createObjectURL(blob); a.download='oposiciones-preguntas.json';
   document.body.appendChild(a); a.click(); a.remove();
 }
 
-document.getElementById('btnInicio').onclick=()=>{cerrarSesionPractica(); sess=null; editing=null; go('home');};
-load(); render();
+load();
+render();
 </script>
-</body>
-</html>
+</body></html>
