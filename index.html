@@ -732,7 +732,7 @@ label{
 <img alt="Logo OpoTest" class="brand-logo" src="https://lh3.googleusercontent.com/aida/AEtjO1WGkt92UrS4G6PuklDc20dtqJwADUq1bVF4CK58lRZCenYPLGP7E0kXJhPa4madvcJNJ5mkO90pG-uMqYfZgzL_SJFW6kpc3Tr17eVkzjhNQy5RN9Grh2ZfwfFBvoyjAGEn0EnpRWN90mpccOXnWiZ7BBDX2TMmXKZdGZ7kRVc0HXYGul2WpScMiIKIm4Dw1YxTy4OiB0nmao-NBa3NVDvDBZS6ZBwaifIxYfWAJi97KJdhfsLCVBtmLVU"/>
 <div class="brand-text">
 <span class="brand-title">OpoTest</span>
-<span class="brand-tag" id="headerSub">Modo Examen</span>
+<span class="brand-tag" id="headerSub">Carpetas de estudio</span>
 </div>
 </div>
 <div class="header-actions">
@@ -742,76 +742,30 @@ label{
     </button>
 </div>
 </header>
-<main id="app">
-<div class="pr-top">
-<svg class="ring" height="56" viewbox="0 0 56 56" width="56">
-<circle class="ring-bg" cx="28" cy="28" r="22"></circle>
-<circle class="ring-fg" cx="28" cy="28" r="22" stroke-dasharray="138.23007675795088" stroke-dashoffset="103.67255756846316" transform="rotate(-90 28 28)"></circle>
-</svg>
-<div class="pr-txt">
-<div class="pr-count">Pregunta 2 <span class="">de 4</span></div>
-<div class="pr-score-chips">
-<span class="chip ok">✓ 1 aciertos</span>
-<span class="chip ko">✗ 1 fallos</span>
-</div>
-</div>
-<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-<span class="badge primary">Tema 1</span>
-<span class="badge ok">Lista</span>
-</div>
-</div>
-<div class="card qcard" style="margin-top:14px">
-<div class="qcard-header">
-<span class="meta">Auxiliar Administrativo 2024 · Pregunta nº 2</span>
-<button class="small" id="bEditP" style="padding:4px 8px;font-size:12px"><svg aria-hidden="true" class="ico" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path><path d="M14 6l4 4"></path></svg> Editar</button>
-</div>
-<p class="enun">Según el artículo 9.3 de la Constitución Española, ¿cuál de los siguientes principios NO está expresamente garantizado?</p>
-<button class="opt ko" data-letra="a" disabled="">
-<span class="opt-badge">A</span>
-<span class="opt-text">El principio de legalidad.</span>
-</button>
-<button class="opt ok" data-letra="b" disabled="">
-<span class="opt-badge">B</span>
-<span class="opt-text">La retroactividad de las disposiciones sancionadoras no favorables.</span>
-</button>
-<button class="opt" data-letra="c" disabled="">
-<span class="opt-badge">C</span>
-<span class="opt-text">La seguridad jurídica.</span>
-</button>
-<button class="opt" data-letra="d" disabled="">
-<span class="opt-badge">D</span>
-<span class="opt-text">La responsabilidad y la interdicción de la arbitrariedad de los poderes públicos.</span>
-</button>
-<div class="feedback bad">
-<span class="" style="font-size:20px">💡</span>
-<div style="font-weight:800">Respuesta Incorrecta</div>
-</div>
-<div class="row" style="margin-top:16px">
-<button class="primary" id="bSig" style="flex:1;padding:14px;font-size:15px">
-        Siguiente pregunta →
-      </button>
-</div>
-</div>
-<div class="row" style="justify-content:space-between">
-<button class="small" id="bSalir"><svg aria-hidden="true" class="ico" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24"><path d="M15 6l-6 6 6 6"></path></svg> Pausar y salir</button>
-<span class="meta">25% completado</span>
-</div></main>
+<main id="app"></main>
 <script>
-const KQ='test-app-v1', KS='test-app-sesiones-v1';
-const VERSION='OpoTest v2.0 · Diseño optimizado';
-let Q=[], SES=[];
-let view='home', actual=null, sess=null, editing=null, form=null;
+const KC='opotest-carpetas-v1', KQ='opotest-preguntas-v1';
+const VERSION='OpoTest v3.0 · Carpetas de estudio';
+let CARPETAS=[], Q=[];
+let view='home', actual=null, actualExamen=null, actualTema=null;
+let editing=null, form=null, importacionExamen=null, importacionTemario=null;
+let practSel=null, sess=null;
 
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function saveC(){try{localStorage.setItem(KC,JSON.stringify(CARPETAS));}catch(e){}}
 function saveQ(){try{localStorage.setItem(KQ,JSON.stringify(Q));}catch(e){}}
-function saveS(){try{localStorage.setItem(KS,JSON.stringify(SES));}catch(e){}}
 function load(){
+  try{const c=localStorage.getItem(KC); if(c) CARPETAS=JSON.parse(c);}catch(e){}
   try{const q=localStorage.getItem(KQ); if(q) Q=JSON.parse(q);}catch(e){}
-  try{const s=localStorage.getItem(KS); if(s) SES=JSON.parse(s);}catch(e){}
 }
-function byId(id){return Q.find(q=>q.id===id);}
-function sesionById(id){return SES.find(s=>s.id===id);}
 function nuevoId(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function byId(id){return Q.find(q=>q.id===id);}
+function carpetaById(id){return CARPETAS.find(c=>c.id===id);}
+function examenNombre(c,examenId){const e=c.examenes.find(x=>x.id===examenId); return e?e.nombre:'Manual';}
+function temaNombre(c,temaId){const t=c.temas.find(x=>x.id===temaId); return t?t.nombre:'';}
+function preguntasDeCarpeta(carpetaId){return Q.filter(q=>q.carpetaId===carpetaId);}
+function preguntasDeExamen(carpetaId,examenId){return Q.filter(q=>q.carpetaId===carpetaId&&q.examenId===examenId);}
+function preguntasDeTema(carpetaId,temaId){return Q.filter(q=>q.carpetaId===carpetaId&&(q.temas||[]).includes(temaId));}
 function esLimpia(q){return !q.revisar || q.revisar.length===0;}
 function estado(q){
   if(q.anulada) return {t:'Anulada',c:'warn'};
@@ -820,307 +774,7 @@ function estado(q){
   if(q.revisar&&q.revisar.length) return {t:'Revisar',c:'warn'};
   return {t:'Lista',c:'ok'};
 }
-function convs(){return [...new Set(Q.map(q=>q.convocatoria))];}
-function temasDe(conv){return [...new Set(Q.filter(q=>conv==='all'||q.convocatoria===conv).map(q=>q.tema))].sort((a,b)=>a-b);}
-function filtrarTodas(s){
-  return Q.filter(q=>(s.conv==='all'||q.convocatoria===s.conv)
-    &&(s.tema==='all'||String(q.tema)===String(s.tema))
-    &&(!s.limpias||esLimpia(q)));
-}
-function filtrarPara(s){
-  return Q.filter(q=>!q.anulada&&(s.conv==='all'||q.convocatoria===s.conv)
-    &&(s.tema==='all'||String(q.tema)===String(s.tema))
-    &&(!s.limpias||esLimpia(q)));
-}
-function resumenFiltro(s){
-  const c=s.conv==='all'?'Todas las convocatorias':s.conv;
-  const t=s.tema==='all'?'Todos los temas':'Tema '+s.tema;
-  return `${c} · ${t}${s.limpias?' · Solo revisadas':''}`;
-}
 
-function calcularTasaGlobal(){
-  const tot=SES.reduce((acc,s)=>acc+(s.aciertos||0)+(s.fallos||0),0);
-  const ac=SES.reduce((acc,s)=>acc+(s.aciertos||0),0);
-  return tot?Math.round((ac/tot)*100):0;
-}
-
-function go(v){view=v; render(); window.scrollTo({top:0,behavior:'smooth'});}
-
-function render(){
-  const titulos={
-    home:'Inicio',
-    sesiones:'Sesiones de Estudio',
-    sesion:'Panel de Sesión',
-    form:'Configurar Sesión',
-    practice:'Modo Examen',
-    edit:'Editor de Preguntas',
-    list:'Banco de Preguntas',
-    datos:'Gestión de Exámenes',
-    revisar:'Revisión de Importación'
-  };
-  const sub=document.getElementById('headerSub');
-  if(sub) sub.textContent=titulos[view]||'Simulador de Exámenes';
-  const app=document.getElementById('app');
-  const v={
-    revisar:vistaRevision,
-    home:vistaInicio,
-    sesiones:vistaSesiones,
-    sesion:vistaSesion,
-    form:vistaForm,
-    practice:vistaPractica,
-    edit:vistaEditar,
-    list:vistaLista,
-    datos:vistaDatos
-  }[view];
-  app.innerHTML=v();
-  bind();
-}
-
-/* ---------- INICIO ---------- */
-function cargarMuestraDemo(){
-  Q=[
-    {id:'demo1',convocatoria:'Auxiliar Administrativo 2024',plaza:'General',tema:1,numero:1,
-     enunciado:'¿Cuál es el valor superior del ordenamiento jurídico según el artículo 1.1 de la Constitución Española?',
-     opciones:[{letra:'a',texto:'La jerarquía normativa y la seguridad jurídica.'},{letra:'b',texto:'La libertad, la justicia, la igualdad y el pluralismo político.'},{letra:'c',texto:'La solidaridad entre las nacionalidades y regiones.'},{letra:'d',texto:'El principio de legalidad e interdicción de la arbitrariedad.'}],
-     correcta:'b',revisar:[],editada:false},
-    {id:'demo2',convocatoria:'Auxiliar Administrativo 2024',plaza:'General',tema:1,numero:2,
-     enunciado:'Según el artículo 9.3 de la Constitución Española, ¿cuál de los siguientes principios NO está expresamente garantizado?',
-     opciones:[{letra:'a',texto:'El principio de legalidad.'},{letra:'b',texto:'La retroactividad de las disposiciones sancionadoras no favorables.'},{letra:'c',texto:'La seguridad jurídica.'},{letra:'d',texto:'La responsabilidad y la interdicción de la arbitrariedad de los poderes públicos.'}],
-     correcta:'b',revisar:[],editada:false},
-    {id:'demo3',convocatoria:'Auxiliar Administrativo 2024',plaza:'General',tema:2,numero:3,
-     enunciado:'En el procedimiento administrativo común (Ley 39/2015), ¿cuál es el plazo general para la interposición del recurso de alzada contra un acto expreso?',
-     opciones:[{letra:'a',texto:'Un mes.'},{letra:'b',texto:'Dos meses.'},{letra:'c',texto:'Tres meses.'},{letra:'d',texto:'Quince días hábiles.'}],
-     correcta:'a',revisar:[],editada:false},
-    {id:'demo4',convocatoria:'Auxiliar Administrativo 2024',plaza:'General',tema:2,numero:4,
-     enunciado:'¿Quién ostenta la potestad reglamentaria originaria en el Estado español?',
-     opciones:[{letra:'a',texto:'El Tribunal Constitucional.'},{letra:'b',texto:'El Gobierno de la Nación.'},{letra:'c',texto:'El Consejo General del Poder Judicial.'},{letra:'d',texto:'Las Cortes Generales en sesión conjunta.'}],
-     correcta:'b',revisar:[],editada:false}
-  ];
-  SES=[
-    {id:'s1',nombre:'Repaso Rápido Constitucional',conv:'all',tema:'all',limpias:false,hechas:0,aciertos:0,fallos:0}
-  ];
-  saveQ(); saveS();
-  go('home');
-}
-
-function vistaInicio(){
-  if(!Q.length){
-    return `
-    <div class="hero-card card">
-      <div class="hero-content">
-        <div class="hero-logo-box">
-          <img src="https://lh3.googleusercontent.com/aida/AEtjO1WGkt92UrS4G6PuklDc20dtqJwADUq1bVF4CK58lRZCenYPLGP7E0kXJhPa4madvcJNJ5mkO90pG-uMqYfZgzL_SJFW6kpc3Tr17eVkzjhNQy5RN9Grh2ZfwfFBvoyjAGEn0EnpRWN90mpccOXnWiZ7BBDX2TMmXKZdGZ7kRVc0HXYGul2WpScMiIKIm4Dw1YxTy4OiB0nmao-NBa3NVDvDBZS6ZBwaifIxYfWAJi97KJdhfsLCVBtmLVU" alt="Logo OpoTest" class="hero-logo-img">
-        </div>
-        <div>
-          <h2 class="hero-title">¡Te damos la bienvenida a OpoTest!</h2>
-          <p class="hero-desc">Tu espacio para practicar preguntas oficiales de exámenes, registrar tu progreso y asegurar tu plaza.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="card" style="text-align:center;padding:32px 24px">
-      <div style="font-size:38px;margin-bottom:8px">📚</div>
-      <h3 style="margin:0 0 8px;font-size:18px;font-weight:800">Comienza a estudiar hoy</h3>
-      <p class="meta" style="max-width:440px;margin:0 auto 20px">Aún no tienes preguntas cargadas. Puedes cargar un set de demostración para probar la interfaz o importar tus exámenes en PDF o JSON.</p>
-      
-      <div class="row" style="justify-content:center;gap:12px">
-        <button class="primary" id="bCargarDemo">${ic('play')} Cargar preguntas de ejemplo</button>
-        <button id="bDatos">${ic('gear')} Importar exámenes</button>
-      </div>
-    </div>
-
-    <p class="footer-note">${VERSION}</p>`;
-  }
-
-  const globalRate = calcularTasaGlobal();
-  const totalHechas = SES.reduce((a,s)=>a+(s.hechas||0),0);
-
-  return `
-  <div class="hero-card card">
-    <div class="hero-content">
-      <div class="hero-logo-box">
-        <img src="https://lh3.googleusercontent.com/aida/AEtjO1WGkt92UrS4G6PuklDc20dtqJwADUq1bVF4CK58lRZCenYPLGP7E0kXJhPa4madvcJNJ5mkO90pG-uMqYfZgzL_SJFW6kpc3Tr17eVkzjhNQy5RN9Grh2ZfwfFBvoyjAGEn0EnpRWN90mpccOXnWiZ7BBDX2TMmXKZdGZ7kRVc0HXYGul2WpScMiIKIm4Dw1YxTy4OiB0nmao-NBa3NVDvDBZS6ZBwaifIxYfWAJi97KJdhfsLCVBtmLVU" alt="Logo OpoTest" class="hero-logo-img">
-      </div>
-      <div>
-        <h2 class="hero-title">¡A por tu plaza!</h2>
-        <p class="hero-desc">Tienes <b>${Q.length} preguntas disponibles</b> organizadas en tus sesiones de práctica.</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="stats-grid">
-    <div class="stat-pill">
-      <div class="stat-val">${Q.length}</div>
-      <div class="stat-label">Preguntas</div>
-    </div>
-    <div class="stat-pill">
-      <div class="stat-val">${SES.length}</div>
-      <div class="stat-label">Sesiones</div>
-    </div>
-    <div class="stat-pill">
-      <div class="stat-val" style="color:var(--ok)">${globalRate}%</div>
-      <div class="stat-label">Tasa Acierto</div>
-    </div>
-  </div>
-
-  <div class="row stretch" style="margin-bottom:18px">
-    <button class="primary" id="bComenzar" style="font-size:16px;padding:14px 22px">
-      ${ic('play')} Comenzar Sesión
-    </button>
-    <button class="secondary" id="bNuevaSesionDirecta">
-      ${ic('plus')} Nueva Sesión
-    </button>
-    <button id="bDatos">
-      ${ic('gear')} Gestión
-    </button>
-  </div>
-
-  <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-      <span style="font-weight:800;font-size:15px">Tus Sesiones Recientes</span>
-      <button class="small" id="bVerTodasSesiones">Ver todas →</button>
-    </div>
-    ${SES.slice(0,3).map(s=>{
-      const n=filtrarPara(s).length;
-      return `<div class="session-card" style="margin-bottom:8px;padding:14px">
-        <div class="session-head">
-          <div>
-            <b>${esc(s.nombre)}</b><br>
-            <span class="meta">${esc(resumenFiltro(s))} · ${n} preguntas</span>
-          </div>
-          <button class="primary small" data-abrir="${s.id}">Practicar</button>
-        </div>
-      </div>`;
-    }).join('')||'<p class="meta" style="text-align:center;padding:12px">No hay sesiones aún. ¡Crea tu primera sesión!</p>'}
-  </div>
-
-  <p class="footer-note">${VERSION}</p>`;
-}
-
-/* ---------- SESIONES ---------- */
-function vistaSesiones(){
-  const items=SES.map(s=>{
-    const n=filtrarPara(s).length;
-    const tot=(s.aciertos||0)+(s.fallos||0);
-    const pct=tot?Math.round((s.aciertos||0)/tot*100):0;
-    return `
-    <div class="session-card">
-      <div class="session-head">
-        <div>
-          <div class="session-name">${esc(s.nombre)}</div>
-          <span class="meta">${esc(resumenFiltro(s))}</span>
-        </div>
-        <span class="badge ${pct>=70?'ok':pct>0?'primary':''}">${tot?pct+'% acierto':'Nueva'}</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;margin:12px 0 14px;color:var(--mut);font-size:13px">
-        <span><b>${n}</b> preguntas</span>
-        <span>•</span>
-        <span class="chip ok">✓ ${s.aciertos||0}</span>
-        <span class="chip ko">✗ ${s.fallos||0}</span>
-        <span>•</span>
-        <span>${s.hechas||0} practicadas</span>
-      </div>
-      <div class="row">
-        <button class="primary small" data-abrir="${s.id}">${ic('play')} Abrir sesión</button>
-        <button class="small" data-editar-ses="${s.id}">${ic('gear')} Configurar</button>
-        <button class="small danger" data-borrar-ses="${s.id}" style="margin-left:auto">${ic('trash')}</button>
-      </div>
-    </div>`;
-  }).join('');
-
-  return `
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-    <div>
-      <h3 style="margin:0;font-size:18px;font-weight:800">Sesiones de práctica</h3>
-      <p class="meta" style="margin:2px 0 0">Entrena por convocatorias o temas concretos</p>
-    </div>
-    <button class="primary small" id="bNueva">${ic('plus')} Nueva sesión</button>
-  </div>
-  ${items||'<div class="card" style="text-align:center;padding:28px"><p class="meta">Aún no tienes sesiones. Crea una para empezar a entrenar.</p><button class="primary small" id="bNueva2">+ Crear primera sesión</button></div>'}
-  <div class="row" style="margin-top:16px"><button class="small" id="bVolver">← Volver al inicio</button></div>`;
-}
-
-function vistaSesion(){
-  const s=sesionById(actual); if(!s){go('sesiones');return '';}
-  const n=filtrarPara(s).length;
-  const tot=(s.aciertos||0)+(s.fallos||0);
-  const pct=tot?Math.round((s.aciertos||0)/tot*100):0;
-
-  return `
-  <div class="card">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between">
-      <div>
-        <span class="badge primary" style="margin-bottom:6px">Sesión seleccionada</span>
-        <h2 style="margin:2px 0 6px;font-size:22px;font-weight:800">${esc(s.nombre)}</h2>
-        <p class="meta" style="margin:0">${esc(resumenFiltro(s))}</p>
-      </div>
-      ${tot?anillo(pct,54):''}
-    </div>
-
-    <div style="display:flex;align-items:center;gap:12px;margin:16px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:13.5px">
-      <span>Disponibles: <b>${n}</b> preguntas</span>
-      <span>•</span>
-      <span style="color:var(--ok);font-weight:700">✓ ${s.aciertos||0}</span>
-      <span style="color:var(--ko);font-weight:700">✗ ${s.fallos||0}</span>
-    </div>
-  </div>
-
-  <h4 style="margin:20px 0 10px;font-weight:800;font-size:14px;color:var(--mut);text-transform:uppercase;letter-spacing:0.5px">Modos de práctica</h4>
-  <div class="row stretch" style="margin-bottom:14px">
-    <button class="primary" id="bOrden" ${n?'':'disabled'} style="padding:16px">
-      ${ic('play')} Practicar en orden
-    </button>
-    <button class="secondary" id="bMezcla" ${n?'':'disabled'} style="padding:16px">
-      ${ic('shuffle')} Modo Aleatorio
-    </button>
-  </div>
-
-  <h4 style="margin:20px 0 10px;font-weight:800;font-size:14px;color:var(--mut);text-transform:uppercase;letter-spacing:0.5px">Gestión de la sesión</h4>
-  <div class="row">
-    <button id="bLista">${ic('list')} Ver y editar preguntas (${n})</button>
-    <button id="bNuevaP">${ic('plus')} Crear pregunta manual</button>
-    <button class="small" id="bVolverS" style="margin-left:auto">← Sesiones</button>
-  </div>`;
-}
-
-function vistaForm(){
-  const f=form;
-  const cv=convs().map(c=>`<option value="${esc(c)}" ${f.conv===c?'selected':''}>${esc(c)}</option>`).join('');
-  const tm=temasDe(f.conv).map(t=>`<option value="${t}" ${String(f.tema)===String(t)?'selected':''}>Tema ${t}</option>`).join('');
-  const numPreg=filtrarParaTemp(f).length;
-
-  return `
-  <div class="card">
-    <h3 style="margin:0 0 16px;font-size:19px;font-weight:800">${f.id?'Configurar sesión':'Nueva sesión de estudio'}</h3>
-    
-    <label>Nombre de la sesión</label>
-    <input type="text" id="fNom" value="${esc(f.nombre)}" placeholder="Ej: Constitución Española - Temas 1 al 5">
-    
-    <label>Convocatoria</label>
-    <select id="fConv"><option value="all">Todas las convocatorias</option>${cv}</select>
-    
-    <label>Tema específico</label>
-    <select id="fTema"><option value="all">Todos los temas disponibles</option>${tm}</select>
-    
-    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:16px;text-transform:none;font-size:14px;color:var(--txt)">
-      <input type="checkbox" id="fLimp" ${f.limpias?'checked':''} style="width:18px;height:18px;accent-color:var(--acc)">
-      Solo preguntas revisadas y verificadas
-    </label>
-
-    <div style="background:var(--acc-light);padding:12px 14px;border-radius:12px;margin-top:18px;display:flex;align-items:center;gap:10px">
-      <span style="font-size:20px">🎯</span>
-      <span style="font-weight:600;font-size:13.5px;color:var(--acc)"><b>${numPreg}</b> preguntas coinciden con este filtro</span>
-    </div>
-  </div>
-
-  <div class="row">
-    <button class="primary" id="bGuardarS">Guardar sesión</button>
-    <button id="bCancelS">Cancelar</button>
-  </div>`;
-}
-function filtrarParaTemp(f){return filtrarPara(f);}
-
-/* ---------- PRÁCTICA ---------- */
 function ic(n){
   const p={
     edit:'<path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M14 6l4 4"/>',
@@ -1132,11 +786,12 @@ function ic(n){
     play:'<polygon points="5 3 19 12 5 21 5 3"/>',
     shuffle:'<path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>',
     gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
-    repeat:'<path d="M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3"/>'
+    repeat:'<path d="M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3"/>',
+    folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+    book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'
   }[n]||'';
   return `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 }
-
 function anillo(pct,tam){
   const r=tam/2-6, c=2*Math.PI*r, off=c*(1-pct/100);
   return `<svg class="ring" width="${tam}" height="${tam}" viewBox="0 0 ${tam} ${tam}">
@@ -1145,147 +800,488 @@ function anillo(pct,tam){
   </svg>`;
 }
 
+function go(v){view=v; render(); window.scrollTo({top:0,behavior:'smooth'});}
+
+function render(){
+  const titulos={
+    home:'Inicio', carpetas:'Tus carpetas', carpeta:'Carpeta de estudio',
+    formCarpeta:'Carpeta de estudio', importarExamen:'Importar examen', revisarExamen:'Revisión del examen',
+    importarTemario:'Importar temario', revisarTemario:'Revisión del temario',
+    examenLista:'Preguntas del examen', temaLista:'Preguntas del tema',
+    elegirPractica:'Elegir qué practicar', practice:'Practicando', edit:'Editor de preguntas',
+    datos:'Copia de seguridad'
+  };
+  const sub=document.getElementById('headerSub');
+  if(sub) sub.textContent=titulos[view]||'OpoTest';
+  const app=document.getElementById('app');
+  const v={
+    home:vistaInicio, carpetas:vistaCarpetas, carpeta:vistaCarpeta, formCarpeta:vistaFormCarpeta,
+    importarExamen:vistaImportarExamen, revisarExamen:vistaRevisarExamen,
+    importarTemario:vistaImportarTemario, revisarTemario:vistaRevisarTemario,
+    examenLista:vistaExamenLista, temaLista:vistaTemaLista,
+    elegirPractica:vistaElegirPractica, practice:vistaPractica, edit:vistaEditar, datos:vistaDatos
+  }[view];
+  app.innerHTML=v();
+  bind();
+}
+
+/* ---------- INICIO ---------- */
+function vistaInicio(){
+  if(!CARPETAS.length){
+    return `
+    <div class="hero-card card">
+      <div class="hero-content">
+        <div class="hero-logo-box">
+          <img src="https://lh3.googleusercontent.com/aida/AEtjO1WGkt92UrS4G6PuklDc20dtqJwADUq1bVF4CK58lRZCenYPLGP7E0kXJhPa4madvcJNJ5mkO90pG-uMqYfZgzL_SJFW6kpc3Tr17eVkzjhNQy5RN9Grh2ZfwfFBvoyjAGEn0EnpRWN90mpccOXnWiZ7BBDX2TMmXKZdGZ7kRVc0HXYGul2WpScMiIKIm4Dw1YxTy4OiB0nmao-NBa3NVDvDBZS6ZBwaifIxYfWAJi97KJdhfsLCVBtmLVU" alt="Logo OpoTest" class="hero-logo-img">
+        </div>
+        <div>
+          <h2 class="hero-title">¡Te damos la bienvenida a OpoTest!</h2>
+          <p class="hero-desc">Organiza tu estudio en carpetas: cada carpeta agrupa los exámenes y el temario de una oposición.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="text-align:center;padding:32px 24px">
+      <div style="font-size:38px;margin-bottom:8px">📁</div>
+      <h3 style="margin:0 0 8px;font-size:18px;font-weight:800">Crea tu primera carpeta</h3>
+      <p class="meta" style="max-width:440px;margin:0 auto 20px">Por ejemplo, "Auxiliar Administrativo". Dentro podrás añadir todos los exámenes y el temario que quieras.</p>
+      <div class="row" style="justify-content:center;gap:12px">
+        <button class="primary" id="bNuevaCarpeta">${ic('plus')} Crear carpeta</button>
+        <button id="bDatos">${ic('gear')} Copia de seguridad</button>
+      </div>
+    </div>
+    <p class="footer-note">${VERSION}</p>`;
+  }
+  const totalPreg=Q.length;
+  const totalCarp=CARPETAS.length;
+  return `
+  <div class="hero-card card">
+    <div class="hero-content">
+      <div class="hero-logo-box">
+        <img src="https://lh3.googleusercontent.com/aida/AEtjO1WGkt92UrS4G6PuklDc20dtqJwADUq1bVF4CK58lRZCenYPLGP7E0kXJhPa4madvcJNJ5mkO90pG-uMqYfZgzL_SJFW6kpc3Tr17eVkzjhNQy5RN9Grh2ZfwfFBvoyjAGEn0EnpRWN90mpccOXnWiZ7BBDX2TMmXKZdGZ7kRVc0HXYGul2WpScMiIKIm4Dw1YxTy4OiB0nmao-NBa3NVDvDBZS6ZBwaifIxYfWAJi97KJdhfsLCVBtmLVU" alt="Logo OpoTest" class="hero-logo-img">
+      </div>
+      <div>
+        <h2 class="hero-title">¡A por tu plaza!</h2>
+        <p class="hero-desc">Tienes <b>${totalPreg} preguntas</b> en <b>${totalCarp} carpeta${totalCarp===1?'':'s'}</b> de estudio.</p>
+      </div>
+    </div>
+  </div>
+  <div class="row stretch" style="margin-bottom:18px">
+    <button class="primary" id="bComenzar" style="font-size:16px;padding:14px 22px">${ic('folder')} Ver mis carpetas</button>
+    <button class="secondary" id="bNuevaCarpetaDirecta">${ic('plus')} Nueva carpeta</button>
+    <button id="bDatos">${ic('gear')} Copia de seguridad</button>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <span style="font-weight:800;font-size:15px">Tus carpetas</span>
+      <button class="small" id="bVerTodasCarpetas">Ver todas →</button>
+    </div>
+    ${CARPETAS.slice(0,3).map(c=>{
+      const n=preguntasDeCarpeta(c.id).length;
+      return `<div class="session-card" style="margin-bottom:8px;padding:14px">
+        <div class="session-head">
+          <div><b>${esc(c.nombre)}</b><br>
+          <span class="meta">${c.examenes.length} exámenes · ${c.temas.length} temas · ${n} preguntas</span></div>
+          <button class="primary small" data-abrir="${c.id}">Abrir</button>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>
+  <p class="footer-note">${VERSION}</p>`;
+}
+
+/* ---------- CARPETAS ---------- */
+function vistaCarpetas(){
+  const items=CARPETAS.map(c=>{
+    const n=preguntasDeCarpeta(c.id).length;
+    return `
+    <div class="session-card">
+      <div class="session-head">
+        <div class="session-name">${esc(c.nombre)}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin:12px 0 14px;color:var(--mut);font-size:13px">
+        <span><b>${c.examenes.length}</b> exámenes</span><span>•</span>
+        <span><b>${c.temas.length}</b> temas</span><span>•</span>
+        <span><b>${n}</b> preguntas</span>
+      </div>
+      <div class="row">
+        <button class="primary small" data-abrir="${c.id}">${ic('folder')} Abrir</button>
+        <button class="small" data-renombrar="${c.id}">${ic('edit')} Renombrar</button>
+        <button class="small danger" data-borrar-carpeta="${c.id}" style="margin-left:auto">${ic('trash')}</button>
+      </div>
+    </div>`;
+  }).join('');
+  return `
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+    <h3 style="margin:0;font-size:18px;font-weight:800">Carpetas de estudio</h3>
+    <button class="primary small" id="bNueva">${ic('plus')} Nueva carpeta</button>
+  </div>
+  ${items||'<div class="card" style="text-align:center;padding:28px"><p class="meta">Aún no tienes carpetas.</p></div>'}
+  <div class="row" style="margin-top:16px"><button class="small" id="bVolver">← Volver al inicio</button></div>`;
+}
+
+function vistaFormCarpeta(){
+  return `
+  <div class="card">
+    <h3 style="margin:0 0 16px;font-size:19px;font-weight:800">${form.id?'Renombrar carpeta':'Nueva carpeta de estudio'}</h3>
+    <label>Nombre</label>
+    <input type="text" id="fNomCarpeta" value="${esc(form.nombre)}" placeholder="Ej: Auxiliar Administrativo">
+  </div>
+  <div class="row">
+    <button class="primary" id="bGuardarCarpeta">Guardar</button>
+    <button id="bCancelCarpeta">Cancelar</button>
+  </div>`;
+}
+
+/* ---------- CARPETA (panel) ---------- */
+function vistaCarpeta(){
+  const c=carpetaById(actual); if(!c){go('carpetas');return '';}
+  const n=preguntasDeCarpeta(c.id).filter(q=>!q.anulada).length;
+  const examenes=c.examenes.map(e=>{
+    const ne=preguntasDeExamen(c.id,e.id).length;
+    return `<div class="session-card" style="padding:12px 14px">
+      <div class="session-head">
+        <div><b>${esc(e.nombre)}</b><br><span class="meta">${ne} preguntas</span></div>
+        <div class="row">
+          <button class="small" data-ver-examen="${e.id}">${ic('list')} Ver</button>
+          <button class="small danger" data-borrar-examen="${e.id}">${ic('trash')}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')||'<p class="meta">Aún no hay exámenes en esta carpeta.</p>';
+  const temas=c.temas.map(t=>{
+    const nt=preguntasDeTema(c.id,t.id).length;
+    return `<div class="session-card" style="padding:12px 14px">
+      <div class="session-head">
+        <div><b>${esc(t.nombre)}</b><br><span class="meta">${esc((t.texto||'').slice(0,70))}${(t.texto||'').length>70?'…':''}</span></div>
+        <div class="row">
+          <button class="small" data-ver-tema="${t.id}">${ic('list')} Ver (${nt})</button>
+          <button class="small danger" data-borrar-tema="${t.id}">${ic('trash')}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')||'<p class="meta">Aún no hay temario en esta carpeta.</p>';
+
+  return `
+  <div class="card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between">
+      <div>
+        <span class="badge primary" style="margin-bottom:6px">Carpeta</span>
+        <h2 style="margin:2px 0 6px;font-size:22px;font-weight:800">${esc(c.nombre)}</h2>
+        <p class="meta" style="margin:0">${c.examenes.length} exámenes · ${c.temas.length} temas · ${n} preguntas disponibles</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row stretch" style="margin:16px 0">
+    <button class="primary" id="bPracticar" ${n?'':'disabled'} style="padding:16px">${ic('play')} Practicar</button>
+    <button id="bNuevaP" style="padding:16px">${ic('plus')} Pregunta manual</button>
+  </div>
+
+  <h4 style="margin:20px 0 10px;font-weight:800;font-size:14px;color:var(--mut);text-transform:uppercase;letter-spacing:0.5px">Exámenes</h4>
+  ${examenes}
+  <div class="row" style="margin-top:10px"><button class="small" id="bImportarExamen">${ic('plus')} Importar examen</button></div>
+
+  <h4 style="margin:24px 0 10px;font-weight:800;font-size:14px;color:var(--mut);text-transform:uppercase;letter-spacing:0.5px">Temario</h4>
+  ${temas}
+  <div class="row" style="margin-top:10px"><button class="small" id="bImportarTemario">${ic('book')} ${c.temas.length?'Reimportar temario':'Importar temario'}</button></div>
+
+  <div class="row" style="margin-top:24px">
+    <button class="small" id="bVolverCarpetas">← Carpetas</button>
+    <button class="small danger" id="bBorrarCarpetaActual" style="margin-left:auto">${ic('trash')} Eliminar carpeta</button>
+  </div>`;
+}
+
+/* ---------- IMPORTAR EXAMEN ---------- */
+function vistaImportarExamen(){
+  return `
+  <div class="card">
+    <h3 style="margin:0 0 4px;font-size:17px;font-weight:800">PDF del examen</h3>
+    <p class="meta" style="margin:0 0 12px">Sube el PDF del cuestionario y el PDF de la plantilla de respuestas.</p>
+    <label>Nombre del examen</label>
+    <input type="text" id="exNombre" placeholder="Ej: Primer ejercicio PEPI 2023">
+    <label>PDF de preguntas</label>
+    <input type="file" id="exPreg" accept=".pdf,application/pdf">
+    <label>PDF de plantilla de respuestas</label>
+    <input type="file" id="exPlan" accept=".pdf,application/pdf">
+    <p class="meta" id="pdfEstado" style="margin:12px 0 14px">Antes de guardar verás un resumen para confirmar.</p>
+    <button class="primary" id="bLeerExamen">${ic('play')} Leer examen</button>
+  </div>
+  <div class="card">
+    <h3 style="margin:0 0 4px;font-size:16px;font-weight:800">Archivo JSON de preguntas</h3>
+    <p class="meta" style="margin:0 0 12px">Para una batería ya preparada en el ordenador.</p>
+    <label>Nombre del examen</label>
+    <input type="text" id="jsonNombre" placeholder="Ej: Batería de preguntas">
+    <label>Archivo JSON</label>
+    <input type="file" id="jsonIn" accept=".json,application/json">
+    <button class="primary" id="bLeerJSON" style="margin-top:12px">${ic('play')} Leer JSON</button>
+  </div>
+  <div class="row"><button class="small" id="bVolverCarpeta">← Carpeta</button></div>`;
+}
+
+/* ---------- REVISIÓN DE EXAMEN ---------- */
+function vistaRevisarExamen(){
+  if(!importacionExamen){go('carpeta');return '';}
+  const P=importacionExamen.preguntas;
+  const conRes=P.filter(q=>q.correcta).length;
+  const revisar=P.filter(q=>q.revisar.length).length;
+  const muestra=P.slice(0,2).map(q=>`
+    <div class="card" style="margin:10px 0;padding:12px">
+      <span class="meta">Pregunta nº ${esc(q.numero)}</span>
+      <p style="margin:4px 0"><b>${esc(q.enunciado).slice(0,160)}</b></p>
+      <span class="badge ${q.correcta?'ok':'warn'}">${q.opciones.length} opciones · Correcta: ${esc(q.correcta?q.correcta.toUpperCase():'No marcada')}</span>
+    </div>`).join('');
+  const anuladas=P.filter(q=>q.anulada).map(q=>q.numero);
+  return `
+  <div class="card">
+    <div class="badge ok" style="margin-bottom:8px">Examen procesado</div>
+    <h3 style="margin:0 0 6px;font-size:20px;font-weight:800">${P.length} preguntas listas para guardar</h3>
+    <p class="meta">${esc(importacionExamen.resumen)}</p>
+    <div style="display:flex;gap:12px;margin:12px 0;font-size:13.5px">
+      <span class="chip ok">✓ ${conRes} con respuesta</span>
+      <span class="chip ko">✗ ${P.length-conRes} sin respuesta</span>
+      ${revisar?`<span class="chip theme">${revisar} avisos</span>`:''}
+    </div>
+    <label>Preguntas anuladas (números separados por comas)</label>
+    <div class="row">
+      <input type="text" id="revAnul" value="${esc(anuladas.join(', '))}" placeholder="Ej: 12, 45" style="flex:1">
+      <button class="small" id="bAplicarAnul">Aplicar</button>
+    </div>
+    <p class="meta" style="margin-top:4px">Se guardan, pero no se incluyen al practicar.</p>
+    ${importacionExamen.avisos.length?`<div style="background:var(--warnbg);border:1px solid var(--warnborder);padding:10px 14px;border-radius:10px;margin-top:12px;color:var(--warn);font-size:13px">${importacionExamen.avisos.map(esc).join('<br>')}</div>`:''}
+  </div>
+  <div class="card"><label style="margin-top:0">Vista previa</label>${muestra}</div>
+  <div class="row stretch">
+    <button class="primary" id="bGuardarExamen">Guardar en esta carpeta</button>
+    <button id="bCancelarExamen">Cancelar</button>
+  </div>`;
+}
+
+/* ---------- IMPORTAR TEMARIO ---------- */
+function vistaImportarTemario(){
+  const c=carpetaById(actual);
+  return `
+  <div class="card">
+    <h3 style="margin:0 0 4px;font-size:17px;font-weight:800">PDF del temario</h3>
+    <p class="meta" style="margin:0 0 12px">Se detectan automáticamente los temas, numerados Tema 1, Tema 2…</p>
+    ${c.temas.length?`<p class="meta" style="color:var(--warn)">Esta carpeta ya tiene ${c.temas.length} temas. Si continúas, podrás sustituirlos por los nuevos.</p>`:''}
+    <label>PDF del temario</label>
+    <input type="file" id="temIn" accept=".pdf,application/pdf">
+    <p class="meta" id="temEstado" style="margin:12px 0 14px">Antes de guardar verás la lista de temas detectados.</p>
+    <button class="primary" id="bLeerTemario">${ic('play')} Leer temario</button>
+  </div>
+  <div class="row"><button class="small" id="bVolverCarpeta">← Carpeta</button></div>`;
+}
+
+function vistaRevisarTemario(){
+  if(!importacionTemario){go('carpeta');return '';}
+  const T=importacionTemario.temas;
+  const items=T.map((t,i)=>`
+    <div class="card" style="margin:8px 0;padding:12px">
+      <b>Tema ${i+1}</b>
+      <p style="margin:4px 0 0">${esc(t.texto).slice(0,160)}${t.texto.length>160?'…':''}</p>
+    </div>`).join('');
+  const c=carpetaById(actual);
+  return `
+  <div class="card">
+    <div class="badge ok" style="margin-bottom:8px">Temario procesado</div>
+    <h3 style="margin:0 0 6px;font-size:20px;font-weight:800">${T.length} temas detectados</h3>
+    ${c.temas.length?`<p class="meta" style="color:var(--warn)">Se sustituirán los ${c.temas.length} temas actuales y las preguntas perderán esa asignación.</p>`:''}
+  </div>
+  <div>${items}</div>
+  <div class="row stretch">
+    <button class="primary" id="bGuardarTemario">Guardar ${T.length} temas</button>
+    <button id="bCancelarTemario">Cancelar</button>
+  </div>`;
+}
+
+/* ---------- LISTAS (examen / tema) ---------- */
+function vistaExamenLista(){
+  const c=carpetaById(actual); if(!c){go('carpetas');return '';}
+  const f=preguntasDeExamen(c.id,actualExamen);
+  const items=f.map(q=>{
+    const e=estado(q);
+    const chipsTemas=(q.temas||[]).map(tid=>`<span class="badge">${esc(temaNombre(c,tid))}</span>`).join('');
+    return `<button class="qitem" data-edit="${esc(q.id)}">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <span class="meta">nº ${esc(q.numero)}</span><span class="badge ${e.c}">${e.t}</span>
+      </div>
+      <div style="font-weight:600;color:var(--txt)">${esc(q.enunciado).slice(0,140)}…</div>
+      <div style="margin-top:6px">${chipsTemas}</div>
+    </button>`;
+  }).join('');
+  return `
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <button id="bVolverCarpeta2" class="small">← Carpeta</button>
+    <span class="meta">${f.length} preguntas</span>
+  </div>
+  ${items||'<div class="card"><p class="meta" style="text-align:center">No hay preguntas.</p></div>'}`;
+}
+function vistaTemaLista(){
+  const c=carpetaById(actual); if(!c){go('carpetas');return '';}
+  const f=preguntasDeTema(c.id,actualTema);
+  const items=f.map(q=>{
+    const e=estado(q);
+    return `<button class="qitem" data-edit="${esc(q.id)}">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <span class="meta">${esc(examenNombre(c,q.examenId))} · nº ${esc(q.numero)}</span><span class="badge ${e.c}">${e.t}</span>
+      </div>
+      <div style="font-weight:600;color:var(--txt)">${esc(q.enunciado).slice(0,140)}…</div>
+    </button>`;
+  }).join('');
+  return `
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+    <button id="bVolverCarpeta2" class="small">← Carpeta</button>
+    <span class="meta">${f.length} preguntas</span>
+  </div>
+  ${items||'<div class="card"><p class="meta" style="text-align:center">Aún no has asignado preguntas a este tema.</p></div>'}`;
+}
+
+/* ---------- ELEGIR QUÉ PRACTICAR ---------- */
+function vistaElegirPractica(){
+  const c=carpetaById(actual); if(!c){go('carpetas');return '';}
+  const exCk=c.examenes.map(e=>{
+    const n=preguntasDeExamen(c.id,e.id).filter(q=>!q.anulada).length;
+    return `<label class="row" style="color:var(--txt);text-transform:none;cursor:pointer">
+      <input type="checkbox" class="pselEx" value="${e.id}" ${practSel.examenes.includes(e.id)?'checked':''} style="width:18px;height:18px;accent-color:var(--acc)">
+      ${esc(e.nombre)} <span class="meta">(${n})</span>
+    </label>`;
+  }).join('')||'<p class="meta">No hay exámenes.</p>';
+  const teCk=c.temas.map(t=>{
+    const n=preguntasDeTema(c.id,t.id).filter(q=>!q.anulada).length;
+    return `<label class="row" style="color:var(--txt);text-transform:none;cursor:pointer">
+      <input type="checkbox" class="pselTe" value="${t.id}" ${practSel.temas.includes(t.id)?'checked':''} style="width:18px;height:18px;accent-color:var(--acc)">
+      ${esc(t.nombre)} <span class="meta">(${n})</span>
+    </label>`;
+  }).join('')||'<p class="meta">No hay temas.</p>';
+  const n=calcularSeleccionPractica(c).length;
+  return `
+  <div class="card">
+    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:0;text-transform:none;color:var(--txt)">
+      <input type="checkbox" id="pselTodas" ${practSel.todas?'checked':''} style="width:18px;height:18px;accent-color:var(--acc)">
+      Todas las preguntas de la carpeta
+    </label>
+  </div>
+  <div class="card" id="bloqueFuentes" style="${practSel.todas?'opacity:.4;pointer-events:none':''}">
+    <h4 style="margin:0 0 8px;font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase">Exámenes</h4>
+    ${exCk}
+    <h4 style="margin:16px 0 8px;font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase">Temas</h4>
+    ${teCk}
+  </div>
+  <div class="card">
+    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;margin-top:0;text-transform:none;color:var(--txt)">
+      <input type="checkbox" id="pselMezclar" ${practSel.mezclar?'checked':''} style="width:18px;height:18px;accent-color:var(--acc)">
+      Mezclar el orden de las preguntas
+    </label>
+    <div style="background:var(--acc-light);padding:12px 14px;border-radius:12px;margin-top:14px;display:flex;align-items:center;gap:10px">
+      <span style="font-size:20px">🎯</span>
+      <span style="font-weight:600;font-size:13.5px;color:var(--acc)"><b>${n}</b> preguntas seleccionadas</span>
+    </div>
+  </div>
+  <div class="row stretch">
+    <button class="primary" id="bEmpezarPractica" ${n?'':'disabled'} style="padding:14px">${ic('play')} Empezar</button>
+    <button id="bCancelarPractica">Cancelar</button>
+  </div>`;
+}
+function calcularSeleccionPractica(c){
+  const todas=preguntasDeCarpeta(c.id).filter(q=>!q.anulada);
+  if(practSel.todas) return todas;
+  return todas.filter(q=>practSel.examenes.includes(q.examenId)||(q.temas||[]).some(t=>practSel.temas.includes(t)));
+}
+
+/* ---------- PRÁCTICA ---------- */
 function vistaPractica(){
-  if(!sess) {go('sesiones'); return '';}
+  if(!sess) {go('carpeta'); return '';}
   if(sess.i>=sess.ids.length) return vistaFin();
   const q=byId(sess.ids[sess.i]);
   if(!q){sess.i++; return vistaPractica();}
+  const c=carpetaById(actual);
   const e=estado(q);
   const n=sess.ids.length;
   const pctHechas=Math.round((sess.i/n)*100);
   const enter=sess.enter?' enter':''; sess.enter=false;
-
   const opts=q.opciones.map(o=>{
     let cls='opt';
     if(sess.resp!==null){
       if(q.correcta===o.letra) cls+=' ok';
       else if(sess.resp===o.letra) cls+=' ko';
     }
-    return `
-    <button class="${cls}" data-letra="${esc(o.letra)}" ${sess.resp!==null?'disabled':''}>
+    return `<button class="${cls}" data-letra="${esc(o.letra)}" ${sess.resp!==null?'disabled':''}>
       <span class="opt-badge">${esc(o.letra.toUpperCase())}</span>
       <span class="opt-text">${esc(o.texto)}</span>
     </button>`;
   }).join('');
-
   let aviso='';
   if(sess.resp!==null && q.correcta){
     const ok=sess.resp===q.correcta;
-    aviso=`
-    <div class="feedback ${ok?'good':'bad'}">
-      <span style="font-size:20px">${ok?'🎉':'💡'}</span>
-      <div style="font-weight:800">${ok?'¡Respuesta correcta!':'Respuesta incorrecta'}</div>
-    </div>`;
+    aviso=`<div class="feedback ${ok?'good':'bad'}"><span style="font-size:20px">${ok?'🎉':'💡'}</span><div style="font-weight:800">${ok?'¡Respuesta correcta!':'Respuesta incorrecta'}</div></div>`;
   }
-
   let pie='';
   if(sess.resp!==null){
     if(!q.correcta){
-      pie=`
-      <div class="card" style="background:var(--warnbg);border-color:var(--warnborder);margin-top:12px">
-        <p style="margin:0 0 8px;font-weight:700">Esta pregunta aún no tiene respuesta marcada. ¿Marcar la <b>${esc(sess.resp.toUpperCase())}</b> como correcta?</p>
-        <div class="row">
-          <button class="primary small" id="bSetOk">Sí, marcar como correcta</button>
-          <button class="small" id="bNoSet">No cambiar</button>
-        </div>
+      pie=`<div class="card" style="background:var(--warnbg);border-color:var(--warnborder);margin-top:12px">
+        <p style="margin:0 0 8px;font-weight:700">Sin respuesta marcada. ¿Marcar la <b>${esc(sess.resp.toUpperCase())}</b> como correcta?</p>
+        <div class="row"><button class="primary small" id="bSetOk">Sí, marcar</button><button class="small" id="bNoSet">No</button></div>
       </div>`;
     }
-    pie+=`
-    <div class="row" style="margin-top:16px">
-      <button class="primary" id="bSig" style="flex:1;padding:14px;font-size:15px">
-        ${sess.i+1<n?'Siguiente pregunta →':'Ver resumen final 🏆'}
-      </button>
-    </div>`;
+    pie+=`<div class="row" style="margin-top:16px"><button class="primary" id="bSig" style="flex:1;padding:14px;font-size:15px">${sess.i+1<n?'Siguiente pregunta →':'Ver resumen final 🏆'}</button></div>`;
   }
-
+  const temasChips=(q.temas||[]).map(tid=>`<span class="badge primary">${esc(temaNombre(c,tid))}</span>`).join('')||'<span class="badge">Sin tema</span>';
   return `
   <div class="pr-top">
     ${anillo(pctHechas,56)}
     <div class="pr-txt">
       <div class="pr-count">Pregunta ${sess.i+1} <span>de ${n}</span></div>
-      <div class="pr-score-chips">
-        <span class="chip ok">✓ ${sess.ac} aciertos</span>
-        <span class="chip ko">✗ ${sess.fa} fallos</span>
-      </div>
+      <div class="pr-score-chips"><span class="chip ok">✓ ${sess.ac} aciertos</span><span class="chip ko">✗ ${sess.fa} fallos</span></div>
     </div>
-    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-      <span class="badge primary">Tema ${esc(q.tema)}</span>
-      <span class="badge ${e.c}">${e.t}</span>
-    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">${temasChips}</div>
   </div>
-
   <div class="card qcard${enter}" style="margin-top:14px">
     <div class="qcard-header">
-      <span class="meta">${esc(q.convocatoria||'Examen Oficial')} · Pregunta nº ${esc(q.numero)}</span>
+      <span class="meta">${esc(examenNombre(c,q.examenId))} · nº ${esc(q.numero)}</span>
       <button class="small" id="bEditP" style="padding:4px 8px;font-size:12px">${ic('edit')} Editar</button>
     </div>
     <p class="enun">${esc(q.enunciado)}</p>
-    ${opts}
-    ${aviso}
-    ${pie}
+    ${opts}${aviso}${pie}
   </div>
-
   <div class="row" style="justify-content:space-between">
-    <button class="small" id="bSalir">${ic('back')} Pausar y salir</button>
-    <span class="meta">${Math.round((sess.i/n)*100)}% completado</span>
+    <button class="small" id="bSalirPractica">${ic('back')} Pausar y salir</button>
+    <span class="meta">${pctHechas}% completado</span>
   </div>`;
 }
-
 function vistaFin(){
   const tot=sess.ac+sess.fa, pct=tot?Math.round(sess.ac/tot*100):0;
+  const c=carpetaById(actual);
   const porTema={};
   sess.res.forEach(r=>{
-    const q=byId(r.id); if(!q) return;
-    const t=q.tema; porTema[t]=porTema[t]||{ok:0,tot:0}; porTema[t].tot++; if(r.ok) porTema[t].ok++;
+    const q=byId(r.id); if(!q||!q.temas||!q.temas.length) return;
+    q.temas.forEach(tid=>{ porTema[tid]=porTema[tid]||{ok:0,tot:0}; porTema[tid].tot++; if(r.ok) porTema[tid].ok++; });
   });
-  const filas=Object.keys(porTema).sort((a,b)=>a-b).map(t=>{
-    const x=porTema[t], p=Math.round(x.ok/x.tot*100);
-    return `
-    <div class="tema-row">
-      <span>Tema ${t}</span>
-      <div class="bar"><div style="width:${p}%"></div></div>
-      <span class="meta">${x.ok}/${x.tot} (${p}%)</span>
-    </div>`;
+  const filas=Object.keys(porTema).map(tid=>{
+    const x=porTema[tid], p=Math.round(x.ok/x.tot*100);
+    return `<div class="tema-row"><span>${esc(temaNombre(c,tid))}</span><div class="bar"><div style="width:${p}%"></div></div><span class="meta">${x.ok}/${x.tot} (${p}%)</span></div>`;
   }).join('');
-
   const badgeIcon=pct>=80?'🥇':pct>=50?'🥈':'📖';
-  const msg=pct>=80?'¡Excelente resultado!':pct>=50?'¡Buen progreso, sigue así!':'Sesión para reforzar conceptos';
-  const submsg=pct>=80?'Dominas muy bien este temario.':pct>=50?'Estás en el camino correcto hacia la plaza.':'Revisa las preguntas falladas para asentar el conocimiento.';
-
+  const msg=pct>=80?'¡Excelente resultado!':pct>=50?'¡Buen progreso, sigue así!':'Práctica para reforzar conceptos';
   return `
   <div class="card res">
     <div style="font-size:42px;margin-bottom:6px">${badgeIcon}</div>
-    <div class="res-wrap">
-      ${anillo(pct,148).replace('class="ring"','class="ring big"')}
-      <div class="res-pct">${pct}%<span>Aciertos</span></div>
-    </div>
+    <div class="res-wrap">${anillo(pct,148).replace('class="ring"','class="ring big"')}<div class="res-pct">${pct}%<span>Aciertos</span></div></div>
     <h3 class="res-msg">${msg}</h3>
-    <p class="meta" style="margin:4px 0 16px">${submsg}</p>
-    
-    <div style="display:inline-flex;gap:12px;background:var(--line-soft);padding:10px 16px;border-radius:999px;font-size:13.5px;font-weight:700">
-      <span style="color:var(--ok)">✓ ${sess.ac} aciertos</span>
-      <span>•</span>
-      <span style="color:var(--ko)">✗ ${sess.fa} fallos</span>
-      <span>•</span>
-      <span>${tot} respondidas</span>
+    <div style="display:inline-flex;gap:12px;background:var(--line-soft);padding:10px 16px;border-radius:999px;font-size:13.5px;font-weight:700;margin-top:10px">
+      <span style="color:var(--ok)">✓ ${sess.ac} aciertos</span><span>•</span><span style="color:var(--ko)">✗ ${sess.fa} fallos</span><span>•</span><span>${tot} respondidas</span>
     </div>
   </div>
-
-  ${filas?`
-  <div class="card">
-    <label style="margin-top:0">Rendimiento por temas</label>
-    ${filas}
-  </div>`:''}
-
+  ${filas?`<div class="card"><label style="margin-top:0">Rendimiento por tema</label>${filas}</div>`:''}
   <div class="row stretch">
-    ${sess.fa?`<button class="primary" id="bRepasar" style="padding:14px">${ic('repeat')} Repasar las ${sess.fa} preguntas falladas</button>`:''}
-    <button id="bSalir" class="${sess.fa?'':'primary'}" style="padding:14px">${ic('back')} Volver al panel de la sesión</button>
+    ${sess.fa?`<button class="primary" id="bRepasar" style="padding:14px">${ic('repeat')} Repasar las ${sess.fa} falladas</button>`:''}
+    <button id="bSalirPractica" class="${sess.fa?'':'primary'}" style="padding:14px">${ic('back')} Volver a la carpeta</button>
   </div>`;
 }
 
 /* ---------- EDICIÓN ---------- */
 function vistaEditar(){
   const d=editing.data;
+  const c=carpetaById(d.carpetaId);
   const opts=d.opciones.map((o,i)=>`
     <div class="card" style="padding:14px;margin-bottom:10px">
       <div class="row" style="justify-content:space-between;margin-bottom:6px">
@@ -1297,39 +1293,38 @@ function vistaEditar(){
       </div>
       <textarea data-opt="${i}">${esc(o.texto)}</textarea>
     </div>`).join('');
-
+  const temasCk=c?c.temas.map(t=>`
+    <label class="row" style="color:var(--txt);text-transform:none;cursor:pointer;margin:4px 0">
+      <input type="checkbox" class="eTema" value="${t.id}" ${(d.temas||[]).includes(t.id)?'checked':''} style="width:18px;height:18px;accent-color:var(--acc)">
+      ${esc(t.nombre)}
+    </label>`).join('') : '';
   return `
   <div class="card">
     <div class="row" style="margin-bottom:10px">
-      <span class="badge primary">${esc(d.convocatoria||'Manual')}</span>
-      <span class="badge">Tema ${esc(d.tema)}</span>
+      <span class="badge primary">${esc(c?examenNombre(c,d.examenId):'Manual')}</span>
       <span class="badge">Nº ${esc(d.numero)}</span>
     </div>
     <label>Enunciado de la pregunta</label>
     <textarea id="eEnun" style="min-height:100px">${esc(d.enunciado)}</textarea>
-    
     <label style="display:flex;align-items:center;gap:8px;margin-top:14px;cursor:pointer;text-transform:none;color:var(--txt)">
       <input type="checkbox" id="eAnul" ${d.anulada?'checked':''} style="width:18px;height:18px;accent-color:var(--ko)">
-      Pregunta anulada (se excluye de las sesiones de práctica)
+      Pregunta anulada (se excluye al practicar)
     </label>
   </div>
-
   <h4 style="margin:16px 0 8px;font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase">Opciones de respuesta</h4>
   ${opts}
-
   <div class="card row" style="padding:12px">
     <button id="bAddOpt" class="small">+ Añadir opción</button>
     <button id="bDelOpt" class="small" ${d.opciones.length<=2?'disabled':''}>− Quitar última</button>
     <button id="bNoCorr" class="small">Sin marcar correcta</button>
   </div>
-
+  ${c&&c.temas.length?`<h4 style="margin:16px 0 8px;font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase">Temas asignados</h4><div class="card">${temasCk}</div>`:''}
   <div class="card row">
     <button class="primary" id="bGuardarE">Guardar cambios</button>
     <button id="bCancelE">Cancelar</button>
     <button class="danger small" id="bDelQ" style="margin-left:auto">${ic('trash')} Eliminar</button>
   </div>`;
 }
-
 function abrirEditor(id,back){
   const q=byId(id);
   editing={id,back,data:JSON.parse(JSON.stringify(q))};
@@ -1342,141 +1337,35 @@ function leerEdicion(){
   document.querySelectorAll('[data-opt]').forEach(t=>{d.opciones[+t.dataset.opt].texto=t.value;});
   const r=document.querySelector('input[name=corr]:checked');
   d.correcta=r?r.value:null;
+  d.temas=[...document.querySelectorAll('.eTema:checked')].map(ch=>ch.value);
   return d;
 }
-function nuevaPregunta(){
-  const n=Math.max(0,...Q.filter(q=>q.convocatoria==='Manual').map(q=>q.numero))+1;
-  const p={id:nuevoId('m'),convocatoria:'Manual',plaza:'',tema:1,numero:n,enunciado:'',
-    opciones:['a','b','c','d'].map(l=>({letra:l,texto:''})),correcta:null,pagina:null,revisar:[],editada:true};
+function nuevaPreguntaManual(){
+  const c=carpetaById(actual);
+  const n=Math.max(0,...preguntasDeCarpeta(c.id).filter(q=>!q.examenId).map(q=>q.numero))+1;
+  const p={id:nuevoId('m'),carpetaId:c.id,examenId:null,numero:n,enunciado:'',
+    opciones:['a','b','c','d'].map(l=>({letra:l,texto:''})),correcta:null,anulada:false,revisar:[],editada:true,temas:[]};
   Q.push(p); saveQ(); return p.id;
 }
 
-/* ---------- LISTA ---------- */
-function vistaLista(){
-  const s=sesionById(actual);
-  const f=s?filtrarTodas(s):Q;
-  const items=f.slice(0,300).map(q=>{
-    const e=estado(q);
-    return `
-    <button class="qitem" data-edit="${esc(q.id)}">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <span class="meta">${esc(q.convocatoria)} · T${esc(q.tema)} · nº ${esc(q.numero)}</span>
-        <span class="badge ${e.c}">${e.t}</span>
-      </div>
-      <div style="font-weight:600;color:var(--txt)">${esc(q.enunciado).slice(0,140)}...</div>
-    </button>`;
-  }).join('');
-
-  return `
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-    <button id="bVolverL" class="small">← Volver a la sesión</button>
-    <span class="meta">${f.length} preguntas disponibles</span>
-  </div>
-  ${items||'<div class="card"><p class="meta" style="text-align:center">No hay preguntas que coincidan con este filtro.</p></div>'}`;
-}
-
-/* ---------- DATOS ---------- */
+/* ---------- DATOS (copia de seguridad) ---------- */
 function vistaDatos(){
   return `
   <div class="card">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-      <div style="width:40px;height:40px;border-radius:10px;background:var(--acc-light);color:var(--acc);display:flex;align-items:center;justify-content:center;font-size:20px">
-        📄
-      </div>
-      <div>
-        <h3 style="margin:0;font-size:17px;font-weight:800">Importar examen oficial (PDF)</h3>
-        <p class="meta" style="margin:0">Sube el PDF del cuestionario y la plantilla oficial de respuestas</p>
-      </div>
-    </div>
-
-    <label>Nombre identificador del examen</label>
-    <input type="text" id="exNombre" placeholder="Ej: Auxiliar Administrativo PEPI 2024">
-    
-    <label>PDF del cuestionario de preguntas</label>
-    <input type="file" id="exPreg" accept=".pdf,application/pdf">
-    
-    <label>PDF de la plantilla de respuestas oficiales</label>
-    <input type="file" id="exPlan" accept=".pdf,application/pdf">
-    
-    <p class="meta" id="pdfEstado" style="margin:12px 0 14px;color:var(--mut)">Antes de guardar se mostrará un resumen detallado para tu confirmación.</p>
-    <button class="primary" id="bExamen">${ic('play')} Analizar y leer examen</button>
-  </div>
-
-  <div class="card">
-    <h3 style="margin:0 0 4px;font-size:16px;font-weight:800">Copia de seguridad en JSON</h3>
-    <p class="meta" style="margin:0 0 12px">Exporta todas tus preguntas y sesiones o importa un respaldo previo.</p>
-    
+    <h3 style="margin:0 0 4px;font-size:16px;font-weight:800">Copia de seguridad completa</h3>
+    <p class="meta" style="margin:0 0 12px">Incluye todas tus carpetas, exámenes, temas y preguntas.</p>
     <div class="row">
-      <button class="secondary" id="bExp">Exportar copia JSON</button>
-      <label class="btn small" style="margin:0;cursor:pointer">
-        Importar archivo JSON
-        <input type="file" id="fileIn" accept=".json,application/json" style="display:none">
-      </label>
+      <button class="secondary" id="bExp">Exportar copia</button>
+      <label class="btn small" style="margin:0;cursor:pointer">Importar copia<input type="file" id="fileIn" accept=".json,application/json" style="display:none"></label>
     </div>
   </div>
-
   <div class="card row" style="justify-content:space-between">
     <button class="small" id="bVolverD">← Volver al inicio</button>
     <button class="danger small" id="bReset">Restablecer todos los datos</button>
   </div>`;
 }
 
-function vistaRevision(){
-  if(!importacion){go('datos');return '';}
-  const P=importacion.preguntas;
-  const conRes=P.filter(q=>q.correcta).length;
-  const revisar=P.filter(q=>q.revisar.length).length;
-  const porConv={};
-  P.forEach(q=>{porConv[q.convocatoria]=(porConv[q.convocatoria]||0)+1;});
-  const lista=Object.entries(porConv).map(([c,n])=>`<li>${esc(c)}: <b>${n}</b> preguntas</li>`).join('');
-  const muestra=P.slice(0,2).map(q=>`
-    <div class="card" style="margin:10px 0;padding:12px">
-      <span class="meta">Tema ${esc(q.tema)} · Pregunta nº ${esc(q.numero)}</span>
-      <p style="margin:4px 0"><b>${esc(q.enunciado).slice(0,160)}</b></p>
-      <span class="badge ${q.correcta?'ok':'warn'}">${q.opciones.length} opciones · Correcta: ${esc(q.correcta?q.correcta.toUpperCase():'No marcada')}</span>
-    </div>`).join('');
-  const anuladas=P.filter(q=>q.anulada).map(q=>q.numero);
-  const hayActuales=Q.length>0;
-
-  return `
-  <div class="card">
-    <div class="badge ok" style="margin-bottom:8px">Examen procesado</div>
-    <h3 style="margin:0 0 6px;font-size:20px;font-weight:800">${P.length} preguntas listas para guardar</h3>
-    <p class="meta">${esc(importacion.resumen)}</p>
-    <div style="display:flex;gap:12px;margin:12px 0;font-size:13.5px">
-      <span class="chip ok">✓ ${conRes} con respuesta</span>
-      <span class="chip ko">✗ ${P.length-conRes} sin respuesta</span>
-      ${revisar?`<span class="chip theme">${revisar} avisos</span>`:''}
-    </div>
-    <ul class="meta" style="padding-left:18px">${lista}</ul>
-
-    <label>Preguntas anuladas oficiales (números separados por comas)</label>
-    <div class="row">
-      <input type="text" id="revAnul" value="${esc(anuladas.join(', '))}" placeholder="Ej: 12, 45, 88" style="flex:1">
-      <button class="small" id="bAplicarAnul">Actualizar</button>
-    </div>
-    <p class="meta" style="margin-top:4px">Las preguntas anuladas se guardan para registro pero no se practicarán.</p>
-    ${importacion.avisos.length?`<div style="background:var(--warnbg);border:1px solid var(--warnborder);padding:10px 14px;border-radius:10px;margin-top:12px;color:var(--warn);font-size:13px">${importacion.avisos.map(esc).join('<br>')}</div>`:''}
-  </div>
-
-  <div class="card">
-    <label style="margin-top:0">Vista previa del examen</label>
-    ${muestra}
-  </div>
-
-  <div class="row stretch">
-    ${hayActuales?`
-      <button class="primary" id="bRevAdd">Añadir a las ${Q.length} actuales</button>
-      <button class="danger" id="bRevRep">Reemplazar existentes</button>
-    `:`
-      <button class="primary" id="bRevAdd">Guardar las ${P.length} preguntas</button>
-    `}
-    <button id="bRevCancel">Cancelar</button>
-  </div>`;
-}
-
-/* ---------- IMPORTACIÓN DE EXAMEN ---------- */
-let importacion=null;
+/* ---------- LECTURA DE PDF (exámenes) ---------- */
 async function leerLineasPDF(file){
   const buf=await file.arrayBuffer();
   pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -1533,9 +1422,9 @@ function leerCuestionario(lineas){
   cerrar();
   return preguntas;
 }
-function construirImportacion(lineasPreg, lineasPlan, nombre){
+function construirImportacionPDF(lineasPreg, lineasPlan, nombre){
   const cuest=leerCuestionario(lineasPreg);
-  if(!cuest.length) throw new Error('No se encontraron preguntas en el PDF de preguntas.');
+  if(!cuest.length) throw new Error('No se encontraron preguntas en el PDF.');
   const {pares,conflictos}=leerPlantilla(lineasPlan);
   const avisos=[];
   if(conflictos.length) avisos.push('Números con dos respuestas distintas en la plantilla: '+conflictos.join(', ')+'.');
@@ -1550,81 +1439,214 @@ function construirImportacion(lineasPreg, lineasPlan, nombre){
     if(opciones.length!==4) revisar.push('opciones');
     if(!correcta) revisar.push('sin_correcta');
     if(conflictos.includes(q.numero)) revisar.push('conflicto');
-    return {id:nuevoId('e'),convocatoria:nombre,plaza:'',tema:q.numero<=70?1:2,numero:q.numero,
-      enunciado:q.enunciado.trim(),opciones,correcta,pagina:null,revisar,editada:false};
+    return {numero:q.numero,enunciado:q.enunciado.trim(),opciones,correcta,revisar,anulada:false};
   });
-  return {preguntas,avisos,resumen:`Examen: ${nombre}. ${reservas} preguntas de reserva detectadas.`};
+  return {preguntas,avisos,resumen:`${reservas} preguntas de reserva detectadas (no incluidas).`};
 }
-async function procesarExamen(){
+function construirImportacionJSON(data){
+  if(!Array.isArray(data)) throw new Error('El archivo no es una lista de preguntas.');
+  const avisos=[];
+  const preguntas=data.map((rec,i)=>{
+    const opciones=(rec.opciones||[]).map(o=>({letra:o.letra,texto:(o.texto||'').trim()}));
+    const revisar=[];
+    if(opciones.length!==4) revisar.push('opciones');
+    if(!rec.correcta) revisar.push('sin_correcta');
+    return {numero:rec.numero||(i+1),enunciado:(rec.enunciado||'').trim(),opciones,correcta:rec.correcta||null,revisar,anulada:!!rec.anulada};
+  });
+  return {preguntas,avisos,resumen:`${preguntas.length} preguntas leídas del archivo JSON.`};
+}
+async function procesarExamenPDF(){
   const $=id=>document.getElementById(id);
   const fp=$('exPreg').files[0], fl=$('exPlan').files[0];
-  if(!fp||!fl){ alert('Selecciona tanto el PDF de preguntas como el de la plantilla.'); return; }
+  if(!fp||!fl){ alert('Selecciona el PDF de preguntas y el de plantilla.'); return; }
   const nombre=$('exNombre').value.trim()||fp.name.replace(/\.pdf$/i,'');
   const est=$('pdfEstado');
   try{
-    est.textContent='Leyendo preguntas del PDF…';
+    est.textContent='Leyendo preguntas…';
     const lp=await leerLineasPDF(fp);
-    est.textContent='Analizando plantilla de respuestas oficiales…';
+    est.textContent='Leyendo plantilla de respuestas…';
     const ll=await leerLineasPDF(fl);
-    importacion=construirImportacion(lp,ll,nombre);
-    go('revisar');
-  }catch(err){ est.textContent='Error al procesar: '+err.message; }
+    importacionExamen={...construirImportacionPDF(lp,ll,nombre),nombre};
+    go('revisarExamen');
+  }catch(err){ est.textContent='Error: '+err.message; }
 }
-function guardarImportacion(modo){
-  const nuevas=importacion.preguntas;
-  Q = modo==='rep' ? nuevas : Q.concat(nuevas);
-  saveQ(); importacion=null; go('home');
+function procesarExamenJSON(){
+  const $=id=>document.getElementById(id);
+  const f=$('jsonIn').files[0];
+  if(!f){ alert('Selecciona un archivo JSON.'); return; }
+  const nombre=$('jsonNombre').value.trim()||f.name.replace(/\.json$/i,'');
+  f.text().then(t=>{
+    const data=JSON.parse(t);
+    importacionExamen={...construirImportacionJSON(data),nombre};
+    go('revisarExamen');
+  }).catch(err=>alert('No se pudo leer el archivo JSON: '+err.message));
+}
+function guardarImportacionExamen(){
+  const c=carpetaById(actual);
+  const examenId=nuevoId('ex');
+  c.examenes.push({id:examenId,nombre:importacionExamen.nombre});
+  importacionExamen.preguntas.forEach(p=>{
+    Q.push({id:nuevoId('e'),carpetaId:c.id,examenId,numero:p.numero,enunciado:p.enunciado,
+      opciones:p.opciones,correcta:p.correcta,anulada:!!p.anulada,revisar:p.revisar,editada:false,temas:[]});
+  });
+  saveC(); saveQ(); importacionExamen=null; go('carpeta');
+}
+
+/* ---------- LECTURA DE TEMARIO ---------- */
+function leerTemario(lineas){
+  const NOISE=[/^Plaza de España/i,/^Código Seguro/i,/^Firmado/i,/^Observaciones$/i,/^Url De/i,/^Estado$/i,
+    /^Página$/i,/^\d+\/\d+$/,/^\d+ de \d+$/,/^ANEXO/i,/@/,/^FUNCIÓN PÚBLICA/i,/^Y RECURSOS HUMANOS/i,
+    /^Diputación$/i,/^de Cádiz$/i,/^T \d/,/^https?:\/\//i,/^\d{2}\/\d{2}\/\d{4}/];
+  const SECCION=/^[A-Za-z]\)\s*MATERIAS/i;
+  const temas=[]; let cur=null;
+  const cerrar=()=>{ if(cur && cur.texto.trim()){ temas.push(cur); } cur=null; };
+  for(const t of lineas){
+    if(!t) continue;
+    if(SECCION.test(t)){ cerrar(); continue; }
+    if(NOISE.some(r=>r.test(t))) continue;
+    const m=t.match(/^(\d{1,2})\.\s*(.*)$/);
+    if(m){ cerrar(); cur={numero:+m[1],texto:m[2]}; continue; }
+    if(cur) cur.texto+=' '+t;
+  }
+  cerrar();
+  return temas.map(t=>({texto:t.texto.replace(/\s+/g,' ').trim()}));
+}
+async function procesarTemario(){
+  const $=id=>document.getElementById(id);
+  const f=$('temIn').files[0];
+  if(!f){ alert('Selecciona el PDF del temario.'); return; }
+  const est=$('temEstado');
+  try{
+    est.textContent='Leyendo temario…';
+    const lineas=await leerLineasPDF(f);
+    const temas=leerTemario(lineas);
+    if(!temas.length) throw new Error('No se detectaron temas en este PDF.');
+    importacionTemario={temas};
+    go('revisarTemario');
+  }catch(err){ est.textContent='Error: '+err.message; }
+}
+function guardarImportacionTemario(){
+  const c=carpetaById(actual);
+  const idsViejos=c.temas.map(t=>t.id);
+  c.temas=importacionTemario.temas.map((t,i)=>({id:nuevoId('t'),numero:i+1,nombre:'Tema '+(i+1),texto:t.texto}));
+  if(idsViejos.length){
+    Q.filter(q=>q.carpetaId===c.id).forEach(q=>{ q.temas=(q.temas||[]).filter(tid=>!idsViejos.includes(tid)); });
+  }
+  saveC(); saveQ(); importacionTemario=null; go('carpeta');
 }
 
 /* ---------- EVENTOS ---------- */
 function bind(){
   const $=id=>document.getElementById(id);
   const on=(id,fn)=>{const el=$(id); if(el) el.onclick=fn;};
-  
+
   on('brandBtn',()=>go('home'));
-  on('btnInicio',()=>go('home'));
-  
-  // Home
-  on('bCargarDemo',cargarMuestraDemo);
-  on('bComenzar',()=>go('sesiones'));
-  on('bNuevaSesionDirecta',()=>{form={id:null,nombre:'',conv:'all',tema:'all',limpias:false}; go('form');});
-  on('bVerTodasSesiones',()=>go('sesiones'));
+  on('btnInicio',()=>{sess=null; go('home');});
+
+  // Inicio
+  on('bNuevaCarpeta',()=>{form={id:null,nombre:''}; go('formCarpeta');});
+  on('bNuevaCarpetaDirecta',()=>{form={id:null,nombre:''}; go('formCarpeta');});
+  on('bComenzar',()=>go('carpetas'));
+  on('bVerTodasCarpetas',()=>go('carpetas'));
   on('bDatos',()=>go('datos'));
 
-  // Sesiones
-  on('bNueva',()=>{form={id:null,nombre:'',conv:'all',tema:'all',limpias:false}; go('form');});
-  on('bNueva2',()=>{form={id:null,nombre:'',conv:'all',tema:'all',limpias:false}; go('form');});
+  // Carpetas
+  on('bNueva',()=>{form={id:null,nombre:''}; go('formCarpeta');});
   on('bVolver',()=>go('home'));
-  document.querySelectorAll('[data-abrir]').forEach(b=>b.onclick=()=>{actual=b.dataset.abrir; go('sesion');});
-  document.querySelectorAll('[data-editar-ses]').forEach(b=>b.onclick=()=>{const s=sesionById(b.dataset.editarSes); form={...s}; actual=s.id; go('form');});
-  document.querySelectorAll('[data-borrar-ses]').forEach(b=>b.onclick=()=>{
-    const s=sesionById(b.dataset.borrarSes);
-    if(confirm(`¿Deseas eliminar la sesión "${s.nombre}"? Tus preguntas no se borrarán.`)){
-      SES=SES.filter(x=>x.id!==s.id); saveS(); render();
+  document.querySelectorAll('[data-abrir]').forEach(b=>b.onclick=()=>{actual=b.dataset.abrir; go('carpeta');});
+  document.querySelectorAll('[data-renombrar]').forEach(b=>b.onclick=()=>{const c=carpetaById(b.dataset.renombrar); form={id:c.id,nombre:c.nombre}; go('formCarpeta');});
+  document.querySelectorAll('[data-borrar-carpeta]').forEach(b=>b.onclick=()=>{
+    const c=carpetaById(b.dataset.borrarCarpeta);
+    if(confirm(`¿Eliminar la carpeta "${c.nombre}" y todas sus preguntas? Esta acción no se puede deshacer.`)){
+      Q=Q.filter(q=>q.carpetaId!==c.id); CARPETAS=CARPETAS.filter(x=>x.id!==c.id); saveC(); saveQ(); render();
     }
   });
 
-  // Formulario de sesión
-  if(view==='form'){
-    const fc=$('fConv'); if(fc) fc.onchange=e=>{form.conv=e.target.value; form.tema='all'; form.nombre=$('fNom').value; render();};
-    const ft=$('fTema'); if(ft) ft.onchange=e=>{form.tema=e.target.value; form.nombre=$('fNom').value; render();};
-    const fl=$('fLimp'); if(fl) fl.onchange=e=>{form.limpias=e.target.checked; form.nombre=$('fNom').value; render();};
-    on('bCancelS',()=>go('sesiones'));
-    on('bGuardarS',()=>{
-      const nombre=$('fNom').value.trim()||'Sesión de repaso';
-      const datos={nombre,conv:$('fConv').value,tema:$('fTema').value,limpias:$('fLimp').checked};
-      if(form.id){ Object.assign(sesionById(form.id),datos); }
-      else { SES.push({id:nuevoId('s'),...datos,hechas:0,aciertos:0,fallos:0}); }
-      saveS(); go('sesiones');
+  // Formulario carpeta
+  if(view==='formCarpeta'){
+    on('bCancelCarpeta',()=>go(form.id?'carpeta':'carpetas'));
+    on('bGuardarCarpeta',()=>{
+      const nombre=$('fNomCarpeta').value.trim()||'Carpeta de estudio';
+      if(form.id){ carpetaById(form.id).nombre=nombre; saveC(); actual=form.id; go('carpeta'); }
+      else { const c={id:nuevoId('c'),nombre,examenes:[],temas:[]}; CARPETAS.push(c); saveC(); actual=c.id; go('carpeta'); }
     });
   }
 
-  // Panel de sesión
-  on('bVolverS',()=>go('sesiones'));
-  on('bOrden',()=>iniciar(false));
-  on('bMezcla',()=>iniciar(true));
-  on('bLista',()=>go('list'));
-  on('bNuevaP',()=>{const id=nuevaPregunta(); abrirEditor(id,'sesion');});
+  // Panel carpeta
+  on('bPracticar',()=>{practSel={examenes:[],temas:[],todas:true,mezclar:true}; go('elegirPractica');});
+  on('bNuevaP',()=>{const id=nuevaPreguntaManual(); abrirEditor(id,'carpeta');});
+  on('bImportarExamen',()=>go('importarExamen'));
+  on('bImportarTemario',()=>go('importarTemario'));
+  on('bVolverCarpetas',()=>go('carpetas'));
+  on('bBorrarCarpetaActual',()=>{
+    const c=carpetaById(actual);
+    if(confirm(`¿Eliminar la carpeta "${c.nombre}" y todas sus preguntas?`)){
+      Q=Q.filter(q=>q.carpetaId!==c.id); CARPETAS=CARPETAS.filter(x=>x.id!==c.id); saveC(); saveQ(); go('carpetas');
+    }
+  });
+  document.querySelectorAll('[data-ver-examen]').forEach(b=>b.onclick=()=>{actualExamen=b.dataset.verExamen; go('examenLista');});
+  document.querySelectorAll('[data-borrar-examen]').forEach(b=>b.onclick=()=>{
+    const c=carpetaById(actual);
+    if(confirm('¿Eliminar este examen y sus preguntas?')){
+      Q=Q.filter(q=>!(q.carpetaId===c.id&&q.examenId===b.dataset.borrarExamen));
+      c.examenes=c.examenes.filter(e=>e.id!==b.dataset.borrarExamen);
+      saveC(); saveQ(); render();
+    }
+  });
+  document.querySelectorAll('[data-ver-tema]').forEach(b=>b.onclick=()=>{actualTema=b.dataset.verTema; go('temaLista');});
+  document.querySelectorAll('[data-borrar-tema]').forEach(b=>b.onclick=()=>{
+    const c=carpetaById(actual);
+    if(confirm('¿Eliminar este tema? Las preguntas dejarán de tenerlo asignado.')){
+      Q.filter(q=>q.carpetaId===c.id).forEach(q=>{ q.temas=(q.temas||[]).filter(t=>t!==b.dataset.borrarTema); });
+      c.temas=c.temas.filter(t=>t.id!==b.dataset.borrarTema);
+      saveC(); saveQ(); render();
+    }
+  });
+
+  // Importar examen
+  on('bLeerExamen',procesarExamenPDF);
+  on('bLeerJSON',procesarExamenJSON);
+  on('bVolverCarpeta',()=>go('carpeta'));
+
+  // Revisión examen
+  on('bAplicarAnul',()=>{
+    const nums=$('revAnul').value.split(/[,;\s]+/).map(x=>+x).filter(x=>x>0);
+    importacionExamen.preguntas.forEach(q=>{ q.anulada=nums.includes(q.numero); });
+    render();
+  });
+  on('bGuardarExamen',guardarImportacionExamen);
+  on('bCancelarExamen',()=>{importacionExamen=null; go('carpeta');});
+
+  // Importar / revisar temario
+  on('bLeerTemario',procesarTemario);
+  on('bGuardarTemario',guardarImportacionTemario);
+  on('bCancelarTemario',()=>{importacionTemario=null; go('carpeta');});
+
+  // Listas examen/tema
+  on('bVolverCarpeta2',()=>go('carpeta'));
+  document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>abrirEditor(b.dataset.edit,view));
+
+  // Elegir práctica
+  const pt=$('pselTodas'); if(pt) pt.onchange=e=>{practSel.todas=e.target.checked; render();};
+  document.querySelectorAll('.pselEx').forEach(ch=>ch.onchange=()=>{
+    practSel.examenes = [...document.querySelectorAll('.pselEx:checked')].map(c=>c.value);
+    const n=calcularSeleccionPractica(carpetaById(actual)).length;
+    render();
+  });
+  document.querySelectorAll('.pselTe').forEach(ch=>ch.onchange=()=>{
+    practSel.temas = [...document.querySelectorAll('.pselTe:checked')].map(c=>c.value);
+    render();
+  });
+  const pm=$('pselMezclar'); if(pm) pm.onchange=e=>{practSel.mezclar=e.target.checked;};
+  on('bEmpezarPractica',()=>{
+    const c=carpetaById(actual);
+    let ids=calcularSeleccionPractica(c).map(q=>q.id);
+    if(practSel.mezclar) ids=ids.sort(()=>Math.random()-0.5);
+    if(!ids.length) return;
+    sess={ids,i:0,ac:0,fa:0,resp:null,res:[],enter:false};
+    go('practice');
+  });
+  on('bCancelarPractica',()=>go('carpeta'));
 
   // Práctica
   document.querySelectorAll('[data-letra]').forEach(b=>b.onclick=()=>responder(b.dataset.letra));
@@ -1636,11 +1658,10 @@ function bind(){
   });
   on('bNoSet',()=>render());
   on('bEditP',()=>abrirEditor(sess.ids[sess.i],'practice'));
-  on('bSalir',()=>{cerrarSesionPractica(); go('sesion');});
+  on('bSalirPractica',()=>{sess=null; go('carpeta');});
   on('bRepasar',()=>{
     const falladas=sess.res.filter(r=>!r.ok).map(r=>r.id);
-    cerrarSesionPractica();
-    sess={ids:falladas,i:0,ac:0,fa:0,resp:null,guardada:false,res:[],enter:false};
+    sess={ids:falladas,i:0,ac:0,fa:0,resp:null,res:[],enter:false};
     go('practice');
   });
 
@@ -1655,56 +1676,29 @@ function bind(){
       saveQ();
       const b=editing.back; editing=null;
       if(b==='practice'&&sess){ sess.resp=null; go('practice'); }
-      else if(b==='list') go('list');
-      else go('sesion');
+      else go(b||'carpeta');
     });
-    on('bCancelE',()=>{const b=editing.back; editing=null; if(b==='practice'&&sess) go('practice'); else if(b==='list') go('list'); else go('sesion');});
+    on('bCancelE',()=>{const b=editing.back; editing=null; if(b==='practice'&&sess) go('practice'); else go(b||'carpeta');});
     on('bDelQ',()=>{
-      if(!confirm('¿Seguro que deseas eliminar esta pregunta?')) return;
+      if(!confirm('¿Eliminar esta pregunta?')) return;
       const id=editing.id, b=editing.back;
       Q=Q.filter(q=>q.id!==id); saveQ(); editing=null;
       if(sess) sess.ids=sess.ids.filter(x=>x!==id);
-      if(b==='practice'&&sess&&sess.ids.length) go('practice'); else go(b==='list'?'list':'sesion');
+      if(b==='practice'&&sess&&sess.ids.length) go('practice'); else go(b||'carpeta');
     });
   }
 
-  // Lista
-  on('bVolverL',()=>go('sesion'));
-  document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>abrirEditor(b.dataset.edit,'list'));
-
   // Datos
-  on('bExamen',procesarExamen);
   on('bExp',exportar);
-  const fi=$('fileIn'); if(fi) fi.onchange=e=>importar(e.target.files[0]);
+  const fi=$('fileIn'); if(fi) fi.onchange=e=>importarCopia(e.target.files[0]);
   on('bVolverD',()=>go('home'));
   on('bReset',()=>{
-    if(confirm('¿Seguro que deseas borrar todas las preguntas, sesiones y estadísticas guardadas? Esta acción no se puede deshacer.')){
-      Q=[]; SES=[]; saveQ(); saveS(); go('home');
+    if(confirm('¿Borrar todas las carpetas y preguntas guardadas? Esta acción no se puede deshacer.')){
+      CARPETAS=[]; Q=[]; saveC(); saveQ(); go('home');
     }
   });
-
-  // Revisión importación
-  on('bAplicarAnul',()=>{
-    const nums=$('revAnul').value.split(/[,;\s]+/).map(x=>+x).filter(x=>x>0);
-    importacion.preguntas.forEach(q=>{ q.anulada=nums.includes(q.numero); });
-    render();
-  });
-  on('bRevAdd',()=>guardarImportacion('add'));
-  on('bRevRep',()=>{
-    if(confirm('¿Reemplazar todas las preguntas actuales por las de este examen?')) guardarImportacion('rep');
-  });
-  on('bRevCancel',()=>{importacion=null; go('datos');});
 }
 
-/* ---------- ACCIONES DE PRÁCTICA ---------- */
-function iniciar(mezclar){
-  const s=sesionById(actual); if(!s) return;
-  let ids=filtrarPara(s).map(q=>q.id);
-  if(mezclar) ids=ids.sort(()=>Math.random()-0.5);
-  if(!ids.length) return;
-  sess={ids,i:0,ac:0,fa:0,resp:null,guardada:false,res:[],enter:false};
-  go('practice');
-}
 function responder(letra){
   if(sess.resp!==null) return;
   const q=byId(sess.ids[sess.i]);
@@ -1718,38 +1712,27 @@ function responder(letra){
 }
 function siguiente(){
   sess.i++; sess.resp=null; sess.enter=true;
-  if(sess.i>=sess.ids.length) cerrarSesionPractica();
   render();
 }
-function cerrarSesionPractica(){
-  if(sess && !sess.guardada){
-    const s=sesionById(actual);
-    if(s){
-      s.hechas=(s.hechas||0)+sess.i;
-      s.aciertos=(s.aciertos||0)+sess.ac;
-      s.fallos=(s.fallos||0)+sess.fa;
-      saveS();
-    }
-    sess.guardada=true;
-  }
-}
-function importar(file){
+function importarCopia(file){
   if(!file) return;
   file.text().then(t=>{
     const data=JSON.parse(t);
-    if(!Array.isArray(data)) throw new Error('Formato inválido');
-    Q=data.map(q=>({revisar:[],editada:false,...q}));
-    saveQ(); go('home');
-  }).catch(()=>alert('No se pudo leer el archivo. Debe ser un JSON de preguntas válido.'));
+    if(!confirm('¿Reemplazar todos los datos actuales por los de esta copia?')) return;
+    CARPETAS=data.carpetas||[]; Q=data.preguntas||[];
+    saveC(); saveQ(); go('home');
+  }).catch(()=>alert('No se pudo leer el archivo. Debe ser una copia de seguridad válida.'));
 }
 function exportar(){
-  const blob=new Blob([JSON.stringify(Q,null,2)],{type:'application/json'});
+  const blob=new Blob([JSON.stringify({carpetas:CARPETAS,preguntas:Q},null,2)],{type:'application/json'});
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob); a.download='oposiciones-preguntas.json';
+  a.href=URL.createObjectURL(blob); a.download='opotest-copia-seguridad.json';
   document.body.appendChild(a); a.click(); a.remove();
 }
 
 load();
 render();
+
 </script>
-</body></html>
+</body>
+</html>
