@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="OpoTest"/>
 <meta name="color-scheme" content="light dark"/>
 <script>
-  // Modo oscuro: aplica el tema guardado (o el del sistema) antes de pintar
+  // Modo oscuro: aplica el tema guardado (o el del sistema) antes de pintar para evitar parpadeos
   (function () {
     var oscuro = false;
     try {
@@ -24,12 +24,14 @@
   }
 </script>
 <title>OpoTest - Preparación de Oposiciones</title>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="icon-192.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
-  /* Neutros fríos, superficies de cristal, acento índigo como marca de OpoTest. */
+  /* ---------- Sistema de diseño: neutros fríos, cristal y acento índigo ---------- */
   :root {
     --fondo: #eceef2;
     --vidrio: rgba(255, 255, 255, .50);
@@ -46,7 +48,6 @@
     --linea: rgba(60, 72, 104, .16);
     --linea-2: rgba(60, 72, 104, .38);
 
-    /* Marca OpoTest: índigo */
     --acc: #4f46e5;
     --acc-rgb: 79, 70, 229;
     --acc2: #7c3aed;
@@ -56,12 +57,10 @@
     --fondo-2: rgba(196, 181, 253, .50);
     --fondo-3: rgba(191, 219, 254, .45);
 
-    /* Estados */
     --ok: #2c7a4b;   --okbg: rgba(44, 122, 75, .13);   --okborder: rgba(44, 122, 75, .32);
     --ko: #b1372d;   --kobg: rgba(177, 55, 45, .13);   --koborder: rgba(177, 55, 45, .32);
     --warn: #9a6200; --warnbg: rgba(154, 98, 0, .13);  --warnborder: rgba(154, 98, 0, .32);
 
-    /* Compatibilidad con nombres antiguos */
     --bg: var(--fondo);
     --card: var(--vidrio);
     --card-elevated: var(--vidrio-fuerte);
@@ -70,12 +69,10 @@
     --line: var(--linea);
     --line-soft: rgba(60, 72, 104, .08);
 
-    /* Radios */
     --radius-sm: 10px;
     --radius: 16px;
     --radius-lg: 22px;
 
-    /* Tipografía */
     --font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'Inter', system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     --serif: ui-serif, 'New York', 'Source Serif 4', Georgia, 'Times New Roman', serif;
   }
@@ -122,36 +119,25 @@
     color: var(--tinta);
     -webkit-font-smoothing: antialiased;
   }
-  body {
-    background: var(--fondo);
-  }
+  body { background: var(--fondo); }
   body::before {
     content: "";
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
     background:
       radial-gradient(52rem 38rem at 8% -8%, var(--fondo-1), transparent 62%),
       radial-gradient(46rem 36rem at 100% 8%, var(--fondo-2), transparent 60%),
       radial-gradient(48rem 34rem at 55% 108%, var(--fondo-3), transparent 62%);
   }
   #particulas {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
+    position: fixed; inset: 0; z-index: -1;
+    width: 100%; height: 100%; pointer-events: none;
   }
-  @media (prefers-reduced-motion: reduce) {
-    #particulas { display: none; }
-  }
+  @media (prefers-reduced-motion: reduce) { #particulas { display: none; } }
   h1, h2, h3, h4, p { margin: 0; }
   :focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
   .hidden { display: none !important; }
 
-  /* Cristal: superficie translúcida con brillo interior y borde de luz diagonal */
+  /* ---------- Cristal: superficie con brillo interior y borde de luz diagonal ---------- */
   .barra, .vidrio,
   .card, .session-card, .pr-top, .qcard, .hero-card {
     background: var(--vidrio);
@@ -163,15 +149,11 @@
     position: relative;
     border: 1px solid var(--borde-vidrio);
   }
-  .card::before, .session-card::before, .pr-top::before, .qcard::before, .hero-card::before {
-    content: "";
-    position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    padding: 1px;
-    pointer-events: none;
-    z-index: 1;
-    background: linear-gradient(135deg, rgba(255, 255, 255, .95), rgba(255, 255, 255, .12) 38%, rgba(255, 255, 255, .06) 62%, rgba(255, 255, 255, .7));
+  .card::before, .session-card::before, .pr-top::before,
+  .qcard::before, .hero-card::before {
+    content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1px;
+    pointer-events: none; z-index: 1;
+    background: linear-gradient(135deg, rgba(255,255,255,.95), rgba(255,255,255,.12) 38%, rgba(255,255,255,.06) 62%, rgba(255,255,255,.7));
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor;
     mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
@@ -180,81 +162,50 @@
   html.dark .card::before, html.dark .session-card::before, html.dark .pr-top::before,
   html.dark .qcard::before, html.dark .hero-card::before { opacity: .22; }
 
-  /* Barra superior */
+  /* ---------- Barra superior ---------- */
   header.barra {
-    position: sticky;
-    top: 0;
-    z-index: 30;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    position: sticky; top: 0; z-index: 30;
+    display: flex; align-items: center; gap: 12px;
     padding: calc(env(safe-area-inset-top, 0px) + 10px) 20px 10px;
     border-bottom: 1px solid var(--borde-vidrio);
   }
   .brand-wrap {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex: 1;
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
+    display: flex; align-items: center; gap: 10px; flex: 1;
+    text-decoration: none; color: inherit; cursor: pointer;
   }
   .brand-logo {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    padding: 6px;
+    width: 36px; height: 36px; border-radius: 10px; padding: 6px;
     background: linear-gradient(135deg, var(--acc), var(--acc2));
     box-shadow: 0 2px 8px var(--acc-glow);
-    object-fit: cover;
     transition: transform .2s ease;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
   }
-  .brand-wrap:hover .brand-logo {
-    transform: scale(1.05) rotate(-2deg);
-  }
+  .brand-logo svg { width: 100%; height: 100%; }
+  .brand-wrap:hover .brand-logo { transform: scale(1.05) rotate(-2deg); }
   .brand-text { display: flex; flex-direction: column; }
   .brand-title {
-    font-size: 17px;
-    font-weight: 800;
-    letter-spacing: -0.3px;
-    line-height: 1.15;
+    font-size: 17px; font-weight: 800; letter-spacing: -.3px; line-height: 1.15;
     background: linear-gradient(135deg, var(--txt), var(--acc));
-    -webkit-background-clip: text;
+    -webkit-background-clip: text; background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
   }
-  .brand-tag {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--mut);
-    letter-spacing: 0.1px;
-  }
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .brand-tag { font-size: 11px; font-weight: 600; color: var(--mut); letter-spacing: .1px; }
+  .header-actions { display: flex; align-items: center; gap: 8px; }
 
-  /* Main */
+  /* ---------- Main ---------- */
   main {
-    position: relative;
-    z-index: 1;
+    position: relative; z-index: 1;
     padding: 20px 16px;
-    max-width: 700px;
-    margin: 0 auto;
+    max-width: 700px; margin: 0 auto;
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 54px);
-    animation: fade .3s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: fade .3s cubic-bezier(.16, 1, .3, 1);
   }
-  @keyframes fade {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: none; }
-  }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-  /* Botones */
+  /* ---------- Botones ---------- */
   button, .btn {
-    font-family: inherit;
-    font-weight: 600;
+    font-family: inherit; font-weight: 600;
     border: 1px solid var(--linea-2);
     background: var(--vidrio-2);
     color: var(--txt);
@@ -262,38 +213,27 @@
     padding: 12px 18px;
     cursor: pointer;
     min-height: 46px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     font-size: 14.5px;
+    text-transform: none; letter-spacing: normal; margin: 0;
     transition: background-color .15s, border-color .15s, color .15s, transform .15s, box-shadow .15s;
     box-shadow: var(--brillo);
     text-decoration: none;
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
   }
   button:hover, .btn:hover { background: var(--campo); }
-  button:active { transform: scale(0.97); }
-  button:disabled {
-    opacity: .5;
-    cursor: not-allowed;
-    transform: none !important;
-  }
+  button:active { transform: scale(.97); }
+  button:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
   button.primary {
     background:
-      linear-gradient(180deg, rgba(255, 255, 255, .30), rgba(255, 255, 255, 0) 55%),
+      linear-gradient(180deg, rgba(255,255,255,.30), rgba(255,255,255,0) 55%),
       linear-gradient(135deg, var(--acc), var(--acc2));
-    border-color: rgba(255, 255, 255, .35);
+    border-color: rgba(255,255,255,.35);
     color: #ffffff;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, .35),
-      0 4px 14px var(--acc-glow);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 4px 14px var(--acc-glow);
   }
   button.primary:hover {
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, .35),
-      0 6px 20px var(--acc-glow);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 6px 20px var(--acc-glow);
     transform: translateY(-1px);
   }
   button.secondary {
@@ -301,97 +241,52 @@
     border-color: rgba(var(--acc-rgb), .30);
     color: var(--acc);
   }
-  button.secondary:hover {
-    background: var(--acc-light);
-    border-color: var(--acc);
-  }
-  button.danger {
-    color: var(--ko);
-    background: var(--kobg);
-    border-color: var(--koborder);
-  }
-  button.danger:hover {
-    background: var(--ko);
-    color: #ffffff;
-  }
-  button.small, .btn.small {
-    min-height: 36px;
-    padding: 6px 12px;
-    font-size: 13px;
-    border-radius: 10px;
-  }
+  button.secondary:hover { background: var(--acc-light); border-color: var(--acc); }
+  button.danger { color: var(--ko); background: var(--kobg); border-color: var(--koborder); }
+  button.danger:hover { background: var(--ko); color: #ffffff; }
+  button.small, .btn.small { min-height: 36px; padding: 6px 12px; font-size: 13px; border-radius: 10px; }
+
   button.nav-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
+    display: inline-flex; align-items: center; gap: 6px;
     background: var(--vidrio-2);
     border: 1px solid var(--linea-2);
     color: var(--txt);
     padding: 7px 13px;
     border-radius: 999px;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 13px; font-weight: 600;
     min-height: 32px;
     box-shadow: var(--brillo);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
   }
   button.nav-btn:hover {
-    border-color: var(--acc);
-    color: var(--acc);
-    background: var(--acc-light);
+    border-color: var(--acc); color: var(--acc); background: var(--acc-light);
   }
-  button.nav-btn-icon {
-    width: 32px;
-    padding: 0;
-    min-height: 32px;
-  }
+  button.nav-btn-icon { width: 32px; padding: 0; min-height: 32px; }
   button.nav-btn-icon svg { width: 16px; height: 16px; }
   .tema-sol { display: none; }
   html.dark .tema-sol { display: inline-block; }
   html.dark .tema-luna { display: none; }
 
-  /* Filas y utilidades */
-  .row {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-  }
+  /* ---------- Utilidades ---------- */
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
   .row.stretch > * { flex: 1; }
   .row-between {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 12px;
   }
   .meta { color: var(--mut); font-size: 13px; }
   .flex-1 { flex: 1; }
   .mt-6 { margin-top: 6px; }
 
-  /* Checkboxes (clase reutilizable) */
-  .cb {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--acc);
-    flex: none;
-    cursor: pointer;
-  }
+  .cb { width: 18px; height: 18px; accent-color: var(--acc); flex: none; cursor: pointer; }
   .cb-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--txt);
-    text-transform: none;
-    font-size: 14px;
-    font-weight: 500;
-    letter-spacing: normal;
-    margin: 4px 0;
-    cursor: pointer;
+    display: flex; align-items: center; gap: 10px;
+    color: var(--txt); text-transform: none;
+    font-size: 14px; font-weight: 500; letter-spacing: normal;
+    margin: 4px 0; cursor: pointer;
   }
 
-  /* Tarjetas */
+  /* ---------- Tarjetas ---------- */
   .card {
     border-radius: var(--radius);
     padding: 20px;
@@ -408,92 +303,55 @@
       var(--vidrio);
     overflow: hidden;
   }
-  .hero-content {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-  }
+  .hero-content { display: flex; align-items: center; gap: 18px; }
   .hero-logo-box {
-    width: 68px;
-    height: 68px;
-    flex-shrink: 0;
-    border-radius: 18px;
-    padding: 3px;
+    width: 68px; height: 68px; flex-shrink: 0;
+    border-radius: 18px; padding: 3px;
     background: linear-gradient(135deg, var(--acc), var(--acc2));
     box-shadow: 0 6px 20px var(--acc-glow);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
   }
   .hero-logo-img {
-    width: 100%;
-    height: 100%;
-    padding: 10px;
-    border-radius: 15px;
-    color: #ffffff;
+    width: 100%; height: 100%; padding: 10px;
+    border-radius: 15px; color: #fff;
   }
   .hero-title {
-    font-size: 20px;
-    font-weight: 800;
-    margin: 0 0 4px;
-    letter-spacing: -0.4px;
+    font-size: 20px; font-weight: 800;
+    margin: 0 0 4px; letter-spacing: -.4px;
     color: var(--txt);
   }
-  .hero-desc {
-    color: var(--mut);
-    font-size: 13.5px;
-    line-height: 1.45;
-  }
+  .hero-desc { color: var(--mut); font-size: 13.5px; line-height: 1.45; }
 
-  /* Estadísticas */
   .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 16px;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; margin-bottom: 16px;
   }
   .stat-pill {
-    background: var(--vidrio-2);
-    border: 1px solid var(--linea);
-    border-radius: 14px;
-    padding: 14px 12px;
-    text-align: center;
+    background: var(--vidrio-2); border: 1px solid var(--linea);
+    border-radius: 14px; padding: 14px 12px; text-align: center;
     box-shadow: var(--brillo);
     transition: transform .15s ease, border-color .15s ease;
   }
   .stat-pill:hover { transform: translateY(-2px); border-color: var(--acc); }
   .stat-val { font-size: 22px; font-weight: 800; color: var(--txt); line-height: 1.1; }
   .stat-label {
-    font-size: 11.5px;
-    font-weight: 600;
-    color: var(--mut);
-    margin-top: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
+    font-size: 11.5px; font-weight: 600; color: var(--mut);
+    margin-top: 4px; text-transform: uppercase; letter-spacing: .3px;
   }
 
-  /* Opciones de respuesta */
+  /* ---------- Opciones ---------- */
   .opt {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    width: 100%;
-    text-align: left;
-    margin: 10px 0;
-    padding: 14px 16px;
-    white-space: normal;
-    font-weight: 500;
-    border-radius: var(--radius);
-    line-height: 1.45;
-    font-size: 15px;
-    border: 1.5px solid var(--line);
+    display: flex; align-items: center; gap: 12px;
+    width: 100%; text-align: left; margin: 10px 0;
+    padding: 14px 16px; white-space: normal;
+    font-weight: 500; border-radius: var(--radius);
+    line-height: 1.45; font-size: 15px;
+    border: 1.5px solid var(--linea);
     background: var(--campo);
     color: var(--txt);
     transition: background-color .18s, border-color .18s, transform .18s, box-shadow .18s;
     box-shadow: var(--brillo);
-    position: relative;
-    min-height: 0;
-    cursor: pointer;
+    position: relative; min-height: 0; cursor: pointer;
   }
   .opt:not(:disabled):hover {
     border-color: var(--acc);
@@ -502,129 +360,1346 @@
     box-shadow: 0 4px 12px var(--acc-glow);
   }
   .opt-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 10px;
-    background: var(--campo);
-    border: 1px solid var(--line);
-    color: var(--acc);
-    font-weight: 800;
-    font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 10px;
+    background: var(--campo); border: 1px solid var(--linea);
+    color: var(--acc); font-weight: 800; font-size: 14px;
     flex-shrink: 0;
     transition: background-color .2s, color .2s, border-color .2s;
   }
-  .opt:hover .opt-badge { background: var(--acc); color: #ffffff; border-color: var(--acc); }
+  .opt:hover .opt-badge { background: var(--acc); color: #fff; border-color: var(--acc); }
   .opt-text { flex: 1; }
   .opt.ok {
-    background: var(--okbg);
-    border-color: var(--ok);
-    color: var(--txt);
+    background: var(--okbg); border-color: var(--ok); color: var(--txt);
     box-shadow: 0 4px 14px rgba(44, 122, 75, .15);
   }
-  .opt.ok .opt-badge { background: var(--ok); color: #ffffff; border-color: var(--ok); }
+  .opt.ok .opt-badge { background: var(--ok); color: #fff; border-color: var(--ok); }
   .opt.ko {
-    background: var(--kobg);
-    border-color: var(--ko);
-    color: var(--txt);
+    background: var(--kobg); border-color: var(--ko); color: var(--txt);
     box-shadow: 0 4px 14px rgba(177, 55, 45, .15);
   }
-  .opt.ko .opt-badge { background: var(--ko); color: #ffffff; border-color: var(--ko); }
+  .opt.ko .opt-badge { background: var(--ko); color: #fff; border-color: var(--ko); }
 
-  /* Cabecera de práctica */
+  /* ---------- Cabecera de práctica ---------- */
   .pr-top {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px 20px;
-    border-radius: var(--radius);
+    display: flex; align-items: center; gap: 16px;
+    padding: 16px 20px; border-radius: var(--radius);
   }
   .pr-txt { flex: 1; }
-  .pr-count { font-size: 24px; font-weight: 800; line-height: 1; letter-spacing: -0.4px; }
+  .pr-count { font-size: 24px; font-weight: 800; line-height: 1; letter-spacing: -.4px; }
   .pr-count span { font-size: 15px; color: var(--mut); font-weight: 600; }
   .pr-score-chips { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
 
   .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 2px 8px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 999px;
+    font-size: 12px; font-weight: 700;
   }
   .chip.ok { background: var(--okbg); color: var(--ok); }
   .chip.ko { background: var(--kobg); color: var(--ko); }
   .chip.theme { background: var(--acc-light); color: var(--acc); }
 
   .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 11.5px;
-    font-weight: 700;
-    border-radius: 999px;
-    padding: 3px 9px;
-    background: var(--line-soft);
-    color: var(--mut);
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11.5px; font-weight: 700;
+    border-radius: 999px; padding: 3px 9px;
+    background: var(--line-soft); color: var(--mut);
     border: 1px solid var(--linea);
   }
   .badge.warn { background: var(--warnbg); color: var(--warn); border-color: var(--warnborder); }
   .badge.ok { background: var(--okbg); color: var(--ok); border-color: var(--okborder); }
   .badge.primary { background: var(--acc-light); color: var(--acc); border-color: rgba(var(--acc-rgb), .30); }
 
-  /* Ficha de pregunta */
+  /* ---------- Ficha de pregunta ---------- */
   .qcard { padding: 24px 22px; border-radius: var(--radius-lg); }
   .qcard-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    gap: 8px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; gap: 8px;
   }
   .enun {
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 1.5;
-    letter-spacing: -0.2px;
-    margin: 4px 0 16px;
-    color: var(--txt);
+    font-size: 18px; font-weight: 700;
+    line-height: 1.5; letter-spacing: -.2px;
+    margin: 4px 0 16px; color: var(--txt);
   }
 
-  /* Feedback */
   .feedback {
-    margin-top: 14px;
-    padding: 14px 18px;
-    border-radius: 14px;
-    font-weight: 600;
-    font-size: 14.5px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    animation: pop .25s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-top: 14px; padding: 14px 18px;
+    border-radius: 14px; font-weight: 600; font-size: 14.5px;
+    display: flex; align-items: center; gap: 10px;
+    animation: pop .25s cubic-bezier(.16, 1, .3, 1);
   }
-  @keyframes pop {
-    from { opacity: 0; transform: scale(0.97); }
-    to { opacity: 1; transform: scale(1); }
-  }
+  @keyframes pop { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: scale(1); } }
   .feedback.good { background: var(--okbg); color: var(--ok); border: 1.5px solid var(--okborder); }
   .feedback.bad { background: var(--kobg); color: var(--ko); border: 1.5px solid var(--koborder); }
 
-  /* Anillos de progreso */
   .ring-bg { fill: none; stroke: var(--linea); stroke-width: 8; }
   .ring-fg { fill: none; stroke: var(--acc); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset .5s ease; }
   .ring.big .ring-fg { stroke-width: 12; }
   .ring.big .ring-bg { stroke-width: 12; }
 
-  /* Resultado */
   .res { text-align: center; padding: 32px 20px; border-radius: var(--radius-lg); }
   .res-wrap { position: relative; width: 148px; height: 148px; margin: 0 auto 12px; }
   .res-pct {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-   
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 36px; font-weight: 800; letter-spacing: -1px;
+  }
+  .res-pct span {
+    font-size: 12px; font-weight: 700; color: var(--mut);
+    text-transform: uppercase; letter-spacing: .5px;
+  }
+  .res-msg { font-weight: 800; margin: 8px 0 4px; font-size: 22px; letter-spacing: -.3px; }
+
+  .bar { height: 8px; background: var(--linea); border-radius: 999px; overflow: hidden; }
+  .bar div {
+    height: 100%; border-radius: 999px;
+    background: linear-gradient(90deg, var(--acc), var(--acc2));
+    transition: width .4s ease;
+  }
+  .tema-row {
+    display: flex; align-items: center; gap: 12px;
+    margin: 12px 0; font-size: 13.5px;
+  }
+  .tema-row span:first-child { width: 84px; font-weight: 700; color: var(--txt); }
+  .tema-row .bar { flex: 1; margin: 0; }
+  .tema-row .meta { width: 50px; text-align: right; font-weight: 600; }
+
+  /* ---------- Formularios ---------- */
+  select, input[type=text], input[type=file], textarea {
+    font-family: inherit;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid var(--linea-2);
+    border-radius: 12px;
+    background: var(--campo);
+    color: var(--txt);
+    outline: none;
+    font-size: 14.5px;
+    transition: border-color .15s, box-shadow .15s;
+    box-shadow: inset 0 1px 2px rgba(40, 52, 90, .08);
+  }
+  select:focus, input:focus, textarea:focus {
+    border-color: var(--acc);
+    box-shadow: 0 0 0 4px var(--acc-light);
+  }
+  textarea { min-height: 90px; resize: vertical; }
+  label {
+    display: block;
+    margin: 14px 0 6px;
+    font-size: 12.5px; font-weight: 700;
+    color: var(--mut);
+    text-transform: uppercase; letter-spacing: .4px;
+  }
+  input[type=checkbox], input[type=radio] {
+    width: 18px; height: 18px;
+    accent-color: var(--acc);
+    cursor: pointer;
+  }
+  input[type=radio] { accent-color: var(--ok); }
+
+  /* ---------- Tarjetas de sesión y utilidades ---------- */
+  .session-card {
+    border-radius: var(--radius);
+    padding: 18px; margin-bottom: 14px;
+    transition: border-color .18s ease, transform .18s ease;
+  }
+  .session-card:hover {
+    border-color: rgba(var(--acc-rgb), .40);
+    transform: translateY(-1px);
+  }
+  .session-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 10px;
+  }
+  .session-name { font-size: 17px; font-weight: 800; color: var(--txt); }
+
+  .ico { width: 18px; height: 18px; vertical-align: -3px; margin-right: 2px; flex-shrink: 0; }
+  .enter { animation: slide .32s cubic-bezier(.16, 1, .3, 1); }
+  @keyframes slide { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+
+  .qitem {
+    display: block; width: 100%; text-align: left;
+    margin: 10px 0; padding: 16px; font-weight: 500;
+    border-radius: 14px;
+    border: 1px solid var(--linea);
+    background: var(--campo);
+    color: var(--txt);
+    cursor: pointer;
+    box-shadow: var(--brillo);
+    transition: border-color .15s, background-color .15s, transform .15s;
+    min-height: 0;
+  }
+  .qitem:hover {
+    border-color: var(--acc);
+    background: var(--acc-light);
+    transform: translateX(2px);
+  }
+
+  .footer-note {
+    text-align: center; font-size: 12px;
+    color: var(--mut); margin-top: 32px; letter-spacing: .2px;
+  }
+  .section-head {
+    margin: 20px 0 10px;
+    font-weight: 800; font-size: 14px;
+    color: var(--mut); text-transform: uppercase; letter-spacing: .5px;
+  }
+  .warning-box {
+    background: var(--warnbg);
+    border: 1px solid var(--warnborder);
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-top: 12px;
+    color: var(--warn);
+    font-size: 13px;
+  }
+  .info-pill {
+    background: var(--acc-light);
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-top: 14px;
+    display: flex; align-items: center; gap: 10px;
+    color: var(--acc);
+    font-weight: 600; font-size: 13.5px;
+  }
+  .score-pill {
+    display: inline-flex; gap: 12px;
+    background: var(--line-soft);
+    padding: 10px 16px; border-radius: 999px;
+    font-size: 13.5px; font-weight: 700; margin-top: 10px;
+  }
+  .empty-card {
+    text-align: center; padding: 32px 24px;
+  }
+  .empty-card .empty-icon { font-size: 38px; margin-bottom: 8px; }
+
+  /* ---------- Accesibilidad / fallbacks ---------- */
+  @media (prefers-reduced-transparency: reduce) {
+    .barra, .vidrio, .card, .session-card, .pr-top, .qcard, .hero-card,
+    .opt, .qitem, button, .btn, .nav-btn {
+      background: var(--solido);
+      -webkit-backdrop-filter: none; backdrop-filter: none;
+    }
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .barra, .vidrio, .card, .session-card, .pr-top, .qcard, .hero-card {
+      background: var(--solido);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particulas" aria-hidden="true"></canvas>
+
+<header class="barra">
+  <div class="brand-wrap" id="brandBtn">
+    <div class="brand-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 11l3 3L22 4"/>
+        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <span class="brand-title">OpoTest</span>
+      <span class="brand-tag" id="headerSub">Carpetas de estudio</span>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button class="nav-btn" id="btnInicio" type="button">
+      <svg class="ico" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      Inicio
+    </button>
+    <button class="nav-btn nav-btn-icon" id="btnTema" type="button" onclick="alternarTema()" title="Cambiar a modo oscuro" aria-label="Alternar modo oscuro">
+      <svg class="tema-luna" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+      </svg>
+      <svg class="tema-sol" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<script>
+const KC='opotest-carpetas-v1', KQ='opotest-preguntas-v1';
+const VERSION='OpoTest v3.0 · Carpetas de estudio';
+let CARPETAS=[], Q=[];
+let view='home', actual=null, actualExamen=null, actualTema=null;
+let editing=null, form=null, importacionExamen=null, importacionTemario=null;
+let practSel=null, sess=null;
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function saveC(){try{localStorage.setItem(KC,JSON.stringify(CARPETAS));}catch(e){}}
+function saveQ(){try{localStorage.setItem(KQ,JSON.stringify(Q));}catch(e){}}
+function load(){
+  try{const c=localStorage.getItem(KC); if(c) CARPETAS=JSON.parse(c);}catch(e){}
+  try{const q=localStorage.getItem(KQ); if(q) Q=JSON.parse(q);}catch(e){}
+}
+function nuevoId(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function byId(id){return Q.find(q=>q.id===id);}
+function carpetaById(id){return CARPETAS.find(c=>c.id===id);}
+function examenNombre(c,examenId){const e=c.examenes.find(x=>x.id===examenId); return e?e.nombre:'Manual';}
+function temaNombre(c,temaId){const t=c.temas.find(x=>x.id===temaId); return t?t.nombre:'';}
+function preguntasDeCarpeta(carpetaId){return Q.filter(q=>q.carpetaId===carpetaId);}
+function preguntasDeExamen(carpetaId,examenId){return Q.filter(q=>q.carpetaId===carpetaId&&q.examenId===examenId);}
+function preguntasDeTema(carpetaId,temaId){return Q.filter(q=>q.carpetaId===carpetaId&&(q.temas||[]).includes(temaId));}
+function esLimpia(q){return !q.revisar || q.revisar.length===0;}
+function estado(q){
+  if(q.anulada) return {t:'Anulada',c:'warn'};
+  if(q.editada) return {t:'Editada',c:''};
+  if(!q.correcta) return {t:'Sin respuesta',c:'warn'};
+  if(q.revisar&&q.revisar.length) return {t:'Revisar',c:'warn'};
+  return {t:'Lista',c:'ok'};
+}
+
+function ic(n){
+  const p={
+    edit:'<path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M14 6l4 4"/>',
+    trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
+    plus:'<path d="M12 5v14M5 12h14"/>',
+    list:'<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>',
+    x:'<path d="M6 6l12 12M18 6L6 18"/>',
+    back:'<path d="M15 6l-6 6 6 6"/>',
+    play:'<polygon points="5 3 19 12 5 21 5 3"/>',
+    shuffle:'<path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>',
+    gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>',
+    repeat:'<path d="M17 1l4 4-4 4M3 11V9a4 4 0 0 1 4-4h14M7 23l-4-4 4-4M21 13v2a4 4 0 0 1-4 4H3"/>',
+    folder:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+    book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'
+  }[n]||'';
+  return `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+}
+function anillo(pct,tam){
+  const r=tam/2-6, c=2*Math.PI*r, off=c*(1-pct/100);
+  return `<svg class="ring" width="${tam}" height="${tam}" viewBox="0 0 ${tam} ${tam}">
+    <circle cx="${tam/2}" cy="${tam/2}" r="${r}" class="ring-bg"/>
+    <circle cx="${tam/2}" cy="${tam/2}" r="${r}" class="ring-fg" stroke-dasharray="${c}" stroke-dashoffset="${off}" transform="rotate(-90 ${tam/2} ${tam/2})"/>
+  </svg>`;
+}
+
+function go(v){view=v; render(); window.scrollTo({top:0,behavior:'smooth'});}
+
+function render(){
+  const titulos={
+    home:'Inicio', carpetas:'Tus carpetas', carpeta:'Carpeta de estudio',
+    formCarpeta:'Carpeta de estudio', importarExamen:'Importar examen', revisarExamen:'Revisión del examen',
+    importarTemario:'Importar temario', revisarTemario:'Revisión del temario',
+    examenLista:'Preguntas del examen', temaLista:'Preguntas del tema',
+    elegirPractica:'Elegir qué practicar', practice:'Practicando', edit:'Editor de preguntas',
+    datos:'Copia de seguridad'
+  };
+  const sub=document.getElementById('headerSub');
+  if(sub) sub.textContent=titulos[view]||'OpoTest';
+  const app=document.getElementById('app');
+  const v={
+    home:vistaInicio, carpetas:vistaCarpetas, carpeta:vistaCarpeta, formCarpeta:vistaFormCarpeta,
+    importarExamen:vistaImportarExamen, revisarExamen:vistaRevisarExamen,
+    importarTemario:vistaImportarTemario, revisarTemario:vistaRevisarTemario,
+    examenLista:vistaExamenLista, temaLista:vistaTemaLista,
+    elegirPractica:vistaElegirPractica, practice:vistaPractica, edit:vistaEditar, datos:vistaDatos
+  }[view];
+  app.innerHTML=v();
+  bind();
+}
+
+/* ---------- INICIO ---------- */
+function vistaInicio(){
+  if(!CARPETAS.length){
+    return `
+    <div class="hero-card card">
+      <div class="hero-content">
+        <div class="hero-logo-box">
+          <svg class="hero-logo-img" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="hero-title">¡Te damos la bienvenida a OpoTest!</h2>
+          <p class="hero-desc">Organiza tu estudio en carpetas: cada carpeta agrupa los exámenes y el temario de una oposición.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card empty-card">
+      <div class="empty-icon">📁</div>
+      <h3 style="margin:0 0 8px;font-size:18px;font-weight:800">Crea tu primera carpeta</h3>
+      <p class="meta" style="max-width:440px;margin:0 auto 20px">Por ejemplo, "Auxiliar Administrativo". Dentro podrás añadir todos los exámenes y el temario que quieras.</p>
+      <div class="row" style="justify-content:center;gap:12px">
+        <button class="primary" id="bNuevaCarpeta">${ic('plus')} Crear carpeta</button>
+        <button id="bDatos">${ic('gear')} Copia de seguridad</button>
+      </div>
+    </div>
+    <p class="footer-note">${VERSION}</p>`;
+  }
+  const totalPreg=Q.length;
+  const totalCarp=CARPETAS.length;
+  return `
+  <div class="hero-card card">
+    <div class="hero-content">
+      <div class="hero-logo-box">
+        <svg class="hero-logo-img" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+      </div>
+      <div>
+        <h2 class="hero-title">¡A por tu plaza!</h2>
+        <p class="hero-desc">Tienes <b>${totalPreg} preguntas</b> en <b>${totalCarp} carpeta${totalCarp===1?'':'s'}</b> de estudio.</p>
+      </div>
+    </div>
+  </div>
+  <div class="row stretch" style="margin-bottom:18px">
+    <button class="primary" id="bComenzar" style="font-size:16px;padding:14px 22px">${ic('folder')} Ver mis carpetas</button>
+    <button class="secondary" id="bNuevaCarpetaDirecta">${ic('plus')} Nueva carpeta</button>
+    <button id="bDatos">${ic('gear')} Copia de seguridad</button>
+  </div>
+  <div class="card">
+    <div class="row-between">
+      <span style="font-weight:800;font-size:15px">Tus carpetas</span>
+      <button class="small" id="bVerTodasCarpetas">Ver todas →</button>
+    </div>
+    ${CARPETAS.slice(0,3).map(c=>{
+      const n=preguntasDeCarpeta(c.id).length;
+      return `<div class="session-card" style="margin-bottom:8px;padding:14px">
+        <div class="session-head">
+          <div><b>${esc(c.nombre)}</b><br>
+          <span class="meta">${c.examenes.length} exámenes · ${c.temas.length} temas · ${n} preguntas</span></div>
+          <button class="primary small" data-abrir="${c.id}">Abrir</button>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>
+  <p class="footer-note">${VERSION}</p>`;
+}
+
+/* ---------- CARPETAS ---------- */
+function vistaCarpetas(){
+  const items=CARPETAS.map(c=>{
+    const n=preguntasDeCarpeta(c.id).length;
+    return `
+    <div class="session-card">
+      <div class="session-head">
+        <div class="session-name">${esc(c.nombre)}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;margin:12px 0 14px;color:var(--mut);font-size:13px">
+        <span><b>${c.examenes.length}</b> exámenes</span><span>•</span>
+        <span><b>${c.temas.length}</b> temas</span><span>•</span>
+        <span><b>${n}</b> preguntas</span>
+      </div>
+      <div class="row">
+        <button class="primary small" data-abrir="${c.id}">${ic('folder')} Abrir</button>
+        <button class="small" data-renombrar="${c.id}">${ic('edit')} Renombrar</button>
+        <button class="small danger" data-borrar-carpeta="${c.id}" style="margin-left:auto">${ic('trash')}</button>
+      </div>
+    </div>`;
+  }).join('');
+  return `
+  <div class="row-between">
+    <h3 style="margin:0;font-size:18px;font-weight:800">Carpetas de estudio</h3>
+    <button class="primary small" id="bNueva">${ic('plus')} Nueva carpeta</button>
+  </div>
+  ${items||'<div class="card"><p class="meta" style="text-align:center;padding:20px 0">Aún no tienes carpetas.</p></div>'}
+  <div class="row" style="margin-top:16px"><button class="small" id="bVolver">← Volver al inicio</button></div>`;
+}
+
+function vistaFormCarpeta(){
+  return `
+  <div class="card">
+    <h3 style="margin:0 0 16px;font-size:19px;font-weight:800">${form.id?'Renombrar carpeta':'Nueva carpeta de estudio'}</h3>
+    <label>Nombre</label>
+    <input type="text" id="fNomCarpeta" value="${esc(form.nombre)}" placeholder="Ej: Auxiliar Administrativo">
+  </div>
+  <div class="row">
+    <button class="primary" id="bGuardarCarpeta">Guardar</button>
+    <button id="bCancelCarpeta">Cancelar</button>
+  </div>`;
+}
+
+/* ---------- CARPETA (panel) ---------- */
+function vistaCarpeta(){
+  const c=carpetaById(actual); if(!c){go('carpetas');return '';}
+  const n=preguntasDeCarpeta(c.id).filter(q=>!q.anulada).length;
+  const examenes=c.examenes.map(e=>{
+    const ne=preguntasDeExamen(c.id,e.id).length;
+    return `<div class="session-card" style="padding:12px 14px">
+      <div class="session-head">
+        <div><b>${esc(e.nombre)}</b><br><span class="meta">${ne} preguntas</span></div>
+        <div class="row">
+          <button class="small" data-ver-examen="${e.id}">${ic('list')} Ver</button>
+          <button class="small danger" data-borrar-examen="${e.id}">${ic('trash')}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')||'<p class="meta">Aún no hay exámenes en esta carpeta.</p>';
+  const temas=c.temas.map(t=>{
+    const nt=preguntasDeTema(c.id,t.id).length;
+    return `<div class="session-card" style="padding:12px 14px">
+      <div class="session-head">
+        <div><b>${esc(t.nombre)}</b><br><span class="meta">${esc((t.texto||'').slice(0,70))}${(t.texto||'').length>70?'…':''}</span></div>
+        <div class="row">
+          <button class="small" data-ver-tema="${t.id}">${ic('list')} Ver (${nt})</button>
+          <button class="small danger" data-borrar-tema="${t.id}">${ic('trash')}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')||'<p class="meta">Aún no hay temario en esta carpeta.</p>';
+
+  return `
+  <div class="card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between">
+      <div>
+        <span class="badge primary" style="margin-bottom:6px">Carpeta</span>
+        <h2 style="margin:2px 0 6px;font-size:22px;font-weight:800">${esc(c.nombre)}</h2>
+        <p class="meta" style="margin:0">${c.examenes.length} exámenes · ${c.temas.length} temas · ${n} preguntas disponibles</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row stretch" style="margin:16px 0">
+    <button class="primary" id="bPracticar" ${n?'':'disabled'} style="padding:16px">${ic('play')} Practicar</button>
+    <button id="bNuevaP" style="padding:16px">${ic('plus')} Pregunta manual</button>
+  </div>
+
+  <h4 class="section-head">Exámenes</h4>
+  ${examenes}
+  <div class="row" style="margin-top:10px"><button class="small" id="bImportarExamen">${ic('plus')} Importar examen</button></div>
+
+  <h4 class="section-head" style="margin-top:24px">Temario</h4>
+  ${temas}
+  <div class="row" style="margin-top:10px"><button class="small" id="bImportarTemario">${ic('book')} ${c.temas.length?'Reimportar temario':'Importar temario'}</button></div>
+
+  <div class="row" style="margin-top:24px">
+    <button class="small" id="bVolverCarpetas">← Carpetas</button>
+    <button class="small danger" id="bBorrarCarpetaActual" style="margin-left:auto">${ic('trash')} Eliminar carpeta</button>
+  </div>`;
+}
+
+/* ---------- IMPORTAR EXAMEN ---------- */
+function vistaImportarExamen(){
+  return `
+  <div class="card">
+    <h3 style="margin:0 0 4px;font-size:17px;font-weight:800">PDF del examen</h3>
+    <p class="meta" style="margin:0 0 12px">Sube el PDF del cuestionario y el PDF de la plantilla de respuestas.</p>
+    <label>Nombre del examen</label>
+    <input type="text" id="exNombre" placeholder="Ej: Primer ejercicio PEPI 2023">
+    <label>PDF de preguntas</label>
+    <input type="file" id="exPreg" accept=".pdf,application/pdf">
+    <label>PDF de plantilla de respuestas</label>
+    <input type="file" id="exPlan" accept=".pdf,application/pdf">
+    <p class="meta" id="pdfEstado" style="margin:12px 0 14px">Antes de guardar verás un resumen para confirmar.</p>
+    <button class="primary" id="bLeerExamen">${ic('play')} Leer examen</button>
+  </div>
+  <div class="card">
+    <h3 style="margin:0 0 4px;font-size:16px;font-weight:800">Archivo JSON de preguntas</h3>
+    <p class="meta" style="margin:0 0 12px">Para una batería ya preparada en el ordenador.</p>
+    <label>Nombre del examen</label>
+    <input type="text" id="jsonNombre" placeholder="Ej: Batería de preguntas">
+    <label>Archivo JSON</label>
+    <input type="file" id="jsonIn" accept=".json,application/json">
+    <button class="primary" id="bLeerJSON" style="margin-top:12px">${ic('play')} Leer JSON</button>
+  </div>
+  <div class="row"><button class="small" id="bVolverCarpeta">← Carpeta</button></div>`;
+}
+
+/* ---------- REVISIÓN DE EXAMEN ---------- */
+function vistaRevisarExamen(){
+  if(!importacionExamen){go('carpeta');return '';}
+  const P=importacionExamen.preguntas;
+  const conRes=P.filter(q=>q.correcta).length;
+  const revisar=P.filter(q=>q.revisar.length).length;
+  const muestra=P.slice(0,2).map(q=>`
+    <div class="card" style="margin:10px 0;padding:12px">
+      <span class="meta">Pregunta nº ${esc(q.numero)}</span>
+      <p style="margin:4px 0"><b>${esc(q.enunciado).slice(0,160)}</b></p>
+      <span class="badge ${q.correcta?'ok':'warn'}">${q.opciones.length} opciones · Correcta: ${esc(q.correcta?q.correcta.toUpperCase():'No marcada')}</span>
+    </div>`).join('');
+  const anuladas=P.filter(q=>q.anulada).map(q=>q.numero);
+  return `
+  <div class="card">
+    <div class="badge ok" style="margin-bottom:8px">Examen procesado</div>
+    <h3 style="margin:0 0 6px;font-size:20px;font-weight:800">${P.length} preguntas listas para guardar</h3>
+    <p class="meta">${esc(importacionExamen.resumen)}</p>
+    <div style="display:flex;gap:12px;margin:12px 0;font-size:13.5px;flex-wrap:wrap">
+      <span class="chip ok">✓ ${conRes} con respuesta</span>
+      <span class="chip ko">✗ ${P.length-conRes} sin respuesta</span>
+      ${revisar?`<span class="chip theme">${revisar} avisos</span>`:''}
+    </div>
+    <label>Preguntas anuladas (números separados por comas)</label>
+    <div class="row">
+      <input type="text" id="revAnul" value="${esc(anuladas.join(', '))}" placeholder="Ej: 12, 45" class="flex-1">
+      <button class="small" id="bAplicarAnul">Aplicar</button>
+    </div>
+    <p class="meta" style="margin-top:4px">Se guardan, pero no se incluyen al practicar.</p>
+    ${importacionExamen.avisos.length?`<div class="warning-box">${importacionExamen.avisos.map(esc).join('<br>')}</div>`:''}
+  </div>
+  <div class="card"><label style="margin-top:0">Vista previa</label>${muestra}</div>
+  <div class="row stretch">
+    <button class="primary" id="bGuardarExamen">Guardar en esta carpeta</button>
+    <button id="bCancelarExamen">Cancelar</button>
+  </div>`;
+}
+
+/* ---------- IMPORTAR TEMARIO ---------- */
+function vistaImportarTemario(){
+  const c=carpetaById(actual);
+  return `
+  <div class="card">
+    <h3 style="margin:0 0 4px;font-size:17px;font-weight:800">PDF del temario</h3>
+    <p class="meta" style="margin:0 0 12px">Se detectan automáticamente los temas, numerados Tema 1, Tema 2…</p>
+    ${c.temas.length?`<p class="meta" style="color:var(--warn)">Esta carpeta ya tiene ${c.temas.length} temas. Si continúas, podrás sustituirlos por los nuevos.</p>`:''}
+    <label>PDF del temario</label>
+    <input type="file" id="temIn" accept=".pdf,application/pdf">
+    <p class="meta" id="temEstado" style="margin:12px 0 14px">Antes de guardar verás la lista de temas detectados.</p>
+    <button class="primary" id="bLeerTemario">${ic('play')} Leer temario</button>
+  </div>
+  <div class="row"><button class="small" id="bVolverCarpeta">← Carpeta</button></div>`;
+}
+
+function vistaRevisarTemario(){
+  if(!importacionTemario){go('carpeta');return '';}
+  const T=importacionTemario.temas;
+  const items=T.map((t,i)=>`
+    <div class="card" style="margin:8px 0;padding:12px">
+      <b>Tema ${i+1}</b>
+      <p style="margin:4px 0 0">${esc(t.texto).slice(0,160)}${t.texto.length>160?'…':''}</p>
+    </div>`).join('');
+  const c=carpetaById(actual);
+  return `
+  <div class="card">
+    <div class="badge ok" style="margin-bottom:8px">Temario procesado</div>
+    <h3 style="margin:0 0 6px;font-size:20px;font-weight:800">${T.length} temas detectados</h3>
+    ${c.temas.length?`<p class="meta" style="color:var(--warn)">Se sustituirán los ${c.temas.length} temas actuales y las preguntas perderán esa asignación.</p>`:''}
+  </div>
+  <div>${items}</div>
+  <div class="row stretch">
+    <button class="primary" id="bGuardarTemario">Guardar ${T.length} temas</button>
+    <button id="bCancelarTemario">Cancelar</button>
+  </div>`;
+}
+
+/* ---------- LISTAS (examen / tema) ---------- */
+function vistaExamenLista(){
+  const c=carpetaById(actual); if(!c){go('carpetas');return '';}
+  const f=preguntasDeExamen(c.id,actualExamen);
+  const items=f.map(q=>{
+    const e=estado(q);
+    const chipsTemas=(q.temas||[]).map(tid=>`<span class="badge">${esc(temaNombre(c,tid))}</span>`).join('');
+    return `<button class="qitem" data-edit="${esc(q.id)}">
+      <div class="row-between" style="margin-bottom:6px">
+        <span class="meta">nº ${esc(q.numero)}</span><span class="badge ${e.c}">${e.t}</span>
+      </div>
+      <div style="font-weight:600;color:var(--txt)">${esc(q.enunciado).slice(0,140)}…</div>
+      <div style="margin-top:6px">${chipsTemas}</div>
+    </button>`;
+  }).join('');
+  return `
+  <div class="row-between">
+    <button id="bVolverCarpeta2" class="small">← Carpeta</button>
+    <span class="meta">${f.length} preguntas</span>
+  </div>
+  ${items||'<div class="card"><p class="meta" style="text-align:center">No hay preguntas.</p></div>'}`;
+}
+function vistaTemaLista(){
+  const c=carpetaById(actual); if(!c){go('carpetas');return '';}
+  const f=preguntasDeTema(c.id,actualTema);
+  const items=f.map(q=>{
+    const e=estado(q);
+    return `<button class="qitem" data-edit="${esc(q.id)}">
+      <div class="row-between" style="margin-bottom:6px">
+        <span class="meta">${esc(examenNombre(c,q.examenId))} · nº ${esc(q.numero)}</span><span class="badge ${e.c}">${e.t}</span>
+      </div>
+      <div style="font-weight:600;color:var(--txt)">${esc(q.enunciado).slice(0,140)}…</div>
+    </button>`;
+  }).join('');
+  return `
+  <div class="row-between">
+    <button id="bVolverCarpeta2" class="small">← Carpeta</button>
+    <span class="meta">${f.length} preguntas</span>
+  </div>
+  ${items||'<div class="card"><p class="meta" style="text-align:center">Aún no has asignado preguntas a este tema.</p></div>'}`;
+}
+
+/* ---------- ELEGIR QUÉ PRACTICAR ---------- */
+function vistaElegirPractica(){
+  const c=carpetaById(actual); if(!c){go('carpetas');return '';}
+  const exCk=c.examenes.map(e=>{
+    const n=preguntasDeExamen(c.id,e.id).filter(q=>!q.anulada).length;
+    return `<label class="cb-label">
+      <input type="checkbox" class="pselEx cb" value="${e.id}" ${practSel.examenes.includes(e.id)?'checked':''}>
+      ${esc(e.nombre)} <span class="meta">(${n})</span>
+    </label>`;
+  }).join('')||'<p class="meta">No hay exámenes.</p>';
+  const teCk=c.temas.map(t=>{
+    const n=preguntasDeTema(c.id,t.id).filter(q=>!q.anulada).length;
+    return `<label class="cb-label">
+      <input type="checkbox" class="pselTe cb" value="${t.id}" ${practSel.temas.includes(t.id)?'checked':''}>
+      ${esc(t.nombre)} <span class="meta">(${n})</span>
+    </label>`;
+  }).join('')||'<p class="meta">No hay temas.</p>';
+  const n=calcularSeleccionPractica(c).length;
+  return `
+  <div class="card">
+    <label class="cb-label" style="margin-top:0">
+      <input type="checkbox" id="pselTodas" class="cb" ${practSel.todas?'checked':''}>
+      Todas las preguntas de la carpeta
+    </label>
+  </div>
+  <div class="card" id="bloqueFuentes" style="${practSel.todas?'opacity:.4;pointer-events:none':''}">
+    <h4 style="margin:0 0 8px;font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase">Exámenes</h4>
+    ${exCk}
+    <h4 style="margin:16px 0 8px;font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase">Temas</h4>
+    ${teCk}
+  </div>
+  <div class="card">
+    <label class="cb-label" style="margin-top:0">
+      <input type="checkbox" id="pselMezclar" class="cb" ${practSel.mezclar?'checked':''}>
+      Mezclar el orden de las preguntas
+    </label>
+    <div class="info-pill">
+      <span style="font-size:20px">🎯</span>
+      <span><b>${n}</b> preguntas seleccionadas</span>
+    </div>
+  </div>
+  <div class="row stretch">
+    <button class="primary" id="bEmpezarPractica" ${n?'':'disabled'} style="padding:14px">${ic('play')} Empezar</button>
+    <button id="bCancelarPractica">Cancelar</button>
+  </div>`;
+}
+function calcularSeleccionPractica(c){
+  const todas=preguntasDeCarpeta(c.id).filter(q=>!q.anulada);
+  if(practSel.todas) return todas;
+  return todas.filter(q=>practSel.examenes.includes(q.examenId)||(q.temas||[]).some(t=>practSel.temas.includes(t)));
+}
+
+/* ---------- PRÁCTICA ---------- */
+function vistaPractica(){
+  if(!sess) {go('carpeta'); return '';}
+  if(sess.i>=sess.ids.length) return vistaFin();
+  const q=byId(sess.ids[sess.i]);
+  if(!q){sess.i++; return vistaPractica();}
+  const c=carpetaById(actual);
+  const n=sess.ids.length;
+  const pctHechas=Math.round((sess.i/n)*100);
+  const enter=sess.enter?' enter':''; sess.enter=false;
+  const opts=q.opciones.map(o=>{
+    let cls='opt';
+    if(sess.resp!==null){
+      if(q.correcta===o.letra) cls+=' ok';
+      else if(sess.resp===o.letra) cls+=' ko';
+    }
+    return `<button class="${cls}" data-letra="${esc(o.letra)}" ${sess.resp!==null?'disabled':''}>
+      <span class="opt-badge">${esc(o.letra.toUpperCase())}</span>
+      <span class="opt-text">${esc(o.texto)}</span>
+    </button>`;
+  }).join('');
+  let aviso='';
+  if(sess.resp!==null && q.correcta){
+    const ok=sess.resp===q.correcta;
+    aviso=`<div class="feedback ${ok?'good':'bad'}"><span style="font-size:20px">${ok?'🎉':'💡'}</span><div style="font-weight:800">${ok?'¡Respuesta correcta!':'Respuesta incorrecta'}</div></div>`;
+  }
+  let pie='';
+  if(sess.resp!==null){
+    if(!q.correcta){
+      pie=`<div class="card" style="background:var(--warnbg);border-color:var(--warnborder);margin-top:12px">
+        <p style="margin:0 0 8px;font-weight:700">Sin respuesta marcada. ¿Marcar la <b>${esc(sess.resp.toUpperCase())}</b> como correcta?</p>
+        <div class="row"><button class="primary small" id="bSetOk">Sí, marcar</button><button class="small" id="bNoSet">No</button></div>
+      </div>`;
+    }
+    pie+=`<div class="row" style="margin-top:16px"><button class="primary" id="bSig" class="flex-1" style="flex:1;padding:14px;font-size:15px">${sess.i+1<n?'Siguiente pregunta →':'Ver resumen final 🏆'}</button></div>`;
+  }
+  const temasChips=(q.temas||[]).map(tid=>`<span class="badge primary">${esc(temaNombre(c,tid))}</span>`).join('')||'<span class="badge">Sin tema</span>';
+  return `
+  <div class="pr-top">
+    ${anillo(pctHechas,56)}
+    <div class="pr-txt">
+      <div class="pr-count">Pregunta ${sess.i+1} <span>de ${n}</span></div>
+      <div class="pr-score-chips"><span class="chip ok">✓ ${sess.ac} aciertos</span><span class="chip ko">✗ ${sess.fa} fallos</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">${temasChips}</div>
+  </div>
+  <div class="card qcard${enter}" style="margin-top:14px">
+    <div class="qcard-header">
+      <span class="meta">${esc(examenNombre(c,q.examenId))} · nº ${esc(q.numero)}</span>
+      <button class="small" id="bEditP" style="padding:4px 8px;font-size:12px">${ic('edit')} Editar</button>
+    </div>
+    <p class="enun">${esc(q.enunciado)}</p>
+    ${opts}${aviso}${pie}
+  </div>
+  <div class="row" style="justify-content:space-between">
+    <button class="small" id="bSalirPractica">${ic('back')} Pausar y salir</button>
+    <span class="meta">${pctHechas}% completado</span>
+  </div>`;
+}
+function vistaFin(){
+  const tot=sess.ac+sess.fa, pct=tot?Math.round(sess.ac/tot*100):0;
+  const c=carpetaById(actual);
+  const porTema={};
+  sess.res.forEach(r=>{
+    const q=byId(r.id); if(!q||!q.temas||!q.temas.length) return;
+    q.temas.forEach(tid=>{ porTema[tid]=porTema[tid]||{ok:0,tot:0}; porTema[tid].tot++; if(r.ok) porTema[tid].ok++; });
+  });
+  const filas=Object.keys(porTema).map(tid=>{
+    const x=porTema[tid], p=Math.round(x.ok/x.tot*100);
+    return `<div class="tema-row"><span>${esc(temaNombre(c,tid))}</span><div class="bar"><div style="width:${p}%"></div></div><span class="meta">${x.ok}/${x.tot} (${p}%)</span></div>`;
+  }).join('');
+  const badgeIcon=pct>=80?'🥇':pct>=50?'🥈':'📖';
+  const msg=pct>=80?'¡Excelente resultado!':pct>=50?'¡Buen progreso, sigue así!':'Práctica para reforzar conceptos';
+  return `
+  <div class="card res">
+    <div style="font-size:42px;margin-bottom:6px">${badgeIcon}</div>
+    <div class="res-wrap">${anillo(pct,148).replace('class="ring"','class="ring big"')}<div class="res-pct">${pct}%<span>Aciertos</span></div></div>
+    <h3 class="res-msg">${msg}</h3>
+    <div class="score-pill">
+      <span style="color:var(--ok)">✓ ${sess.ac} aciertos</span><span>•</span><span style="color:var(--ko)">✗ ${sess.fa} fallos</span><span>•</span><span>${tot} respondidas</span>
+    </div>
+  </div>
+  ${filas?`<div class="card"><label style="margin-top:0">Rendimiento por tema</label>${filas}</div>`:''}
+  <div class="row stretch">
+    ${sess.fa?`<button class="primary" id="bRepasar" style="padding:14px">${ic('repeat')} Repasar las ${sess.fa} falladas</button>`:''}
+    <button id="bSalirPractica" class="${sess.fa?'':'primary'}" style="padding:14px">${ic('back')} Volver a la carpeta</button>
+  </div>`;
+}
+
+/* ---------- EDICIÓN ---------- */
+function vistaEditar(){
+  const d=editing.data;
+  const c=carpetaById(d.carpetaId);
+  const opts=d.opciones.map((o,i)=>`
+    <div class="card" style="padding:14px;margin-bottom:10px">
+      <div class="row-between" style="margin-bottom:6px">
+        <b>Opción ${esc(o.letra.toUpperCase())}</b>
+        <label class="cb-label" style="margin:0">
+          <input type="radio" name="corr" value="${esc(o.letra)}" ${d.correcta===o.letra?'checked':''}>
+          Es la correcta
+        </label>
+      </div>
+      <textarea data-opt="${i}">${esc(o.texto)}</textarea>
+    </div>`).join('');
+  const temasCk=c?c.temas.map(t=>`
+    <label class="cb-label">
+      <input type="checkbox" class="eTema cb" value="${t.id}" ${(d.temas||[]).includes(t.id)?'checked':''}>
+      ${esc(t.nombre)}
+    </label>`).join('') : '';
+  return `
+  <div class="card">
+    <div class="row" style="margin-bottom:10px">
+      <span class="badge primary">${esc(c?examenNombre(c,d.examenId):'Manual')}</span>
+      <span class="badge">Nº ${esc(d.numero)}</span>
+    </div>
+    <label>Enunciado de la pregunta</label>
+    <textarea id="eEnun" style="min-height:100px">${esc(d.enunciado)}</textarea>
+    <label class="cb-label" style="margin-top:14px">
+      <input type="checkbox" id="eAnul" class="cb" ${d.anulada?'checked':''}>
+      Pregunta anulada (se excluye al practicar)
+    </label>
+  </div>
+  <h4 style="margin:16px 0 8px;font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase">Opciones de respuesta</h4>
+  ${opts}
+  <div class="card row" style="padding:12px">
+    <button id="bAddOpt" class="small">+ Añadir opción</button>
+    <button id="bDelOpt" class="small" ${d.opciones.length<=2?'disabled':''}>− Quitar última</button>
+    <button id="bNoCorr" class="small">Sin marcar correcta</button>
+  </div>
+  ${c&&c.temas.length?`<h4 style="margin:16px 0 8px;font-size:13px;font-weight:700;color:var(--mut);text-transform:uppercase">Temas asignados</h4><div class="card">${temasCk}</div>`:''}
+  <div class="card row">
+    <button class="primary" id="bGuardarE">Guardar cambios</button>
+    <button id="bCancelE">Cancelar</button>
+    <button class="danger small" id="bDelQ" style="margin-left:auto">${ic('trash')} Eliminar</button>
+  </div>`;
+}
+function abrirEditor(id,back){
+  const q=byId(id);
+  editing={id,back,data:JSON.parse(JSON.stringify(q))};
+  view='edit'; render();
+}
+function leerEdicion(){
+  const d=editing.data;
+  d.enunciado=document.getElementById('eEnun').value;
+  d.anulada=document.getElementById('eAnul').checked;
+  document.querySelectorAll('[data-opt]').forEach(t=>{d.opciones[+t.dataset.opt].texto=t.value;});
+  const r=document.querySelector('input[name=corr]:checked');
+  d.correcta=r?r.value:null;
+  d.temas=[...document.querySelectorAll('.eTema:checked')].map(ch=>ch.value);
+  return d;
+}
+function nuevaPreguntaManual(){
+  const c=carpetaById(actual);
+  const n=Math.max(0,...preguntasDeCarpeta(c.id).filter(q=>!q.examenId).map(q=>q.numero))+1;
+  const p={id:nuevoId('m'),carpetaId:c.id,examenId:null,numero:n,enunciado:'',
+    opciones:['a','b','c','d'].map(l=>({letra:l,texto:''})),correcta:null,anulada:false,revisar:[],editada:true,temas:[]};
+  Q.push(p); saveQ(); return p.id;
+}
+
+/* ---------- DATOS (copia de seguridad) ---------- */
+function vistaDatos(){
+  return `
+  <div class="card">
+    <h3 style="margin:0 0 4px;font-size:16px;font-weight:800">Copia de seguridad completa</h3>
+    <p class="meta" style="margin:0 0 12px">Incluye todas tus carpetas, exámenes, temas y preguntas.</p>
+    <div class="row">
+      <button class="secondary" id="bExp">Exportar copia</button>
+      <label class="btn small" style="cursor:pointer">Importar copia<input type="file" id="fileIn" accept=".json,application/json" style="display:none"></label>
+    </div>
+  </div>
+  <div class="card row" style="justify-content:space-between">
+    <button class="small" id="bVolverD">← Volver al inicio</button>
+    <button class="danger small" id="bReset">Restablecer todos los datos</button>
+  </div>`;
+}
+
+/* ---------- LECTURA DE PDF (exámenes) ---------- */
+async function leerLineasPDF(file){
+  const buf=await file.arrayBuffer();
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+  const out=[];
+  for(let p=1;p<=pdf.numPages;p++){
+    const page=await pdf.getPage(p);
+    const tc=await page.getTextContent();
+    const cajas=tc.items.filter(it=>it.str.trim()!=='').map(it=>({str:it.str,x:it.transform[4],y:it.transform[5],w:it.width||0}));
+    cajas.sort((a,b)=>b.y-a.y);
+    const grupos=[];
+    for(const c of cajas){ const g=grupos[grupos.length-1]; if(g&&Math.abs(c.y-g.y)<=2.5) g.items.push(c); else grupos.push({y:c.y,items:[c]}); }
+    for(const g of grupos){
+      g.items.sort((a,b)=>a.x-b.x);
+      let t='', prev=null;
+      for(const c of g.items){ if(prev&&c.x-(prev.x+prev.w)>1.5&&!t.endsWith(' ')) t+=' '; t+=c.str; prev=c; }
+      out.push(t.replace(/\s+/g,' ').trim());
+    }
+    if(p%20===0) await new Promise(r=>setTimeout(r,0));
+  }
+  return out.filter(Boolean);
+}
+function leerPlantilla(lineas){
+  const pares={}, conflictos=[];
+  const re=/(?<!\d)(\d{1,3})\s+([A-D])(?![A-Za-zÁÉÍÓÚáéíóúñ])/g;
+  for(const l of lineas){
+    re.lastIndex=0; let m;
+    while((m=re.exec(l))){
+      const n=+m[1], letra=m[2];
+      if(n<1||n>200) continue;
+      if(pares[n]&&pares[n]!==letra){ if(!conflictos.includes(n)) conflictos.push(n); }
+      else pares[n]=letra;
+    }
+  }
+  return {pares,conflictos};
+}
+function leerCuestionario(lineas){
+  const preguntas=[]; let cur=null, state='out', started=false, reserva=false;
+  const cerrar=()=>{ if(cur){ preguntas.push(cur); cur=null; } };
+  const RUIDO=[/^Excmo\. Ayuntamiento/,/^Servicio de Personal/,/^PRIMER EJERCICIO 2 PLAZAS/,/^ADMINISTRATIVO\/A PEPI/,/^\d+$/];
+  for(const t of lineas){
+    if(!started){ if(t==='PRIMER EJERCICIO') started=true; continue; }
+    if(RUIDO.some(r=>r.test(t))) continue;
+    if(t==='PREGUNTAS DE RESERVA'){ cerrar(); state='out'; reserva=true; continue; }
+    if(/^(PRIMER|SEGUNDO)\s+(EJERCICIO|SUPUESTO)(\s+PRÁCTICO|\s+PRACTICO)?$/.test(t)){ cerrar(); state='out'; reserva=false; continue; }
+    const mq=t.match(/^(\d{1,3})\.-\s*(.*)$/);
+    if(mq){ cerrar(); state='q'; cur={numero:+mq[1],enunciado:mq[2],opciones:[],reserva}; continue; }
+    if(!cur) continue;
+    const mo=t.match(/^([a-d])\)\s*(.*)$/);
+    if(mo){ state='o'; cur.opciones.push({letra:mo[1],texto:mo[2]}); continue; }
+    if(state==='q') cur.enunciado+=' '+t;
+    else if(state==='o'&&cur.opciones.length){ cur.opciones[cur.opciones.length-1].texto+=' '+t; }
+  }
+  cerrar();
+  return preguntas;
+}
+function construirImportacionPDF(lineasPreg, lineasPlan, nombre){
+  const cuest=leerCuestionario(lineasPreg);
+  if(!cuest.length) throw new Error('No se encontraron preguntas en el PDF.');
+  const {pares,conflictos}=leerPlantilla(lineasPlan);
+  const avisos=[];
+  if(conflictos.length) avisos.push('Números con dos respuestas distintas en la plantilla: '+conflictos.join(', ')+'.');
+  const reservas=cuest.filter(q=>q.reserva).length;
+  const ordinarias=cuest.filter(q=>!q.reserva);
+  const sinRespuesta=ordinarias.filter(q=>!pares[q.numero]).map(q=>q.numero);
+  if(sinRespuesta.length) avisos.push('Sin respuesta en la plantilla: '+sinRespuesta.join(', ')+'.');
+  const preguntas=ordinarias.map(q=>{
+    const opciones=q.opciones.map(o=>({letra:o.letra,texto:o.texto.trim()}));
+    const correcta=pares[q.numero]?pares[q.numero].toLowerCase():null;
+    const revisar=[];
+    if(opciones.length!==4) revisar.push('opciones');
+    if(!correcta) revisar.push('sin_correcta');
+    if(conflictos.includes(q.numero)) revisar.push('conflicto');
+    return {numero:q.numero,enunciado:q.enunciado.trim(),opciones,correcta,revisar,anulada:false};
+  });
+  return {preguntas,avisos,resumen:`${reservas} preguntas de reserva detectadas (no incluidas).`};
+}
+function construirImportacionJSON(data){
+  if(!Array.isArray(data)) throw new Error('El archivo no es una lista de preguntas.');
+  const avisos=[];
+  const preguntas=data.map((rec,i)=>{
+    const opciones=(rec.opciones||[]).map(o=>({letra:o.letra,texto:(o.texto||'').trim()}));
+    const revisar=[];
+    if(opciones.length!==4) revisar.push('opciones');
+    if(!rec.correcta) revisar.push('sin_correcta');
+    return {numero:rec.numero||(i+1),enunciado:(rec.enunciado||'').trim(),opciones,correcta:rec.correcta||null,revisar,anulada:!!rec.anulada};
+  });
+  return {preguntas,avisos,resumen:`${preguntas.length} preguntas leídas del archivo JSON.`};
+}
+async function procesarExamenPDF(){
+  const $=id=>document.getElementById(id);
+  const fp=$('exPreg').files[0], fl=$('exPlan').files[0];
+  if(!fp||!fl){ alert('Selecciona el PDF de preguntas y el de plantilla.'); return; }
+  const nombre=$('exNombre').value.trim()||fp.name.replace(/\.pdf$/i,'');
+  const est=$('pdfEstado');
+  try{
+    est.textContent='Leyendo preguntas…';
+    const lp=await leerLineasPDF(fp);
+    est.textContent='Leyendo plantilla de respuestas…';
+    const ll=await leerLineasPDF(fl);
+    importacionExamen={...construirImportacionPDF(lp,ll,nombre),nombre};
+    go('revisarExamen');
+  }catch(err){ est.textContent='Error: '+err.message; }
+}
+function procesarExamenJSON(){
+  const $=id=>document.getElementById(id);
+  const f=$('jsonIn').files[0];
+  if(!f){ alert('Selecciona un archivo JSON.'); return; }
+  const nombre=$('jsonNombre').value.trim()||f.name.replace(/\.json$/i,'');
+  f.text().then(t=>{
+    const data=JSON.parse(t);
+    importacionExamen={...construirImportacionJSON(data),nombre};
+    go('revisarExamen');
+  }).catch(err=>alert('No se pudo leer el archivo JSON: '+err.message));
+}
+function guardarImportacionExamen(){
+  const c=carpetaById(actual);
+  const examenId=nuevoId('ex');
+  c.examenes.push({id:examenId,nombre:importacionExamen.nombre});
+  importacionExamen.preguntas.forEach(p=>{
+    Q.push({id:nuevoId('e'),carpetaId:c.id,examenId,numero:p.numero,enunciado:p.enunciado,
+      opciones:p.opciones,correcta:p.correcta,anulada:!!p.anulada,revisar:p.revisar,editada:false,temas:[]});
+  });
+  saveC(); saveQ(); importacionExamen=null; go('carpeta');
+}
+
+/* ---------- LECTURA DE TEMARIO ---------- */
+function leerTemario(lineas){
+  const NOISE=[/^Plaza de España/i,/^Código Seguro/i,/^Firmado/i,/^Observaciones$/i,/^Url De/i,/^Estado$/i,
+    /^Página$/i,/^\d+\/\d+$/,/^\d+ de \d+$/,/^ANEXO/i,/@/,/^FUNCIÓN PÚBLICA/i,/^Y RECURSOS HUMANOS/i,
+    /^Diputación$/i,/^de Cádiz$/i,/^T \d/,/^https?:\/\//i,/^\d{2}\/\d{2}\/\d{4}/];
+  const SECCION=/^[A-Za-z]\)\s*MATERIAS/i;
+  const temas=[]; let cur=null;
+  const cerrar=()=>{ if(cur && cur.texto.trim()){ temas.push(cur); } cur=null; };
+  for(const t of lineas){
+    if(!t) continue;
+    if(SECCION.test(t)){ cerrar(); continue; }
+    if(NOISE.some(r=>r.test(t))) continue;
+    const m=t.match(/^(\d{1,2})\.\s*(.*)$/);
+    if(m){ cerrar(); cur={numero:+m[1],texto:m[2]}; continue; }
+    if(cur) cur.texto+=' '+t;
+  }
+  cerrar();
+  return temas.map(t=>({texto:t.texto.replace(/\s+/g,' ').trim()}));
+}
+async function procesarTemario(){
+  const $=id=>document.getElementById(id);
+  const f=$('temIn').files[0];
+  if(!f){ alert('Selecciona el PDF del temario.'); return; }
+  const est=$('temEstado');
+  try{
+    est.textContent='Leyendo temario…';
+    const lineas=await leerLineasPDF(f);
+    const temas=leerTemario(lineas);
+    if(!temas.length) throw new Error('No se detectaron temas en este PDF.');
+    importacionTemario={temas};
+    go('revisarTemario');
+  }catch(err){ est.textContent='Error: '+err.message; }
+}
+function guardarImportacionTemario(){
+  const c=carpetaById(actual);
+  const idsViejos=c.temas.map(t=>t.id);
+  c.temas=importacionTemario.temas.map((t,i)=>({id:nuevoId('t'),numero:i+1,nombre:'Tema '+(i+1),texto:t.texto}));
+  if(idsViejos.length){
+    Q.filter(q=>q.carpetaId===c.id).forEach(q=>{ q.temas=(q.temas||[]).filter(tid=>!idsViejos.includes(tid)); });
+  }
+  saveC(); saveQ(); importacionTemario=null; go('carpeta');
+}
+
+/* ---------- EVENTOS ---------- */
+function bind(){
+  const $=id=>document.getElementById(id);
+  const on=(id,fn)=>{const el=$(id); if(el) el.onclick=fn;};
+
+  on('brandBtn',()=>go('home'));
+  on('btnInicio',()=>{sess=null; go('home');});
+
+  // Inicio
+  on('bNuevaCarpeta',()=>{form={id:null,nombre:''}; go('formCarpeta');});
+  on('bNuevaCarpetaDirecta',()=>{form={id:null,nombre:''}; go('formCarpeta');});
+  on('bComenzar',()=>go('carpetas'));
+  on('bVerTodasCarpetas',()=>go('carpetas'));
+  on('bDatos',()=>go('datos'));
+
+  // Carpetas
+  on('bNueva',()=>{form={id:null,nombre:''}; go('formCarpeta');});
+  on('bVolver',()=>go('home'));
+  document.querySelectorAll('[data-abrir]').forEach(b=>b.onclick=()=>{actual=b.dataset.abrir; go('carpeta');});
+  document.querySelectorAll('[data-renombrar]').forEach(b=>b.onclick=()=>{const c=carpetaById(b.dataset.renombrar); form={id:c.id,nombre:c.nombre}; go('formCarpeta');});
+  document.querySelectorAll('[data-borrar-carpeta]').forEach(b=>b.onclick=()=>{
+    const c=carpetaById(b.dataset.borrarCarpeta);
+    if(confirm(`¿Eliminar la carpeta "${c.nombre}" y todas sus preguntas? Esta acción no se puede deshacer.`)){
+      Q=Q.filter(q=>q.carpetaId!==c.id); CARPETAS=CARPETAS.filter(x=>x.id!==c.id); saveC(); saveQ(); render();
+    }
+  });
+
+  // Formulario carpeta
+  if(view==='formCarpeta'){
+    on('bCancelCarpeta',()=>go(form.id?'carpeta':'carpetas'));
+    on('bGuardarCarpeta',()=>{
+      const nombre=$('fNomCarpeta').value.trim()||'Carpeta de estudio';
+      if(form.id){ carpetaById(form.id).nombre=nombre; saveC(); actual=form.id; go('carpeta'); }
+      else { const c={id:nuevoId('c'),nombre,examenes:[],temas:[]}; CARPETAS.push(c); saveC(); actual=c.id; go('carpeta'); }
+    });
+  }
+
+  // Panel carpeta
+  on('bPracticar',()=>{practSel={examenes:[],temas:[],todas:true,mezclar:true}; go('elegirPractica');});
+  on('bNuevaP',()=>{const id=nuevaPreguntaManual(); abrirEditor(id,'carpeta');});
+  on('bImportarExamen',()=>go('importarExamen'));
+  on('bImportarTemario',()=>go('importarTemario'));
+  on('bVolverCarpetas',()=>go('carpetas'));
+  on('bBorrarCarpetaActual',()=>{
+    const c=carpetaById(actual);
+    if(confirm(`¿Eliminar la carpeta "${c.nombre}" y todas sus preguntas?`)){
+      Q=Q.filter(q=>q.carpetaId!==c.id); CARPETAS=CARPETAS.filter(x=>x.id!==c.id); saveC(); saveQ(); go('carpetas');
+    }
+  });
+  document.querySelectorAll('[data-ver-examen]').forEach(b=>b.onclick=()=>{actualExamen=b.dataset.verExamen; go('examenLista');});
+  document.querySelectorAll('[data-borrar-examen]').forEach(b=>b.onclick=()=>{
+    const c=carpetaById(actual);
+    if(confirm('¿Eliminar este examen y sus preguntas?')){
+      Q=Q.filter(q=>!(q.carpetaId===c.id&&q.examenId===b.dataset.borrarExamen));
+      c.examenes=c.examenes.filter(e=>e.id!==b.dataset.borrarExamen);
+      saveC(); saveQ(); render();
+    }
+  });
+  document.querySelectorAll('[data-ver-tema]').forEach(b=>b.onclick=()=>{actualTema=b.dataset.verTema; go('temaLista');});
+  document.querySelectorAll('[data-borrar-tema]').forEach(b=>b.onclick=()=>{
+    const c=carpetaById(actual);
+    if(confirm('¿Eliminar este tema? Las preguntas dejarán de tenerlo asignado.')){
+      Q.filter(q=>q.carpetaId===c.id).forEach(q=>{ q.temas=(q.temas||[]).filter(t=>t!==b.dataset.borrarTema); });
+      c.temas=c.temas.filter(t=>t.id!==b.dataset.borrarTema);
+      saveC(); saveQ(); render();
+    }
+  });
+
+  // Importar examen
+  on('bLeerExamen',procesarExamenPDF);
+  on('bLeerJSON',procesarExamenJSON);
+  on('bVolverCarpeta',()=>go('carpeta'));
+
+  // Revisión examen
+  on('bAplicarAnul',()=>{
+    const nums=$('revAnul').value.split(/[,;\s]+/).map(x=>+x).filter(x=>x>0);
+    importacionExamen.preguntas.forEach(q=>{ q.anulada=nums.includes(q.numero); });
+    render();
+  });
+  on('bGuardarExamen',guardarImportacionExamen);
+  on('bCancelarExamen',()=>{importacionExamen=null; go('carpeta');});
+
+  // Importar / revisar temario
+  on('bLeerTemario',procesarTemario);
+  on('bGuardarTemario',guardarImportacionTemario);
+  on('bCancelarTemario',()=>{importacionTemario=null; go('carpeta');});
+
+  // Listas examen/tema
+  on('bVolverCarpeta2',()=>go('carpeta'));
+  document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>abrirEditor(b.dataset.edit,view));
+
+  // Elegir práctica
+  const pt=$('pselTodas'); if(pt) pt.onchange=e=>{practSel.todas=e.target.checked; render();};
+  document.querySelectorAll('.pselEx').forEach(ch=>ch.onchange=()=>{
+    practSel.examenes = [...document.querySelectorAll('.pselEx:checked')].map(c=>c.value);
+    render();
+  });
+  document.querySelectorAll('.pselTe').forEach(ch=>ch.onchange=()=>{
+    practSel.temas = [...document.querySelectorAll('.pselTe:checked')].map(c=>c.value);
+    render();
+  });
+  const pm=$('pselMezclar'); if(pm) pm.onchange=e=>{practSel.mezclar=e.target.checked;};
+  on('bEmpezarPractica',()=>{
+    const c=carpetaById(actual);
+    let ids=calcularSeleccionPractica(c).map(q=>q.id);
+    if(practSel.mezclar) ids=ids.sort(()=>Math.random()-0.5);
+    if(!ids.length) return;
+    sess={ids,i:0,ac:0,fa:0,resp:null,res:[],enter:false};
+    go('practice');
+  });
+  on('bCancelarPractica',()=>go('carpeta'));
+
+  // Práctica
+  document.querySelectorAll('[data-letra]').forEach(b=>b.onclick=()=>responder(b.dataset.letra));
+  on('bSig',siguiente);
+  on('bSetOk',()=>{
+    const q=byId(sess.ids[sess.i]);
+    q.correcta=sess.resp; q.editada=true; q.revisar=[];
+    saveQ(); sess.ac++; sess.res.push({id:q.id,ok:true}); render();
+  });
+  on('bNoSet',()=>render());
+  on('bEditP',()=>abrirEditor(sess.ids[sess.i],'practice'));
+  on('bSalirPractica',()=>{sess=null; go('carpeta');});
+  on('bRepasar',()=>{
+    const falladas=sess.res.filter(r=>!r.ok).map(r=>r.id);
+    sess={ids:falladas,i:0,ac:0,fa:0,resp:null,res:[],enter:false};
+    go('practice');
+  });
+
+  // Edición
+  if(view==='edit'){
+    on('bAddOpt',()=>{leerEdicion(); const d=editing.data; d.opciones.push({letra:String.fromCharCode(97+d.opciones.length),texto:''}); render();});
+    on('bDelOpt',()=>{leerEdicion(); const d=editing.data; if(d.opciones.length>2) d.opciones.pop(); if(!d.opciones.find(o=>o.letra===d.correcta)) d.correcta=null; render();});
+    on('bNoCorr',()=>{leerEdicion(); editing.data.correcta=null; render();});
+    on('bGuardarE',()=>{
+      const d=leerEdicion(); d.editada=true; d.revisar=[];
+      const i=Q.findIndex(q=>q.id===d.id); if(i>=0) Q[i]=d; else Q.push(d);
+      saveQ();
+      const b=editing.back; editing=null;
+      if(b==='practice'&&sess){ sess.resp=null; go('practice'); }
+      else go(b||'carpeta');
+    });
+    on('bCancelE',()=>{const b=editing.back; editing=null; if(b==='practice'&&sess) go('practice'); else go(b||'carpeta');});
+    on('bDelQ',()=>{
+      if(!confirm('¿Eliminar esta pregunta?')) return;
+      const id=editing.id, b=editing.back;
+      Q=Q.filter(q=>q.id!==id); saveQ(); editing=null;
+      if(sess) sess.ids=sess.ids.filter(x=>x!==id);
+      if(b==='practice'&&sess&&sess.ids.length) go('practice'); else go(b||'carpeta');
+    });
+  }
+
+  // Datos
+  on('bExp',exportar);
+  const fi=$('fileIn'); if(fi) fi.onchange=e=>importarCopia(e.target.files[0]);
+  on('bVolverD',()=>go('home'));
+  on('bReset',()=>{
+    if(confirm('¿Borrar todas las carpetas y preguntas guardadas? Esta acción no se puede deshacer.')){
+      CARPETAS=[]; Q=[]; saveC(); saveQ(); go('home');
+    }
+  });
+}
+
+function responder(letra){
+  if(sess.resp!==null) return;
+  const q=byId(sess.ids[sess.i]);
+  sess.resp=letra;
+  if(q.correcta){
+    const ok=letra===q.correcta;
+    if(ok) sess.ac++; else sess.fa++;
+    sess.res.push({id:q.id,ok});
+  }
+  render();
+}
+function siguiente(){
+  sess.i++; sess.resp=null; sess.enter=true;
+  render();
+}
+function importarCopia(file){
+  if(!file) return;
+  file.text().then(t=>{
+    const data=JSON.parse(t);
+    if(!confirm('¿Reemplazar todos los datos actuales por los de esta copia?')) return;
+    CARPETAS=data.carpetas||[]; Q=data.preguntas||[];
+    saveC(); saveQ(); go('home');
+  }).catch(()=>alert('No se pudo leer el archivo. Debe ser una copia de seguridad válida.'));
+}
+function exportar(){
+  const blob=new Blob([JSON.stringify({carpetas:CARPETAS,preguntas:Q},null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='opotest-copia-seguridad.json';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ---------- Service worker (PWA) ---------- */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  });
+}
+
+load();
+render();
+</script>
+
+<script>
+  // Partículas de fondo: motas que suben despacio con balanceo suave y destellos difusos
+  // con el color del acento. Se desactivan si el sistema pide reducir el movimiento.
+  (function () {
+    const lienzo = document.getElementById('particulas');
+    const reducido = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (!lienzo || !lienzo.getContext || reducido.matches) return;
+    const ctx = lienzo.getContext('2d');
+    const color = { r: 79, g: 70, b: 229 }, objetivo = { r: 79, g: 70, b: 229 };
+    let ancho = 0, alto = 0, motas = [], destellos = [], previo = 0, animacion = 0;
+
+    const azar = (a, b) => a + Math.random() * (b - a);
+    const hexARgb = h => { const m = /^#?([0-9a-f]{6})$/i.exec((h || '').trim()); if (!m) return null; const n = parseInt(m[1], 16); return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }; };
+    const oscuro = () => document.documentElement.classList.contains('dark');
+
+    function leerColor() {
+      const c = hexARgb(getComputedStyle(document.documentElement).getPropertyValue('--acc'));
+      if (c) Object.assign(objetivo, c);
+    }
+    const nuevaMota = alAzar => ({ x0: azar(0, ancho), y: alAzar ? azar(0, alto) : alto + 12, r: azar(1.1, 3.3), vy: azar(6, 15), amp: azar(10, 34), frec: azar(.12, .35), fase: azar(0, 6.283), brillo: azar(.45, 1), pulso: azar(.3, .9) });
+    const nuevoDestello = () => ({ x0: azar(0, ancho), y: azar(0, alto), r: azar(70, 170), vy: azar(2, 5), amp: azar(20, 60), frec: azar(.05, .12), fase: azar(0, 6.283), pulso: azar(.1, .25) });
+
+    function ajustar() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      ancho = window.innerWidth; alto = window.innerHeight;
+      lienzo.width = Math.round(ancho * dpr); lienzo.height = Math.round(alto * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const nMotas = Math.min(90, Math.max(24, Math.round(ancho * alto / 15000)));
+      const nDestellos = ancho < 700 ? 4 : 7;
+      while (motas.length < nMotas) motas.push(nuevaMota(true));
+      motas.length = nMotas;
+      while (destellos.length < nDestellos) destellos.push(nuevoDestello());
+      destellos.length = nDestellos;
+    }
+
+    function dibujar(ahora) {
+      animacion = requestAnimationFrame(dibujar);
+      const t = ahora / 1000, dt = Math.min(.05, previo ? t - previo : .016); previo = t;
+      const k = Math.min(1, dt * 2.5);
+      color.r += (objetivo.r - color.r) * k; color.g += (objetivo.g - color.g) * k; color.b += (objetivo.b - color.b) * k;
+      const noche = oscuro();
+      const mezcla = noche ? .2 : 0;
+      const c = [Math.round(color.r + (255 - color.r) * mezcla), Math.round(color.g + (255 - color.g) * mezcla), Math.round(color.b + (255 - color.b) * mezcla)].join(',');
+      ctx.clearRect(0, 0, ancho, alto);
+
+      for (const d of destellos) {
+        d.y -= d.vy * dt; if (d.y < -d.r) { d.y = alto + d.r; d.x0 = azar(0, ancho); }
+        const x = d.x0 + Math.sin(t * d.frec + d.fase) * d.amp;
+        const a = (noche ? .17 : .14) * (.6 + .4 * Math.sin(t * d.pulso + d.fase));
+        const g = ctx.createRadialGradient(x, d.y, 0, x, d.y, d.r);
+        g.addColorStop(0, `rgba(${c},${a})`); g.addColorStop(1, `rgba(${c},0)`);
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, d.y, d.r, 0, 6.283); ctx.fill();
+      }
+      for (const m of motas) {
+        m.y -= m.vy * dt;
+        if (m.y < -12) Object.assign(m, nuevaMota(false));
+        const x = m.x0 + Math.sin(t * m.frec + m.fase) * m.amp;
+        const borde = Math.max(0, Math.min(1, m.y / 140, (alto - m.y) / 60));
+        const a = m.brillo * (.55 + .45 * Math.sin(t * m.pulso + m.fase)) * borde * (noche ? .8 : .52);
+        ctx.fillStyle = `rgba(${c},${a * .22})`; ctx.beginPath(); ctx.arc(x, m.y, m.r * 3.4, 0, 6.283); ctx.fill();
+        ctx.fillStyle = `rgba(${c},${a})`;       ctx.beginPath(); ctx.arc(x, m.y, m.r, 0, 6.283); ctx.fill();
+      }
+    }
+
+    function parar() { cancelAnimationFrame(animacion); ctx.clearRect(0, 0, ancho, alto); lienzo.style.display = 'none'; }
+    ajustar(); leerColor(); Object.assign(color, objetivo);
+    window.addEventListener('resize', ajustar);
+    new MutationObserver(leerColor).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    if (reducido.addEventListener) reducido.addEventListener('change', e => { if (e.matches) parar(); });
+    animacion = requestAnimationFrame(dibujar);
+  })();
+</script>
+</body>
+</html>
